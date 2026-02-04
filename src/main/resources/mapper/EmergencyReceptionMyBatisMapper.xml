@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.seoulit.reception.repository.EmergencyReceptionMyBatisMapper">
+
+    <select id="selectEmergencyReceptions" resultType="kr.co.seoulit.reception.dto.EmergencyReceptionDTO">
+        SELECT
+        r.reception_id,
+        r.reception_no,
+        r.patient_id,
+        r.visit_type,
+        r.department_id,
+        r.doctor_id,
+        r.reservation_id,
+        r.scheduled_at,
+        r.arrived_at,
+        r.status,
+        r.note,
+        r.is_active,
+        r.created_at,
+        r.updated_at,
+        e.triage_level,
+        e.chief_complaint,
+        e.vital_temp,
+        e.vital_bp_systolic,
+        e.vital_bp_diastolic,
+        e.vital_hr,
+        e.vital_rr,
+        e.vital_spo2,
+        e.arrival_mode,
+        e.triage_note
+        FROM reception r
+        JOIN reception_emergency e ON r.reception_id = e.reception_id
+        <where>
+            r.visit_type = 'EMERGENCY'
+            <if test="searchValue != null and searchValue != ''">
+                <choose>
+                    <when test="searchType == 'patientId'">
+                        AND r.patient_id = #{searchValue}
+                    </when>
+                    <when test="searchType == 'status'">
+                        AND r.status = #{searchValue}
+                    </when>
+                    <when test="searchType == 'triageLevel'">
+                        AND e.triage_level = #{searchValue}
+                    </when>
+                </choose>
+            </if>
+        </where>
+        ORDER BY e.triage_level ASC, r.created_at ASC
+    </select>
+
+</mapper>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.seoulit.reception.repository.ReservationMyBatisMapper">
+
+    <select id="selectReservations" resultType="kr.co.seoulit.reception.dto.ReservationDTO">
+        SELECT
+        reservation_id,
+        reservation_no,
+        patient_id,
+        patient_name,
+        department_id,
+        department_name,
+        doctor_id,
+        doctor_name,
+        reserved_at,
+        status,
+        note,
+        is_active,
+        inactive_at,
+        inactive_reason_code,
+        inactive_reason_text,
+        canceled_at,
+        cancel_reason_code,
+        cancel_reason_text,
+        created_by,
+        updated_by,
+        created_at,
+        updated_at
+        FROM reservation
+        <where>
+            <if test="searchValue != null and searchValue != ''">
+                <choose>
+                    <when test="searchType == 'reservationNo'">
+                        AND reservation_no = #{searchValue}
+                    </when>
+                    <when test="searchType == 'patientId'">
+                        AND patient_id = #{searchValue}
+                    </when>
+                    <when test="searchType == 'status'">
+                        AND status = #{searchValue}
+                    </when>
+                </choose>
+            </if>
+        </where>
+        ORDER BY reservation_id
+    </select>
+
+</mapper>

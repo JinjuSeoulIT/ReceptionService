@@ -1,0 +1,50 @@
+version: "3.9"
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: reception-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: 1111
+      MYSQL_DATABASE: hospital_reception
+    ports:
+      - "3307:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./db/init:/docker-entrypoint-initdb.d
+
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+
+  backend:
+    image: hyojeong7/reception-backend:v33
+    container_name: reception-backend
+    restart: unless-stopped
+    environment:
+      SPRING_DATASOURCE_HIKARI_JDBC_URL: jdbc:mysql://db:3306/hospital_reception?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC&connectionCollation=utf8mb4_general_ci
+      SPRING_DATASOURCE_HIKARI_USERNAME: root
+      SPRING_DATASOURCE_HIKARI_PASSWORD: 1111
+      # JAVA_TOOL_OPTIONS: -Dfile.encoding=UTF-8 한글화의 흔적
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8181:8181"
+  frontend:
+    image: hyojeong7/reception-frontend:v13
+    container_name: reception-frontend
+    restart: unless-stopped
+    environment:
+      NEXT_PUBLIC_API_BASE: http://backend:8181
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
+
+volumes:
+  db_data:

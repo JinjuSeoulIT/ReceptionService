@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.seoulit.reception.repository.ReceptionMyBatisMapper">
+
+    <select id="selectReceptions" resultType="kr.co.seoulit.reception.dto.ReceptionDTO">
+        SELECT
+        r.reception_id,
+        r.reception_no,
+        r.patient_id,
+        p.patient_name,
+        r.visit_type,
+        r.department_id,
+        d.department_name,
+        r.doctor_id,
+        doc.doctor_name,
+        r.reservation_id,
+        r.scheduled_at,
+        r.arrived_at,
+        r.status,
+        r.note,
+        r.is_active,
+        r.inactive_at,
+        r.inactive_reason_code,
+        r.inactive_reason_text,
+        r.cancel_reason_code,
+        r.cancel_reason_text,
+        r.hold_reason_code,
+        r.hold_reason_text,
+        r.created_by,
+        r.updated_by,
+        r.created_at,
+        r.updated_at
+        FROM reception r
+        LEFT JOIN patient p ON p.patient_id = r.patient_id
+        LEFT JOIN department d ON d.department_id = r.department_id
+        LEFT JOIN doctor doc ON doc.doctor_id = r.doctor_id
+        <where>
+            <if test="searchValue != null and searchValue != ''">
+                <choose>
+                    <when test="searchType == 'receptionNo'">
+                        AND r.reception_no = #{searchValue}
+                    </when>
+                    <when test="searchType == 'patientId'">
+                        AND r.patient_id = #{searchValue}
+                    </when>
+                    <when test="searchType == 'patientName'">
+                        AND p.patient_name LIKE CONCAT('%', #{searchValue}, '%')
+                    </when>
+                    <when test="searchType == 'status'">
+                        AND r.status = #{searchValue}
+                    </when>
+                </choose>
+            </if>
+            <if test="dateFrom != null and dateFrom != ''">
+                AND DATE(r.created_at) &gt;= #{dateFrom}
+            </if>
+            <if test="dateTo != null and dateTo != ''">
+                AND DATE(r.created_at) &lt;= #{dateTo}
+            </if>
+            <if test="departmentId != null">
+                AND r.department_id = #{departmentId}
+            </if>
+            <if test="doctorId != null">
+                AND r.doctor_id = #{doctorId}
+            </if>
+        </where>
+        ORDER BY r.reception_id
+    </select>
+
+    <select id="selectQueue" resultType="kr.co.seoulit.reception.dto.ReceptionDTO">
+        SELECT
+        r.reception_id,
+        r.reception_no,
+        r.patient_id,
+        p.patient_name,
+        r.visit_type,
+        r.department_id,
+        d.department_name,
+        r.doctor_id,
+        doc.doctor_name,
+        r.reservation_id,
+        r.scheduled_at,
+        r.arrived_at,
+        r.status,
+        r.note,
+        r.is_active,
+        r.inactive_at,
+        r.inactive_reason_code,
+        r.inactive_reason_text,
+        r.cancel_reason_code,
+        r.cancel_reason_text,
+        r.hold_reason_code,
+        r.hold_reason_text,
+        r.created_by,
+        r.updated_by,
+        r.created_at,
+        r.updated_at
+        FROM reception r
+        LEFT JOIN patient p ON p.patient_id = r.patient_id
+        LEFT JOIN department d ON d.department_id = r.department_id
+        LEFT JOIN doctor doc ON doc.doctor_id = r.doctor_id
+        <where>
+            r.is_active = 1
+            AND r.status IN ('WAITING', 'CALLED')
+            <if test="departmentId != null">
+                AND r.department_id = #{departmentId}
+            </if>
+            <if test="doctorId != null">
+                AND r.doctor_id = #{doctorId}
+            </if>
+            <if test="date != null and date != ''">
+                AND DATE(r.created_at) = #{date}
+            </if>
+        </where>
+        ORDER BY r.scheduled_at IS NULL, r.scheduled_at, r.created_at
+    </select>
+
+</mapper>
