@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: reception
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: hyojeong7/reception-frontend:v23
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
+#          env:
+#            # 🔹 프론트가 호출할 백엔드 주소
+#            - name: NEXT_PUBLIC_API_BASE_URL
+#              value: http://backend.reception.svc.cluster.local
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  namespace: reception
+spec:
+  selector:
+    app: frontend
+  ports:
+    - port: 80
+      targetPort: 3000
+  type: LoadBalancer
+#
+#  로드 밸런서는 어떤 노드, 어떤 노드가 여유롭나 판단하고 노드를 선택
+#  클러스터ip는 어떤 파드를 쓸 지 선택해줌
+#

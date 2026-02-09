@@ -1,0 +1,79 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mysql-init
+  namespace: reception
+data:
+  init.sql: |
+
+    USE reception;
+    
+    DROP TABLE IF EXISTS reception;
+        
+    CREATE TABLE IF NOT EXISTS reception (
+                                            reception_id VARCHAR(20) PRIMARY KEY,
+        name VARCHAR(50) NOT NULL,
+        email VARCHAR(100),
+        department VARCHAR(10),
+        gender VARCHAR(1),
+        birth_date DATE,
+        phone VARCHAR(20),
+        address VARCHAR(200)
+        ) CHARACTER SET utf8mb4
+        COLLATE utf8mb4_unicode_ci;
+
+    INSERT INTO reception
+    (reception_id, name, email, department, gender, birth_date, phone, address)
+    VALUES
+        ('001', 'HongKilDong', 'hong@test.com', '개발팀', 'M', '1995-03-12', '010-1111-2222', '서울'),
+        ('002', 'KimSaeHae', 'kim@test.com', '회계팀', 'F', '1994-07-21', '010-3333-4444', '부산');
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+  namespace: reception
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:8.0
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: "1111"
+            - name: MYSQL_DATABASE
+              value: reception
+          volumeMounts:
+            - name: mysql-data
+              mountPath: /var/lib/mysql
+            - name: mysql-init
+              mountPath: /docker-entrypoint-initdb.d
+      volumes:
+        - name: mysql-data
+          emptyDir: {}
+        - name: mysql-init
+          configMap:
+            name: mysql-init
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+  namespace: reception
+spec:
+  selector:
+    app: mysql
+  ports:
+    - port: 3306
+      targetPort: 3306
+  type: ClusterIP
