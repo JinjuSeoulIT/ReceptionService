@@ -12,6 +12,7 @@ import kr.co.seoulit.reception.repository.ReceptionRepository;
 import kr.co.seoulit.reception.util.KoreanLabelUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,9 +31,15 @@ public class EmergencyReceptionServiceImpl implements EmergencyReceptionService 
     private final PatientRepository patientRepository;
     private final DepartmentRepository departmentRepository;
     private final DoctorRepository doctorRepository;
+    private final JdbcTemplate jdbcTemplate;
 
     @Override
     public List<EmergencyReceptionDTO> getEmergencyReceptionList(Map<String, Object> searchCondition) {
+        if (!tableExists("RECEPTION_EMERGENCY")) {
+            log.warn("Missing table RECEPTION_EMERGENCY. Returning empty list.");
+            return List.of();
+        }
+
         String searchType = (String) searchCondition.get("searchType");
         String searchValue = (String) searchCondition.get("searchValue");
         return emergencyMyBatisMapper.selectEmergencyReceptions(searchType, searchValue)
@@ -44,13 +51,9 @@ public class EmergencyReceptionServiceImpl implements EmergencyReceptionService 
     @Override
     public EmergencyReceptionDTO getEmergencyReception(Long receptionId) {
         ReceptionEntity reception = receptionRepository.findById(receptionId)
-                .orElseThrow(() -> new IllegalArgumentException(
-                        "응급 접수 ID " + receptionId + "에 해당하는 접수 정보가 없습니다."
-                ));
+                .orElseThrow(() -> new IllegalArgumentException("Emergency reception not found: " + receptionId));
         ReceptionEmergencyEntity emergency = emergencyRepository.findById(receptionId)
-                .orElseThrow(() -> new IllegalArgumentException(
-                        "응급 접수 상세가 존재하지 않습니다. receptionId=" + receptionId
-                ));
+                .orElseThrow(() -> new IllegalArgumentException("Emergency detail not found: " + receptionId));
 
         return KoreanLabelUtil.toKorean(toDto(reception, emergency));
     }
@@ -59,18 +62,18 @@ public class EmergencyReceptionServiceImpl implements EmergencyReceptionService 
     @Transactional
     public void createEmergencyReception(EmergencyReceptionDTO request) {
         if (request.getReceptionNo() == null || request.getReceptionNo().isBlank()) {
-            throw new IllegalArgumentException("접수번호는 필수입니다.");
+            throw new IllegalArgumentException("receptionNo is required");
         }
         if (request.getPatientId() == null) {
-            throw new IllegalArgumentException("환자 ID는 필수입니다.");
+            throw new IllegalArgumentException("patientId is required");
         }
         if (request.getDepartmentId() == null) {
-            throw new IllegalArgumentException("진료과 ID는 필수입니다.");
+            throw new IllegalArgumentException("departmentId is required");
         }
         if (request.getTriageLevel() == null
                 || request.getChiefComplaint() == null
                 || request.getChiefComplaint().isBlank()) {
-            throw new IllegalArgumentException("중증도 단계와 주호소는 필수입니다.");
+            throw new IllegalArgumentException("triageLevel and chiefComplaint are required");
         }
 
         ReceptionEntity reception = new ReceptionEntity();
@@ -111,13 +114,9 @@ public class EmergencyReceptionServiceImpl implements EmergencyReceptionService 
     @Transactional
     public void updateEmergencyReception(Long receptionId, EmergencyReceptionDTO request) {
         ReceptionEntity reception = receptionRepository.findById(receptionId)
-                .orElseThrow(() -> new IllegalArgumentException(
-                        "응급 접수 ID " + receptionId + "에 해당하는 접수 정보가 없습니다."
-                ));
+                .orElseThrow(() -> new IllegalArgumentException("Emergency reception not found: " + receptionId));
         ReceptionEmergencyEntity emergency = emergencyRepository.findById(receptionId)
-                .orElseThrow(() -> new IllegalArgumentException(
-                        "응급 접수 상세가 존재하지 않습니다. receptionId=" + receptionId
-                ));
+                .orElseThrow(() -> new IllegalArgumentException("Emergency detail not found: " + receptionId));
 
         if (request.getReceptionNo() != null && !request.getReceptionNo().isBlank()) {
             reception.setReceptionNo(request.getReceptionNo());
@@ -236,18 +235,14 @@ public class EmergencyReceptionServiceImpl implements EmergencyReceptionService 
         if (fallback != null && !fallback.isBlank()) return fallback;
         return patientRepository.findById(patientId)
                 .map(p -> p.getPatientName())
-                .orElseThrow(() -> new IllegalArgumentException(
-                        "환자 ID " + patientId + "에 해당하는 환자 정보를 찾을 수 없습니다."
-                ));
+                .orElseThrow(() -> new IllegalArgumentException("Patient not found: " + patientId));
     }
 
     private String resolveDepartmentName(Long departmentId, String fallback) {
         if (fallback != null && !fallback.isBlank()) return fallback;
         return departmentRepository.findById(departmentId)
                 .map(d -> d.getDepartmentName())
-                .orElseThrow(() -> new IllegalArgumentException(
-                        "진료과 ID " + departmentId + "에 해당하는 진료과 정보를 찾을 수 없습니다."
-                ));
+                .orElseThrow(() -> new IllegalArgumentException("Department not found: " + departmentId));
     }
 
     private String resolveDoctorName(Long doctorId, String fallback) {
@@ -255,8 +250,15 @@ public class EmergencyReceptionServiceImpl implements EmergencyReceptionService 
         if (fallback != null && !fallback.isBlank()) return fallback;
         return doctorRepository.findById(doctorId)
                 .map(d -> d.getDoctorName())
-                .orElseThrow(() -> new IllegalArgumentException(
-                        "의사 ID " + doctorId + "에 해당하는 의사 정보를 찾을 수 없습니다."
-                ));
+                .orElseThrow(() -> new IllegalArgumentException("Doctor not found: " + doctorId));
+    }
+
+    private boolean tableExists(String tableName) {
+        Integer count = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM user_tables WHERE UPPER(table_name) = UPPER(?)",
+                Integer.class,
+                tableName
+        );
+        return count != null && count > 0;
     }
 }

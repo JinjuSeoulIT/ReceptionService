@@ -47,7 +47,7 @@
                         AND r.patient_id = #{searchValue}
                     </when>
                     <when test="searchType == 'patientName'">
-                        AND p.patient_name LIKE CONCAT('%', #{searchValue}, '%')
+                        AND p.patient_name LIKE '%' || #{searchValue} || '%'
                     </when>
                     <when test="searchType == 'status'">
                         AND r.status = #{searchValue}
@@ -55,10 +55,10 @@
                 </choose>
             </if>
             <if test="dateFrom != null and dateFrom != ''">
-                AND DATE(r.created_at) &gt;= #{dateFrom}
+                AND TRUNC(r.created_at) &gt;= TO_DATE(#{dateFrom}, 'YYYY-MM-DD')
             </if>
             <if test="dateTo != null and dateTo != ''">
-                AND DATE(r.created_at) &lt;= #{dateTo}
+                AND TRUNC(r.created_at) &lt;= TO_DATE(#{dateTo}, 'YYYY-MM-DD')
             </if>
             <if test="departmentId != null">
                 AND r.department_id = #{departmentId}
@@ -112,10 +112,10 @@
                 AND r.doctor_id = #{doctorId}
             </if>
             <if test="date != null and date != ''">
-                AND DATE(r.created_at) = #{date}
+                AND TRUNC(r.created_at) = TO_DATE(#{date}, 'YYYY-MM-DD')
             </if>
         </where>
-        ORDER BY r.scheduled_at IS NULL, r.scheduled_at, r.created_at
+        ORDER BY CASE WHEN r.scheduled_at IS NULL THEN 1 ELSE 0 END, r.scheduled_at, r.created_at
     </select>
 
 </mapper>

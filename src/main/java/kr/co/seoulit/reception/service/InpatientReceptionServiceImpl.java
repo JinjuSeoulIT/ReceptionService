@@ -12,6 +12,7 @@ import kr.co.seoulit.reception.repository.ReceptionRepository;
 import kr.co.seoulit.reception.util.KoreanLabelUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,9 +31,15 @@ public class InpatientReceptionServiceImpl implements InpatientReceptionService 
     private final PatientRepository patientRepository;
     private final DepartmentRepository departmentRepository;
     private final DoctorRepository doctorRepository;
+    private final JdbcTemplate jdbcTemplate;
 
     @Override
     public List<InpatientReceptionDTO> getInpatientReceptionList(Map<String, Object> searchCondition) {
+        if (!tableExists("RECEPTION_INPATIENT")) {
+            log.warn("Missing table RECEPTION_INPATIENT. Returning empty list.");
+            return List.of();
+        }
+
         String searchType = (String) searchCondition.get("searchType");
         String searchValue = (String) searchCondition.get("searchValue");
         return inpatientMyBatisMapper.selectInpatientReceptions(searchType, searchValue)
@@ -44,13 +51,9 @@ public class InpatientReceptionServiceImpl implements InpatientReceptionService 
     @Override
     public InpatientReceptionDTO getInpatientReception(Long receptionId) {
         ReceptionEntity reception = receptionRepository.findById(receptionId)
-                .orElseThrow(() -> new IllegalArgumentException(
-                        "입원 접수 ID " + receptionId + "에 해당하는 접수 정보가 없습니다."
-                ));
+                .orElseThrow(() -> new IllegalArgumentException("Inpatient reception not found: " + receptionId));
         ReceptionInpatientEntity inpatient = inpatientRepository.findById(receptionId)
-                .orElseThrow(() -> new IllegalArgumentException(
-                        "입원 접수 상세가 존재하지 않습니다. receptionId=" + receptionId
-                ));
+                .orElseThrow(() -> new IllegalArgumentException("Inpatient detail not found: " + receptionId));
 
         return KoreanLabelUtil.toKorean(toDto(reception, inpatient));
     }
@@ -59,16 +62,16 @@ public class InpatientReceptionServiceImpl implements InpatientReceptionService 
     @Transactional
     public void createInpatientReception(InpatientReceptionDTO request) {
         if (request.getReceptionNo() == null || request.getReceptionNo().isBlank()) {
-            throw new IllegalArgumentException("접수번호는 필수입니다.");
+            throw new IllegalArgumentException("receptionNo is required");
         }
         if (request.getPatientId() == null) {
-            throw new IllegalArgumentException("환자 ID는 필수입니다.");
+            throw new IllegalArgumentException("patientId is required");
         }
         if (request.getDepartmentId() == null) {
-            throw new IllegalArgumentException("진료과 ID는 필수입니다.");
+            throw new IllegalArgumentException("departmentId is required");
         }
         if (request.getAdmissionPlanAt() == null) {
-            throw new IllegalArgumentException("입원 예정 일시는 필수입니다.");
+            throw new IllegalArgumentException("admissionPlanAt is required");
         }
 
         ReceptionEntity reception = new ReceptionEntity();
@@ -102,13 +105,9 @@ public class InpatientReceptionServiceImpl implements InpatientReceptionService 
     @Transactional
     public void updateInpatientReception(Long receptionId, InpatientReceptionDTO request) {
         ReceptionEntity reception = receptionRepository.findById(receptionId)
-                .orElseThrow(() -> new IllegalArgumentException(
-                        "입원 접수 ID " + receptionId + "에 해당하는 접수 정보가 없습니다."
-                ));
+                .orElseThrow(() -> new IllegalArgumentException("Inpatient reception not found: " + receptionId));
         ReceptionInpatientEntity inpatient = inpatientRepository.findById(receptionId)
-                .orElseThrow(() -> new IllegalArgumentException(
-                        "입원 접수 상세가 존재하지 않습니다. receptionId=" + receptionId
-                ));
+                .orElseThrow(() -> new IllegalArgumentException("Inpatient detail not found: " + receptionId));
 
         if (request.getReceptionNo() != null && !request.getReceptionNo().isBlank()) {
             reception.setReceptionNo(request.getReceptionNo());
@@ -199,18 +198,14 @@ public class InpatientReceptionServiceImpl implements InpatientReceptionService 
         if (fallback != null && !fallback.isBlank()) return fallback;
         return patientRepository.findById(patientId)
                 .map(p -> p.getPatientName())
-                .orElseThrow(() -> new IllegalArgumentException(
-                        "환자 ID " + patientId + "에 해당하는 환자 정보를 찾을 수 없습니다."
-                ));
+                .orElseThrow(() -> new IllegalArgumentException("Patient not found: " + patientId));
     }
 
     private String resolveDepartmentName(Long departmentId, String fallback) {
         if (fallback != null && !fallback.isBlank()) return fallback;
         return departmentRepository.findById(departmentId)
                 .map(d -> d.getDepartmentName())
-                .orElseThrow(() -> new IllegalArgumentException(
-                        "진료과 ID " + departmentId + "에 해당하는 진료과 정보를 찾을 수 없습니다."
-                ));
+                .orElseThrow(() -> new IllegalArgumentException("Department not found: " + departmentId));
     }
 
     private String resolveDoctorName(Long doctorId, String fallback) {
@@ -218,8 +213,15 @@ public class InpatientReceptionServiceImpl implements InpatientReceptionService 
         if (fallback != null && !fallback.isBlank()) return fallback;
         return doctorRepository.findById(doctorId)
                 .map(d -> d.getDoctorName())
-                .orElseThrow(() -> new IllegalArgumentException(
-                        "의사 ID " + doctorId + "에 해당하는 의사 정보를 찾을 수 없습니다."
-                ));
+                .orElseThrow(() -> new IllegalArgumentException("Doctor not found: " + doctorId));
+    }
+
+    private boolean tableExists(String tableName) {
+        Integer count = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM user_tables WHERE UPPER(table_name) = UPPER(?)",
+                Integer.class,
+                tableName
+        );
+        return count != null && count > 0;
     }
 }
