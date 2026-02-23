@@ -1,5 +1,8 @@
 package kr.co.seoulit.reception.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.co.seoulit.common.api.ApiResponse;
 import kr.co.seoulit.reception.dto.DoctorDTO;
 import kr.co.seoulit.reception.entity.DoctorEntity;
@@ -17,12 +20,15 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/doctors")
+@Tag(name = "의사 API", description = "의사 API")
 public class DoctorController {
 
     private final DoctorRepository doctorRepository;
 
+    @Operation(summary = "의사 목록 조회", description = "의사 목록 조회")
     @GetMapping
     public ResponseEntity<ApiResponse<List<DoctorDTO>>> getDoctors(
+            @Parameter(description = "진료과 ID")
             @RequestParam(required = false) Long departmentId
     ) {
         List<DoctorEntity> entities = departmentId == null

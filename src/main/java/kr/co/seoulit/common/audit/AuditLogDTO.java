@@ -5,40 +5,40 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
-@Schema(description = "Audit log info")
+@Schema(description = "감사 로그 정보")
 @Data
 public class AuditLogDTO {
 
-    @Schema(description = "Audit log ID")
+    @Schema(description = "감사 로그 ID")
     private Long auditLogId;
 
-    @Schema(description = "Entity type")
+    @Schema(description = "엔티티 유형")
     private String entityType;
 
-    @Schema(description = "Entity ID")
+    @Schema(description = "엔티티 ID")
     private Long entityId;
 
-    @Schema(description = "Action")
+    @Schema(description = "작업 유형")
     private String action;
 
-    @Schema(description = "Actor ID")
+    @Schema(description = "처리자 ID")
     private Long actorId;
 
-    @Schema(description = "Occurred at")
+    @Schema(description = "발생 시각")
     private LocalDateTime occurredAt;
 
-    @Schema(description = "Reason code")
+    @Schema(description = "사유 코드")
     private String reasonCode;
 
-    @Schema(description = "Reason text")
+    @Schema(description = "사유")
     private String reasonText;
 
-    @Schema(description = "Before JSON")
+    @Schema(description = "변경 전 JSON")
     private String beforeJson;
 
-    @Schema(description = "After JSON")
+    @Schema(description = "변경 후 JSON")
     private String afterJson;
 
-    @Schema(description = "Diff JSON")
+    @Schema(description = "변경 차이 JSON")
     private String diffJson;
 }

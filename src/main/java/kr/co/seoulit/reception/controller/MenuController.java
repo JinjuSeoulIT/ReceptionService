@@ -1,5 +1,7 @@
 package kr.co.seoulit.reception.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.co.seoulit.reception.dto.MenuNode;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,8 +11,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/menus")
+@Tag(name = "메뉴 API", description = "메뉴 API")
 public class MenuController {
 
+    @Operation(summary = "메뉴 목록 조회", description = "메뉴 목록 조회")
     @GetMapping
     public List<MenuNode> getMenus() {
         MenuNode home = new MenuNode(

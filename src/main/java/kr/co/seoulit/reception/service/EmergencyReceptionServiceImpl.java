@@ -18,12 +18,23 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Slf4j
 public class EmergencyReceptionServiceImpl implements EmergencyReceptionService {
+    private static final Set<String> EMERGENCY_ALLOWED_STATUS = Set.of(
+            "WAITING",
+            "TRIAGE",
+            "IN_PROGRESS",
+            "OBSERVATION",
+            "COMPLETED",
+            "TRANSFERRED",
+            "ON_HOLD",
+            "CANCELED"
+    );
 
     private final ReceptionRepository receptionRepository;
     private final ReceptionEmergencyRepository emergencyRepository;
@@ -64,8 +75,9 @@ public class EmergencyReceptionServiceImpl implements EmergencyReceptionService 
         if (request.getReceptionNo() == null || request.getReceptionNo().isBlank()) {
             throw new IllegalArgumentException("receptionNo is required");
         }
-        if (request.getPatientId() == null) {
-            throw new IllegalArgumentException("patientId is required");
+        if ((request.getPatientId() == null)
+                && (request.getPatientName() == null || request.getPatientName().isBlank())) {
+            throw new IllegalArgumentException("patientId or patientName is required");
         }
         if (request.getDepartmentId() == null) {
             throw new IllegalArgumentException("departmentId is required");
@@ -78,8 +90,9 @@ public class EmergencyReceptionServiceImpl implements EmergencyReceptionService 
 
         ReceptionEntity reception = new ReceptionEntity();
         reception.setReceptionNo(request.getReceptionNo());
-        reception.setPatientId(request.getPatientId());
-        reception.setPatientName(resolvePatientName(request.getPatientId(), request.getPatientName()));
+        Long resolvedPatientId = resolveOrCreatePatientId(request.getPatientId(), request.getPatientName());
+        reception.setPatientId(resolvedPatientId);
+        reception.setPatientName(resolvePatientName(resolvedPatientId, request.getPatientName()));
         reception.setVisitType("EMERGENCY");
         reception.setDepartmentId(request.getDepartmentId());
         reception.setDepartmentName(resolveDepartmentName(request.getDepartmentId(), request.getDepartmentName()));
@@ -88,7 +101,7 @@ public class EmergencyReceptionServiceImpl implements EmergencyReceptionService 
         reception.setReservationId(request.getReservationId());
         reception.setScheduledAt(request.getScheduledAt());
         reception.setArrivedAt(request.getArrivedAt());
-        reception.setStatus(request.getStatus() != null ? request.getStatus() : "WAITING");
+        reception.setStatus(normalizeEmergencyStatus(request.getStatus()));
         reception.setNote(request.getNote());
         reception.setIsActive(request.getIsActive() != null ? request.getIsActive() : true);
 
@@ -126,6 +139,9 @@ public class EmergencyReceptionServiceImpl implements EmergencyReceptionService 
         }
         if (request.getPatientName() != null) {
             reception.setPatientName(request.getPatientName());
+            if (request.getPatientId() == null) {
+                reception.setPatientId(resolveOrCreatePatientId(null, request.getPatientName()));
+            }
         } else if (request.getPatientId() != null) {
             reception.setPatientName(resolvePatientName(request.getPatientId(), null));
         }
@@ -155,7 +171,7 @@ public class EmergencyReceptionServiceImpl implements EmergencyReceptionService 
             reception.setArrivedAt(request.getArrivedAt());
         }
         if (request.getStatus() != null && !request.getStatus().isBlank()) {
-            reception.setStatus(request.getStatus());
+            reception.setStatus(normalizeEmergencyStatus(request.getStatus()));
         }
         if (request.getNote() != null) {
             reception.setNote(request.getNote());
@@ -213,7 +229,7 @@ public class EmergencyReceptionServiceImpl implements EmergencyReceptionService 
         dto.setReservationId(reception.getReservationId());
         dto.setScheduledAt(reception.getScheduledAt());
         dto.setArrivedAt(reception.getArrivedAt());
-        dto.setStatus(reception.getStatus());
+        dto.setStatus(normalizeEmergencyStatusForOutput(reception.getStatus()));
         dto.setNote(reception.getNote());
         dto.setIsActive(reception.getIsActive());
         dto.setCreatedAt(reception.getCreatedAt());
@@ -238,6 +254,23 @@ public class EmergencyReceptionServiceImpl implements EmergencyReceptionService 
                 .orElseThrow(() -> new IllegalArgumentException("Patient not found: " + patientId));
     }
 
+    private Long resolveOrCreatePatientId(Long patientId, String patientName) {
+        if (patientId != null) {
+            return patientId;
+        }
+        if (patientName == null || patientName.isBlank()) {
+            throw new IllegalArgumentException("patientName is required");
+        }
+        return patientRepository.findByPatientName(patientName.trim())
+                .map(p -> p.getPatientId())
+                .orElseGet(() -> {
+                    kr.co.seoulit.reception.entity.PatientEntity entity =
+                            new kr.co.seoulit.reception.entity.PatientEntity();
+                    entity.setPatientName(patientName.trim());
+                    return patientRepository.save(entity).getPatientId();
+                });
+    }
+
     private String resolveDepartmentName(Long departmentId, String fallback) {
         if (fallback != null && !fallback.isBlank()) return fallback;
         return departmentRepository.findById(departmentId)
@@ -260,5 +293,27 @@ public class EmergencyReceptionServiceImpl implements EmergencyReceptionService 
                 tableName
         );
         return count != null && count > 0;
+    }
+
+    private String normalizeEmergencyStatus(String rawStatus) {
+        String normalized = normalizeEmergencyStatusForOutput(rawStatus);
+        if (normalized == null || normalized.isBlank()) {
+            return "WAITING";
+        }
+        if (!EMERGENCY_ALLOWED_STATUS.contains(normalized)) {
+            throw new IllegalArgumentException("Invalid emergency status: " + rawStatus);
+        }
+        return normalized;
+    }
+
+    private String normalizeEmergencyStatusForOutput(String rawStatus) {
+        if (rawStatus == null || rawStatus.isBlank()) {
+            return rawStatus;
+        }
+        String status = rawStatus.trim().toUpperCase();
+        if ("CALLED".equals(status)) return "TRIAGE";
+        if ("PAYMENT_WAIT".equals(status)) return "OBSERVATION";
+        if ("INACTIVE".equals(status)) return "TRANSFERRED";
+        return status;
     }
 }

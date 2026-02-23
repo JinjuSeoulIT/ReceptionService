@@ -1,0 +1,305 @@
+2026-02-19 09:02:49.714 INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2026-02-19 09:02:50.461 INFO  kr.co.seoulit.ReceptionApplication - Starting ReceptionApplication using Java 17.0.12 with PID 31048 (D:\서울IT교육센터\dev\teamwork\project\backend\hospital_reception_backend\reception_back\build\classes\java\main started by USER in D:\서울IT교육센터\dev\teamwork\project\backend\hospital_reception_backend\reception_back)
+2026-02-19 09:02:50.497 INFO  kr.co.seoulit.ReceptionApplication - No active profile set, falling back to 1 default profile: "default"
+2026-02-19 09:03:06.773 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-19 09:03:06.793 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-02-19 09:03:09.279 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 2419 ms. Found 11 JPA repository interfaces.
+2026-02-19 09:03:09.373 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-19 09:03:09.380 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-02-19 09:03:09.512 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.common.audit.AuditLogRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-19 09:03:09.513 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.DepartmentRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-19 09:03:09.521 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.DoctorRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-19 09:03:09.523 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.PatientRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-19 09:03:09.524 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.ReceptionChecklistItemRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-19 09:03:09.525 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.ReceptionEmergencyRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-19 09:03:09.527 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.ReceptionInpatientRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-19 09:03:09.528 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.ReceptionRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-19 09:03:09.740 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.ReceptionStatusHistoryRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-19 09:03:09.742 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.ReceptionTodayScheduleRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-19 09:03:09.742 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.ReservationRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-19 09:03:09.743 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 312 ms. Found 0 Redis repository interfaces.
+2026-02-19 09:03:16.337 INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8283 (http)
+2026-02-19 09:03:16.386 INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8283"]
+2026-02-19 09:03:16.391 INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-02-19 09:03:16.393 INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.26]
+2026-02-19 09:03:17.060 INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-02-19 09:03:17.063 INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 25682 ms
+2026-02-19 09:03:21.499 INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-02-19 09:03:23.581 INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.5.2.Final
+2026-02-19 09:03:23.918 INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-02-19 09:03:26.815 INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-02-19 09:03:26.943 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-02-19 09:03:30.344 INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection oracle.jdbc.driver.T4CConnection@63f3366a
+2026-02-19 09:03:30.393 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-02-19 09:03:30.540 WARN  org.hibernate.orm.deprecation - HHH90000026: Oracle10gDialect has been deprecated; use org.hibernate.community.dialect.OracleLegacyDialect instead
+2026-02-19 09:03:50.596 INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-02-19 09:03:50.639 INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-02-19 09:04:25.418 WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-02-19 09:04:25.765 INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2026-02-19 09:04:38.463 INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8283"]
+2026-02-19 09:04:38.610 INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8283 (http) with context path '/'
+2026-02-19 09:04:38.710 INFO  kr.co.seoulit.ReceptionApplication - Started ReceptionApplication in 122.183 seconds (process running for 143.324)
+2026-02-19 09:07:10.148 INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-02-19 09:07:10.149 INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-02-19 09:07:10.155 INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 4 ms
+2026-02-19 09:07:33.892 INFO  o.s.api.AbstractOpenApiResource - Init duration for springdoc-openapi is: 16428 ms
+2026-02-19 09:08:04.181 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.MenuController.getMenus()시작
+2026-02-19 09:08:04.182 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.MenuController.getMenus()종료
+2026-02-19 09:08:05.101 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.PatientController.getPatients()시작
+2026-02-19 09:08:06.272 DEBUG org.hibernate.SQL - select pe1_0.patient_id,pe1_0.patient_name from patient pe1_0
+2026-02-19 09:08:06.733 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.PatientController.getPatients()종료
+2026-02-19 13:57:57.240 WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h13m23s339ms524µs900ns).
+2026-02-19 16:26:27.726 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.MenuController.getMenus()시작
+2026-02-19 16:26:27.734 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.MenuController.getMenus()종료
+2026-02-19 16:26:27.765 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-19 16:26:27.765 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-19 16:26:27.766 INFO  k.c.s.r.c.ReceptionController - 접수 목록 요청: searchType=null, searchValue=null
+2026-02-19 16:26:27.770 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.MenuController.getMenus()시작
+2026-02-19 16:26:27.771 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.MenuController.getMenus()종료
+2026-02-19 16:26:27.772 INFO  k.c.s.r.c.ReceptionController - 접수 목록 요청: searchType=null, searchValue=null
+2026-02-19 16:26:27.788 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()시작
+2026-02-19 16:26:27.788 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()시작
+2026-02-19 16:26:28.203 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()종료
+2026-02-19 16:26:28.203 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()종료
+2026-02-19 16:26:28.212 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()종료
+2026-02-19 16:26:28.212 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()종료
+2026-02-19 16:26:32.761 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.MenuController.getMenus()시작
+2026-02-19 16:26:32.765 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.MenuController.getMenus()종료
+2026-02-19 16:26:32.783 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.MenuController.getMenus()시작
+2026-02-19 16:26:32.786 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.MenuController.getMenus()종료
+2026-02-19 16:26:32.809 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-19 16:26:32.809 INFO  k.c.s.r.c.ReceptionController - 접수 목록 요청: searchType=null, searchValue=null
+2026-02-19 16:26:32.869 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()시작
+2026-02-19 16:26:32.924 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()종료
+2026-02-19 16:26:32.958 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()종료
+2026-02-19 16:26:32.977 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-19 16:26:32.977 INFO  k.c.s.r.c.ReceptionController - 접수 목록 요청: searchType=null, searchValue=null
+2026-02-19 16:26:32.978 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()시작
+2026-02-19 16:26:32.998 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()종료
+2026-02-19 16:26:33.029 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()종료
+2026-02-19 16:26:33.130 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReception()시작
+2026-02-19 16:26:33.132 INFO  k.c.s.r.c.ReceptionController - 접수 조회 요청: id=5
+2026-02-19 16:26:33.152 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReception()시작
+2026-02-19 16:26:33.194 DEBUG org.hibernate.SQL - select re1_0.reception_id,re1_0.arrived_at,re1_0.cancel_reason_code,re1_0.cancel_reason_text,re1_0.created_at,re1_0.created_by,re1_0.department_id,re1_0.department_name,re1_0.doctor_id,re1_0.doctor_name,re1_0.hold_reason_code,re1_0.hold_reason_text,re1_0.inactive_at,re1_0.inactive_reason_code,re1_0.inactive_reason_text,re1_0.is_active,re1_0.note,re1_0.patient_id,re1_0.patient_name,re1_0.reception_no,re1_0.reservation_id,re1_0.scheduled_at,re1_0.status,re1_0.updated_at,re1_0.updated_by,re1_0.visit_type from reception re1_0 where re1_0.reception_id=?
+2026-02-19 16:26:33.198 TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:BIGINT) <- [5]
+2026-02-19 16:26:33.422 INFO  k.co.seoulit.common.aop.LoggerAspect - kr.co.seoulit.reception.mapstruct.ReceptionResMapStructImpl.toDto()시작
+2026-02-19 16:26:33.422 INFO  k.co.seoulit.common.aop.LoggerAspect - kr.co.seoulit.reception.mapstruct.ReceptionResMapStructImpl.toDto()종료
+2026-02-19 16:26:33.423 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReception()종료
+2026-02-19 16:26:33.438 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReception()종료
+2026-02-19 16:26:47.936 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.MenuController.getMenus()시작
+2026-02-19 16:26:47.936 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.MenuController.getMenus()종료
+2026-02-19 16:26:47.944 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.MenuController.getMenus()시작
+2026-02-19 16:26:47.945 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.MenuController.getMenus()종료
+2026-02-19 16:26:47.957 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-19 16:26:47.958 INFO  k.c.s.r.c.ReceptionController - 접수 목록 요청: searchType=status, searchValue=COMPLETED
+2026-02-19 16:26:47.974 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()시작
+2026-02-19 16:26:48.025 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()종료
+2026-02-19 16:26:48.036 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()종료
+2026-02-19 16:26:48.066 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-19 16:26:48.066 INFO  k.c.s.r.c.ReceptionController - 접수 목록 요청: searchType=status, searchValue=COMPLETED
+2026-02-19 16:26:48.068 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()시작
+2026-02-19 16:26:48.088 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()종료
+2026-02-19 16:26:48.098 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()종료
+2026-02-19 16:26:48.331 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReception()시작
+2026-02-19 16:26:48.331 INFO  k.c.s.r.c.ReceptionController - 접수 조회 요청: id=7
+2026-02-19 16:26:48.331 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReception()시작
+2026-02-19 16:26:48.332 DEBUG org.hibernate.SQL - select re1_0.reception_id,re1_0.arrived_at,re1_0.cancel_reason_code,re1_0.cancel_reason_text,re1_0.created_at,re1_0.created_by,re1_0.department_id,re1_0.department_name,re1_0.doctor_id,re1_0.doctor_name,re1_0.hold_reason_code,re1_0.hold_reason_text,re1_0.inactive_at,re1_0.inactive_reason_code,re1_0.inactive_reason_text,re1_0.is_active,re1_0.note,re1_0.patient_id,re1_0.patient_name,re1_0.reception_no,re1_0.reservation_id,re1_0.scheduled_at,re1_0.status,re1_0.updated_at,re1_0.updated_by,re1_0.visit_type from reception re1_0 where re1_0.reception_id=?
+2026-02-19 16:26:48.333 TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:BIGINT) <- [7]
+2026-02-19 16:26:48.351 INFO  k.co.seoulit.common.aop.LoggerAspect - kr.co.seoulit.reception.mapstruct.ReceptionResMapStructImpl.toDto()시작
+2026-02-19 16:26:48.352 INFO  k.co.seoulit.common.aop.LoggerAspect - kr.co.seoulit.reception.mapstruct.ReceptionResMapStructImpl.toDto()종료
+2026-02-19 16:26:48.352 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReception()종료
+2026-02-19 16:26:48.361 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReception()종료
+2026-02-19 16:36:52.938 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.MenuController.getMenus()시작
+2026-02-19 16:36:52.939 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.MenuController.getMenus()종료
+2026-02-19 16:36:52.951 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.MenuController.getMenus()시작
+2026-02-19 16:36:52.952 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.MenuController.getMenus()종료
+2026-02-19 16:36:52.960 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-19 16:36:52.961 INFO  k.c.s.r.c.ReceptionController - 접수 목록 요청: searchType=null, searchValue=null
+2026-02-19 16:36:52.970 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-19 16:36:52.974 INFO  k.c.s.r.c.ReceptionController - 접수 목록 요청: searchType=null, searchValue=null
+2026-02-19 16:36:52.981 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()시작
+2026-02-19 16:36:52.986 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()시작
+2026-02-19 16:36:53.003 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()종료
+2026-02-19 16:36:53.012 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()종료
+2026-02-19 16:36:53.012 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()종료
+2026-02-19 16:36:53.024 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()종료
+2026-02-19 16:36:58.672 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.MenuController.getMenus()시작
+2026-02-19 16:36:58.673 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.MenuController.getMenus()종료
+2026-02-19 16:36:58.709 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.MenuController.getMenus()시작
+2026-02-19 16:36:58.710 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.MenuController.getMenus()종료
+2026-02-19 16:37:06.430 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.MenuController.getMenus()시작
+2026-02-19 16:37:06.431 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.MenuController.getMenus()종료
+2026-02-19 16:37:06.449 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.MenuController.getMenus()시작
+2026-02-19 16:37:06.450 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.MenuController.getMenus()종료
+2026-02-19 16:37:06.547 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.PatientController.getPatients()시작
+2026-02-19 16:37:06.578 DEBUG org.hibernate.SQL - select pe1_0.patient_id,pe1_0.patient_name from patient pe1_0
+2026-02-19 16:37:06.626 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.PatientController.getPatients()종료
+2026-02-19 16:37:06.637 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.PatientController.getPatients()시작
+2026-02-19 16:37:06.639 DEBUG org.hibernate.SQL - select pe1_0.patient_id,pe1_0.patient_name from patient pe1_0
+2026-02-19 16:37:06.669 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.PatientController.getPatients()종료
+2026-02-19 16:37:19.879 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.MenuController.getMenus()시작
+2026-02-19 16:37:19.879 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.MenuController.getMenus()종료
+2026-02-19 16:37:19.886 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.MenuController.getMenus()시작
+2026-02-19 16:37:19.887 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.MenuController.getMenus()종료
+2026-02-19 16:37:19.906 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-19 16:37:19.906 INFO  k.c.s.r.c.ReceptionController - 접수 목록 요청: searchType=null, searchValue=null
+2026-02-19 16:37:19.908 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-19 16:37:19.908 INFO  k.c.s.r.c.ReceptionController - 접수 목록 요청: searchType=null, searchValue=null
+2026-02-19 16:37:19.922 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()시작
+2026-02-19 16:37:19.938 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()시작
+2026-02-19 16:37:19.971 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()종료
+2026-02-19 16:37:19.971 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()종료
+2026-02-19 16:37:19.979 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()종료
+2026-02-19 16:37:19.979 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()종료
+2026-02-19 16:38:39.795 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.MenuController.getMenus()시작
+2026-02-19 16:38:39.795 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.MenuController.getMenus()종료
+2026-02-19 16:38:39.801 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.MenuController.getMenus()시작
+2026-02-19 16:38:39.802 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.MenuController.getMenus()종료
+2026-02-19 16:38:43.619 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.MenuController.getMenus()시작
+2026-02-19 16:38:43.619 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.MenuController.getMenus()종료
+2026-02-19 16:38:43.631 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.MenuController.getMenus()시작
+2026-02-19 16:38:43.632 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.MenuController.getMenus()종료
+2026-02-19 16:38:43.677 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-19 16:38:43.677 INFO  k.c.s.r.c.ReceptionController - 접수 목록 요청: searchType=null, searchValue=null
+2026-02-19 16:38:43.694 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-19 16:38:43.695 INFO  k.c.s.r.c.ReceptionController - 접수 목록 요청: searchType=null, searchValue=null
+2026-02-19 16:38:43.701 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()시작
+2026-02-19 16:38:43.718 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()시작
+2026-02-19 16:38:43.721 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()종료
+2026-02-19 16:38:43.735 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()종료
+2026-02-19 16:38:43.739 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()종료
+2026-02-19 16:38:43.748 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()종료
+2026-02-19 16:38:48.767 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.PatientController.getPatients()시작
+2026-02-19 16:38:48.800 DEBUG org.hibernate.SQL - select pe1_0.patient_id,pe1_0.patient_name from patient pe1_0
+2026-02-19 16:38:48.788 WARN  k.c.s.c.h.GlobalExceptionHandler - No resource found
+org.springframework.web.servlet.resource.NoResourceFoundException: No static resource api/visits.
+	at org.springframework.web.servlet.resource.ResourceHttpRequestHandler.handleRequest(ResourceHttpRequestHandler.java:585)
+	at org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter.handle(HttpRequestHandlerAdapter.java:52)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:389)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:904)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1741)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1190)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2026-02-19 16:38:48.827 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.PatientController.getPatients()종료
+2026-02-19 16:38:48.833 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.PatientController.getPatients()시작
+2026-02-19 16:38:48.835 DEBUG org.hibernate.SQL - select pe1_0.patient_id,pe1_0.patient_name from patient pe1_0
+2026-02-19 16:38:48.845 WARN  k.c.s.c.h.GlobalExceptionHandler - No resource found
+org.springframework.web.servlet.resource.NoResourceFoundException: No static resource api/visits.
+	at org.springframework.web.servlet.resource.ResourceHttpRequestHandler.handleRequest(ResourceHttpRequestHandler.java:585)
+	at org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter.handle(HttpRequestHandlerAdapter.java:52)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:389)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:904)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1741)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1190)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2026-02-19 16:38:48.871 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.PatientController.getPatients()종료
+2026-02-19 16:38:59.273 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.MenuController.getMenus()시작
+2026-02-19 16:38:59.273 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.MenuController.getMenus()종료
+2026-02-19 16:38:59.286 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.MenuController.getMenus()시작
+2026-02-19 16:38:59.286 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.MenuController.getMenus()종료
+2026-02-19 16:38:59.498 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.PatientController.getPatients()시작
+2026-02-19 16:38:59.527 DEBUG org.hibernate.SQL - select pe1_0.patient_id,pe1_0.patient_name from patient pe1_0
+2026-02-19 16:38:59.558 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.PatientController.getPatients()종료
+2026-02-19 16:38:59.563 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.PatientController.getPatients()시작
+2026-02-19 16:38:59.567 DEBUG org.hibernate.SQL - select pe1_0.patient_id,pe1_0.patient_name from patient pe1_0
+2026-02-19 16:38:59.610 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.PatientController.getPatients()종료
+2026-02-19 16:39:14.669 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.MenuController.getMenus()시작
+2026-02-19 16:39:14.669 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.MenuController.getMenus()종료
+2026-02-19 16:39:14.676 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.MenuController.getMenus()시작
+2026-02-19 16:39:14.678 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.MenuController.getMenus()종료
+2026-02-19 16:39:19.269 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.MenuController.getMenus()시작
+2026-02-19 16:39:19.269 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.MenuController.getMenus()종료
+2026-02-19 16:39:19.275 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.MenuController.getMenus()시작
+2026-02-19 16:39:19.275 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.MenuController.getMenus()종료
+2026-02-19 16:39:19.301 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-19 16:39:19.301 INFO  k.c.s.r.c.ReceptionController - 접수 목록 요청: searchType=null, searchValue=null
+2026-02-19 16:39:19.309 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-19 16:39:19.309 INFO  k.c.s.r.c.ReceptionController - 접수 목록 요청: searchType=null, searchValue=null
+2026-02-19 16:39:19.326 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()시작
+2026-02-19 16:39:19.328 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()시작
+2026-02-19 16:39:19.343 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()종료
+2026-02-19 16:39:19.354 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()종료
+2026-02-19 16:39:19.359 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()종료
+2026-02-19 16:39:19.365 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()종료
+2026-02-19 18:38:44.959 WARN  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=45m44s364ms240µs299ns).
+2026-02-19 20:08:53.825 INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-02-19 20:08:53.866 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-02-19 20:09:14.774 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.

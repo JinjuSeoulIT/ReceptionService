@@ -1,5 +1,7 @@
 package kr.co.seoulit.reception.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.co.seoulit.common.api.ApiResponse;
 import kr.co.seoulit.reception.dto.DepartmentDTO;
 import kr.co.seoulit.reception.entity.DepartmentEntity;
@@ -16,10 +18,12 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/departments")
+@Tag(name = "진료과 API", description = "진료과 API")
 public class DepartmentController {
 
     private final DepartmentRepository departmentRepository;
 
+    @Operation(summary = "진료과 목록 조회", description = "진료과 목록 조회")
     @GetMapping
     public ResponseEntity<ApiResponse<List<DepartmentDTO>>> getDepartments() {
         List<DepartmentDTO> list = departmentRepository.findAll()

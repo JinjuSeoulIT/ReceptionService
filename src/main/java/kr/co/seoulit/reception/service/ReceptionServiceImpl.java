@@ -19,11 +19,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.StreamSupport;
 import java.util.stream.Collectors;
 
 @Service
@@ -51,16 +54,21 @@ public class ReceptionServiceImpl implements ReceptionService {
         Long departmentId = (Long) searchCondition.get("departmentId");
         Long doctorId = (Long) searchCondition.get("doctorId");
 
-        return receptionMyBatisMapper.selectReceptions(
-                searchType,
-                searchValue,
-                dateFrom,
-                dateTo,
-                departmentId,
-                doctorId
-        ).stream()
-                .map(KoreanLabelUtil::toKorean)
-                .collect(Collectors.toList());
+        try {
+            return receptionMyBatisMapper.selectReceptions(
+                    searchType,
+                    searchValue,
+                    dateFrom,
+                    dateTo,
+                    departmentId,
+                    doctorId
+            ).stream()
+                    .map(KoreanLabelUtil::toKorean)
+                    .collect(Collectors.toList());
+        } catch (Exception ex) {
+            log.error("selectReceptions failed. fallback to JPA list", ex);
+            return fallbackReceptionList(searchType, searchValue, dateFrom, dateTo, departmentId, doctorId);
+        }
     }
 
     @Override
@@ -75,10 +83,15 @@ public class ReceptionServiceImpl implements ReceptionService {
 
     @Override
     public List<ReceptionDTO> getReceptionQueue(Long departmentId, Long doctorId, String date) {
-        return receptionMyBatisMapper.selectQueue(departmentId, doctorId, date)
-                .stream()
-                .map(KoreanLabelUtil::toKorean)
-                .collect(Collectors.toList());
+        try {
+            return receptionMyBatisMapper.selectQueue(departmentId, doctorId, date)
+                    .stream()
+                    .map(KoreanLabelUtil::toKorean)
+                    .collect(Collectors.toList());
+        } catch (Exception ex) {
+            log.error("selectQueue failed. fallback to in-memory filter", ex);
+            return fallbackQueueList(departmentId, doctorId, date);
+        }
     }
 
     @Override
@@ -276,10 +289,88 @@ public class ReceptionServiceImpl implements ReceptionService {
 
     @Override
     public List<ReceptionStatusHistoryDTO> getReceptionStatusHistory(Long receptionId) {
-        return receptionStatusHistoryRepository.findByReceptionIdOrderByChangedAtAsc(receptionId)
-                .stream()
-                .map(this::toHistoryDto)
+        try {
+            return receptionStatusHistoryRepository.findByReceptionIdOrderByChangedAtAsc(receptionId)
+                    .stream()
+                    .map(this::toHistoryDto)
+                    .collect(Collectors.toList());
+        } catch (DataAccessException ex) {
+            log.error("status-history query failed. receptionId={}", receptionId, ex);
+            return List.of();
+        }
+    }
+
+    private List<ReceptionDTO> fallbackReceptionList(
+            String searchType,
+            String searchValue,
+            String dateFrom,
+            String dateTo,
+            Long departmentId,
+            Long doctorId
+    ) {
+        String keyword = searchValue == null ? null : searchValue.trim();
+        LocalDate from = parseDate(dateFrom);
+        LocalDate to = parseDate(dateTo);
+
+        return StreamSupport.stream(receptionRepository.findAll().spliterator(), false)
+                .map(receptionResMapStruct::toDto)
+                .filter(dto -> {
+                    if (keyword == null || keyword.isBlank()) return true;
+                    return switch (searchType) {
+                        case "receptionNo" -> keyword.equals(dto.getReceptionNo());
+                        case "patientId" -> String.valueOf(dto.getPatientId()).equals(keyword);
+                        case "patientName" -> dto.getPatientName() != null && dto.getPatientName().contains(keyword);
+                        case "status" -> keyword.equals(dto.getStatus());
+                        default -> true;
+                    };
+                })
+                .filter(dto -> departmentId == null || departmentId.equals(dto.getDepartmentId()))
+                .filter(dto -> doctorId == null || doctorId.equals(dto.getDoctorId()))
+                .filter(dto -> {
+                    if (from == null && to == null) return true;
+                    if (dto.getCreatedAt() == null) return false;
+                    LocalDate createdDate = dto.getCreatedAt().toLocalDate();
+                    if (from != null && createdDate.isBefore(from)) return false;
+                    return to == null || !createdDate.isAfter(to);
+                })
+                .sorted((a, b) -> Long.compare(
+                        a.getReceptionId() == null ? 0L : a.getReceptionId(),
+                        b.getReceptionId() == null ? 0L : b.getReceptionId()
+                ))
+                .map(KoreanLabelUtil::toKorean)
                 .collect(Collectors.toList());
+    }
+
+    private List<ReceptionDTO> fallbackQueueList(Long departmentId, Long doctorId, String date) {
+        LocalDate target = parseDate(date);
+        return StreamSupport.stream(receptionRepository.findAll().spliterator(), false)
+                .map(receptionResMapStruct::toDto)
+                .filter(dto -> Boolean.TRUE.equals(dto.getIsActive()))
+                .filter(dto -> "WAITING".equals(dto.getStatus()) || "CALLED".equals(dto.getStatus()))
+                .filter(dto -> departmentId == null || departmentId.equals(dto.getDepartmentId()))
+                .filter(dto -> doctorId == null || doctorId.equals(dto.getDoctorId()))
+                .filter(dto -> {
+                    if (target == null) return true;
+                    if (dto.getCreatedAt() == null) return false;
+                    return dto.getCreatedAt().toLocalDate().isEqual(target);
+                })
+                .sorted((a, b) -> {
+                    if (a.getScheduledAt() == null && b.getScheduledAt() == null) return 0;
+                    if (a.getScheduledAt() == null) return 1;
+                    if (b.getScheduledAt() == null) return -1;
+                    return a.getScheduledAt().compareTo(b.getScheduledAt());
+                })
+                .map(KoreanLabelUtil::toKorean)
+                .collect(Collectors.toList());
+    }
+
+    private LocalDate parseDate(String value) {
+        if (value == null || value.isBlank()) return null;
+        try {
+            return LocalDate.parse(value);
+        } catch (Exception ex) {
+            return null;
+        }
     }
 
     private ReceptionStatusHistoryDTO toHistoryDto(ReceptionStatusHistoryEntity entity) {

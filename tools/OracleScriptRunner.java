@@ -7,6 +7,11 @@ import java.sql.DriverManager;
 import java.sql.Statement;
 
 public class OracleScriptRunner {
+    private enum BlockMode {
+        NONE,
+        TRIGGER_OR_PLSQL
+    }
+
     public static void main(String[] args) throws Exception {
         if (args.length < 4) {
             System.err.println("Usage: OracleScriptRunner <jdbcUrl> <user> <password> <scriptPath>");
@@ -27,26 +32,31 @@ public class OracleScriptRunner {
             conn.setAutoCommit(false);
 
             StringBuilder stmt = new StringBuilder();
-            boolean inTrigger = false;
+            BlockMode blockMode = BlockMode.NONE;
             String line;
+            boolean firstLine = true;
 
             while ((line = reader.readLine()) != null) {
+                if (firstLine) {
+                    line = stripBom(line);
+                    firstLine = false;
+                }
                 String trimmed = line.trim();
                 if (trimmed.isEmpty() || trimmed.startsWith("--")) {
                     continue;
                 }
 
-                if (!inTrigger && trimmed.toUpperCase().startsWith("CREATE OR REPLACE TRIGGER")) {
-                    inTrigger = true;
+                if (blockMode == BlockMode.NONE && startsPlsqlBlock(trimmed)) {
+                    blockMode = BlockMode.TRIGGER_OR_PLSQL;
                     stmt.append(line).append("\n");
                     continue;
                 }
 
-                if (inTrigger) {
+                if (blockMode == BlockMode.TRIGGER_OR_PLSQL) {
                     if (trimmed.equals("/")) {
                         execute(conn, stmt.toString(), true);
                         stmt.setLength(0);
-                        inTrigger = false;
+                        blockMode = BlockMode.NONE;
                     } else {
                         stmt.append(line).append("\n");
                     }
@@ -93,5 +103,19 @@ public class OracleScriptRunner {
             return sql.length() > 200 ? sql.substring(0, 200) + "..." : sql;
         }
         return sql.substring(0, idx);
+    }
+
+    private static String stripBom(String line) {
+        if (line != null && !line.isEmpty() && line.charAt(0) == '\uFEFF') {
+            return line.substring(1);
+        }
+        return line;
+    }
+
+    private static boolean startsPlsqlBlock(String trimmed) {
+        String upper = trimmed.toUpperCase();
+        return upper.startsWith("CREATE OR REPLACE TRIGGER")
+                || upper.startsWith("DECLARE")
+                || upper.startsWith("BEGIN");
     }
 }

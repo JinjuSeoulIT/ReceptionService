@@ -1,0 +1,78 @@
+> Task :compileJava UP-TO-DATE
+> Task :processResources UP-TO-DATE
+> Task :classes UP-TO-DATE
+> Task :resolveMainClassName UP-TO-DATE
+
+> Task :bootRun
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.3.2)
+
+2026-02-14 16:42:49.744 INFO  [background-preinit] o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2026-02-14 16:42:49.820 INFO  [main] kr.co.seoulit.ReceptionApplication - Starting ReceptionApplication using Java 17.0.12 with PID 129784 (D:\?„œ?š¸ITêµìœ¡?„¼?„°\dev\teamwork\project\backend\hospital_reception_backend\reception_back\build\classes\java\main started by USER in D:\?„œ?š¸ITêµìœ¡?„¼?„°\dev\teamwork\project\backend\hospital_reception_backend\reception_back)
+2026-02-14 16:42:49.822 INFO  [main] kr.co.seoulit.ReceptionApplication - No active profile set, falling back to 1 default profile: "default"
+2026-02-14 16:42:51.495 INFO  [main] o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-14 16:42:51.498 INFO  [main] o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-02-14 16:42:51.899 INFO  [main] o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 390 ms. Found 11 JPA repository interfaces.
+2026-02-14 16:42:51.940 INFO  [main] o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-14 16:42:51.957 INFO  [main] o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-02-14 16:42:52.008 INFO  [main] o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.common.audit.AuditLogRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-14 16:42:52.009 INFO  [main] o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.DepartmentRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-14 16:42:52.011 INFO  [main] o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.DoctorRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-14 16:42:52.014 INFO  [main] o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.PatientRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-14 16:42:52.016 INFO  [main] o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.ReceptionChecklistItemRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-14 16:42:52.017 INFO  [main] o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.ReceptionEmergencyRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-14 16:42:52.018 INFO  [main] o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.ReceptionInpatientRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-14 16:42:52.019 INFO  [main] o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.ReceptionRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-14 16:42:52.020 INFO  [main] o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.ReceptionStatusHistoryRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-14 16:42:52.021 INFO  [main] o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.ReceptionTodayScheduleRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-14 16:42:52.022 INFO  [main] o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.ReservationRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-14 16:42:52.022 INFO  [main] o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 42 ms. Found 0 Redis repository interfaces.
+2026-02-14 16:42:54.365 INFO  [main] o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8283 (http)
+2026-02-14 16:42:54.380 INFO  [main] o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8283"]
+2026-02-14 16:42:54.384 INFO  [main] o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-02-14 16:42:54.385 INFO  [main] o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.26]
+2026-02-14 16:42:54.595 INFO  [main] o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-02-14 16:42:54.596 INFO  [main] o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 4695 ms
+2026-02-14 16:42:54.957 INFO  [main] o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-02-14 16:42:55.042 INFO  [main] org.hibernate.Version - HHH000412: Hibernate ORM core version 6.5.2.Final
+2026-02-14 16:42:55.107 INFO  [main] o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-02-14 16:42:55.629 INFO  [main] o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-02-14 16:42:55.676 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-02-14 16:42:56.113 INFO  [main] com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection oracle.jdbc.driver.T4CConnection@3dd591b9
+2026-02-14 16:42:56.118 INFO  [main] com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-02-14 16:42:56.154 WARN  [main] org.hibernate.orm.deprecation - HHH90000026: Oracle10gDialect has been deprecated; use org.hibernate.community.dialect.OracleLegacyDialect instead
+2026-02-14 16:42:58.689 INFO  [main] o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-02-14 16:42:58.698 INFO  [main] o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-02-14 16:43:01.093 WARN  [main] o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-02-14 16:43:01.154 INFO  [main] o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2026-02-14 16:43:02.354 INFO  [main] o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8283"]
+2026-02-14 16:43:02.393 INFO  [main] o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8283 (http) with context path '/'
+2026-02-14 16:43:02.410 INFO  [main] kr.co.seoulit.ReceptionApplication - Started ReceptionApplication in 13.307 seconds (process running for 14.215)
+2026-02-14 16:43:54.544 INFO  [http-nio-8283-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-02-14 16:43:54.544 INFO  [http-nio-8283-exec-1] o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-02-14 16:43:54.546 INFO  [http-nio-8283-exec-1] o.s.web.servlet.DispatcherServlet - Completed initialization in 2 ms
+2026-02-14 16:43:54.612 INFO  [http-nio-8283-exec-1] k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.EmergencyReceptionController.getEmergencyReceptions()?‹œ?ž‘
+2026-02-14 16:43:54.612 INFO  [http-nio-8283-exec-1] k.c.s.r.c.EmergencyReceptionController - ?‘ê¸? ? ‘?ˆ˜ ëª©ë¡ ?š”ì²?: searchType=null, searchValue=null
+2026-02-14 16:43:54.626 INFO  [http-nio-8283-exec-1] k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.EmergencyReceptionServiceImpl.getEmergencyReceptionList()?‹œ?ž‘
+2026-02-14 16:43:54.779 INFO  [http-nio-8283-exec-1] k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.EmergencyReceptionServiceImpl.getEmergencyReceptionList()ì¢…ë£Œ
+2026-02-14 16:43:54.799 INFO  [http-nio-8283-exec-1] k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.EmergencyReceptionController.getEmergencyReceptions()ì¢…ë£Œ
+2026-02-14 16:43:54.959 INFO  [http-nio-8283-exec-2] k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()?‹œ?ž‘
+2026-02-14 16:43:54.959 INFO  [http-nio-8283-exec-2] k.c.s.r.c.ReceptionController - ? ‘?ˆ˜ ëª©ë¡ ?š”ì²?: searchType=null, searchValue=null
+2026-02-14 16:43:54.960 INFO  [http-nio-8283-exec-2] k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()?‹œ?ž‘
+2026-02-14 16:43:54.985 INFO  [http-nio-8283-exec-2] k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()ì¢…ë£Œ
+2026-02-14 16:43:54.994 INFO  [http-nio-8283-exec-2] k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()ì¢…ë£Œ
+2026-02-14 16:44:34.167 INFO  [http-nio-8283-exec-4] k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.EmergencyReceptionController.getEmergencyReceptions()?‹œ?ž‘
+2026-02-14 16:44:34.167 INFO  [http-nio-8283-exec-4] k.c.s.r.c.EmergencyReceptionController - ?‘ê¸? ? ‘?ˆ˜ ëª©ë¡ ?š”ì²?: searchType=null, searchValue=null
+2026-02-14 16:44:34.176 INFO  [http-nio-8283-exec-4] k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.EmergencyReceptionServiceImpl.getEmergencyReceptionList()?‹œ?ž‘
+2026-02-14 16:44:34.194 INFO  [http-nio-8283-exec-4] k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.EmergencyReceptionServiceImpl.getEmergencyReceptionList()ì¢…ë£Œ
+2026-02-14 16:44:34.201 INFO  [http-nio-8283-exec-4] k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.EmergencyReceptionController.getEmergencyReceptions()ì¢…ë£Œ
+
+> Task :bootRun FAILED
+4 actionable tasks: 1 executed, 3 up-to-date

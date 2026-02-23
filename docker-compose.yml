@@ -22,7 +22,10 @@ services:
 
 
   backend:
-    image: hyojeong7/reception-backend:v33
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: reception-backend:local-fix
     container_name: reception-backend
     restart: unless-stopped
     environment:

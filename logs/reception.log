@@ -1,41 +1,1018 @@
-2026-02-09 09:00:23.167 INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
-2026-02-09 09:00:23.262 INFO  kr.co.seoulit.ReceptionApplication - Starting ReceptionApplication using Java 17.0.12 with PID 32504 (D:\서울IT교육센터\dev\teamwork\project\backend\hospital_reception_backend\reception_back\build\classes\java\main started by USER in D:\서울IT교육센터\dev\teamwork\project\backend\hospital_reception_backend\reception_back)
-2026-02-09 09:00:23.265 INFO  kr.co.seoulit.ReceptionApplication - No active profile set, falling back to 1 default profile: "default"
-2026-02-09 09:00:25.456 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
-2026-02-09 09:00:25.461 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-02-09 09:00:25.817 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 345 ms. Found 11 JPA repository interfaces.
-2026-02-09 09:00:25.847 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
-2026-02-09 09:00:25.849 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
-2026-02-09 09:00:25.875 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.common.audit.AuditLogRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
-2026-02-09 09:00:25.876 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.DepartmentRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
-2026-02-09 09:00:25.877 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.DoctorRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
-2026-02-09 09:00:25.877 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.PatientRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
-2026-02-09 09:00:25.878 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.ReceptionChecklistItemRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
-2026-02-09 09:00:25.878 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.ReceptionEmergencyRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
-2026-02-09 09:00:25.879 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.ReceptionInpatientRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
-2026-02-09 09:00:25.879 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.ReceptionRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
-2026-02-09 09:00:25.880 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.ReceptionStatusHistoryRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
-2026-02-09 09:00:25.880 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.ReceptionTodayScheduleRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
-2026-02-09 09:00:25.881 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.ReservationRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
-2026-02-09 09:00:25.881 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 19 ms. Found 0 Redis repository interfaces.
-2026-02-09 09:00:27.161 INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8283 (http)
-2026-02-09 09:00:27.180 INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8283"]
-2026-02-09 09:00:27.182 INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
-2026-02-09 09:00:27.183 INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.26]
-2026-02-09 09:00:27.396 INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
-2026-02-09 09:00:27.397 INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 4025 ms
-2026-02-09 09:00:27.776 INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
-2026-02-09 09:00:27.919 INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.5.2.Final
-2026-02-09 09:00:27.996 INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
-2026-02-09 09:00:28.601 INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-02-09 09:00:28.654 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
-2026-02-09 09:00:29.596 INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection oracle.jdbc.driver.T4CConnection@32298473
-2026-02-09 09:00:29.600 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
-2026-02-09 09:00:29.649 WARN  org.hibernate.orm.deprecation - HHH90000026: Oracle10gDialect has been deprecated; use org.hibernate.community.dialect.OracleLegacyDialect instead
-2026-02-09 09:00:34.453 INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-02-09 09:00:34.462 INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-02-09 09:00:40.646 WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-02-09 09:00:40.789 INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
-2026-02-09 09:00:43.167 INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8283"]
-2026-02-09 09:00:43.211 INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8283 (http) with context path '/'
-2026-02-09 09:00:43.224 INFO  kr.co.seoulit.ReceptionApplication - Started ReceptionApplication in 21.449 seconds (process running for 25.712)
+2026-02-23 08:52:04.472 INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2026-02-23 08:52:04.549 INFO  kr.co.seoulit.ReceptionApplication - Starting ReceptionApplication using Java 17.0.12 with PID 33148 (D:\서울IT교육센터\dev\teamwork\project\backend\hospital_reception_backend\reception_back\build\classes\java\main started by USER in D:\서울IT교육센터\dev\teamwork\project\backend\hospital_reception_backend\reception_back)
+2026-02-23 08:52:04.551 INFO  kr.co.seoulit.ReceptionApplication - No active profile set, falling back to 1 default profile: "default"
+2026-02-23 08:52:06.193 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-23 08:52:06.197 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-02-23 08:52:06.509 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 298 ms. Found 9 JPA repository interfaces.
+2026-02-23 08:52:06.536 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-23 08:52:06.539 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-02-23 08:52:06.561 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.common.audit.AuditLogRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-23 08:52:06.562 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.DepartmentRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-23 08:52:06.563 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.DoctorRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-23 08:52:06.563 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.PatientRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-23 08:52:06.564 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.ReceptionEmergencyRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-23 08:52:06.565 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.ReceptionInpatientRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-23 08:52:06.565 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.ReceptionRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-23 08:52:06.566 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.ReceptionStatusHistoryRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-23 08:52:06.566 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.ReservationRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-23 08:52:06.566 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 18 ms. Found 0 Redis repository interfaces.
+2026-02-23 08:52:08.007 INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8283 (http)
+2026-02-23 08:52:08.027 INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8283"]
+2026-02-23 08:52:08.030 INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-02-23 08:52:08.031 INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.26]
+2026-02-23 08:52:08.168 INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-02-23 08:52:08.168 INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 3540 ms
+2026-02-23 08:52:08.725 INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-02-23 08:52:08.829 INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.5.2.Final
+2026-02-23 08:52:08.883 INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-02-23 08:52:09.674 INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-02-23 08:52:09.816 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-02-23 08:52:32.206 WARN  o.h.e.j.e.i.JdbcEnvironmentInitiator - HHH000342: Could not obtain connection to query metadata
+java.lang.NullPointerException: Cannot invoke "org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(java.sql.SQLException, String)" because the return value of "org.hibernate.resource.transaction.backend.jdbc.internal.JdbcIsolationDelegate.sqlExceptionHelper()" is null
+	at org.hibernate.resource.transaction.backend.jdbc.internal.JdbcIsolationDelegate.delegateWork(JdbcIsolationDelegate.java:116)
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.getJdbcEnvironmentUsingJdbcMetadata(JdbcEnvironmentInitiator.java:290)
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.initiateService(JdbcEnvironmentInitiator.java:123)
+	at org.hibernate.engine.jdbc.env.internal.JdbcEnvironmentInitiator.initiateService(JdbcEnvironmentInitiator.java:77)
+	at org.hibernate.boot.registry.internal.StandardServiceRegistryImpl.initiateService(StandardServiceRegistryImpl.java:130)
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.createService(AbstractServiceRegistryImpl.java:263)
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.initializeService(AbstractServiceRegistryImpl.java:238)
+	at org.hibernate.service.internal.AbstractServiceRegistryImpl.getService(AbstractServiceRegistryImpl.java:215)
+	at org.hibernate.boot.model.relational.Database.<init>(Database.java:45)
+	at org.hibernate.boot.internal.InFlightMetadataCollectorImpl.getDatabase(InFlightMetadataCollectorImpl.java:221)
+	at org.hibernate.boot.internal.InFlightMetadataCollectorImpl.<init>(InFlightMetadataCollectorImpl.java:189)
+	at org.hibernate.boot.model.process.spi.MetadataBuildingProcess.complete(MetadataBuildingProcess.java:171)
+	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.metadata(EntityManagerFactoryBuilderImpl.java:1431)
+	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:1502)
+	at org.springframework.orm.jpa.vendor.SpringHibernateJpaPersistenceProvider.createContainerEntityManagerFactory(SpringHibernateJpaPersistenceProvider.java:75)
+	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.createNativeEntityManagerFactory(LocalContainerEntityManagerFactoryBean.java:390)
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:409)
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.afterPropertiesSet(AbstractEntityManagerFactoryBean.java:396)
+	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.afterPropertiesSet(LocalContainerEntityManagerFactoryBean.java:366)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1853)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1802)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:600)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:522)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:337)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:335)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:205)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:954)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:625)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:754)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:456)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:335)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1363)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1352)
+	at kr.co.seoulit.ReceptionApplication.main(ReceptionApplication.java:12)
+2026-02-23 08:52:32.362 WARN  org.hibernate.orm.deprecation - HHH90000026: Oracle10gDialect has been deprecated; use org.hibernate.community.dialect.OracleLegacyDialect instead
+2026-02-23 08:52:35.646 INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-02-23 08:52:35.657 INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-02-23 08:52:38.301 WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-02-23 08:52:38.358 INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2026-02-23 08:52:39.607 INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8283"]
+2026-02-23 08:52:39.663 INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8283 (http) with context path '/'
+2026-02-23 08:52:39.675 INFO  kr.co.seoulit.ReceptionApplication - Started ReceptionApplication in 36.0 seconds (process running for 41.319)
+2026-02-23 08:57:18.072 INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-02-23 08:57:18.073 INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-02-23 08:57:18.077 INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 4 ms
+2026-02-23 08:57:20.499 INFO  o.s.api.AbstractOpenApiResource - Init duration for springdoc-openapi is: 1687 ms
+2026-02-23 09:08:17.188 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-23 09:08:17.189 INFO  k.c.s.r.c.ReceptionController - Reception list request: searchType=null, searchValue=null
+2026-02-23 09:08:17.195 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-02-23 09:08:36.951 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-23 09:08:36.951 INFO  k.c.s.r.c.ReceptionController - Reception list request: searchType=null, searchValue=null
+2026-02-23 09:08:39.268 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-02-23 09:08:39.268 WARN  o.h.e.jdbc.spi.SqlExceptionHelper - SQL Error: 17002, SQLState: 08006
+2026-02-23 09:08:39.269 ERROR o.h.e.jdbc.spi.SqlExceptionHelper - IO 오류: The Network Adapter could not establish the connection (CONNECTION_ID=DobIfCIjRqK1gWafIURIGg==)
+2026-02-23 09:08:39.276 ERROR k.c.s.c.h.GlobalExceptionHandler - Unhandled server error
+org.springframework.transaction.CannotCreateTransactionException: Could not open JPA EntityManager for transaction
+	at org.springframework.orm.jpa.JpaTransactionManager.doBegin(JpaTransactionManager.java:466)
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.startTransaction(AbstractPlatformTransactionManager.java:532)
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.getTransaction(AbstractPlatformTransactionManager.java:405)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.createTransactionIfNecessary(TransactionAspectSupport.java:604)
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:373)
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:768)
+	at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:97)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:768)
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:720)
+	at kr.co.seoulit.reception.service.ReceptionServiceImpl$$SpringCGLIB$$0.getReceptionList(<generated>)
+	at kr.co.seoulit.reception.controller.ReceptionController.getReceptions(ReceptionController.java:55)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:354)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:768)
+	at org.springframework.aop.aspectj.MethodInvocationProceedingJoinPoint.proceed(MethodInvocationProceedingJoinPoint.java:89)
+	at kr.co.seoulit.common.aop.LoggerAspect.logPrint(LoggerAspect.java:31)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.aop.aspectj.AbstractAspectJAdvice.invokeAdviceMethodWithGivenArgs(AbstractAspectJAdvice.java:637)
+	at org.springframework.aop.aspectj.AbstractAspectJAdvice.invokeAdviceMethod(AbstractAspectJAdvice.java:627)
+	at org.springframework.aop.aspectj.AspectJAroundAdvice.invoke(AspectJAroundAdvice.java:71)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:768)
+	at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:97)
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184)
+	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.proceed(CglibAopProxy.java:768)
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:720)
+	at kr.co.seoulit.reception.controller.ReceptionController$$SpringCGLIB$$0.getReceptions(<generated>)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:255)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:188)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:926)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:831)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:389)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:904)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1741)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1190)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+Caused by: org.hibernate.exception.JDBCConnectionException: Unable to acquire JDBC Connection [IO 오류: The Network Adapter could not establish the connection (CONNECTION_ID=DobIfCIjRqK1gWafIURIGg==)] [n/a]
+	at org.hibernate.exception.internal.SQLStateConversionDelegate.convert(SQLStateConversionDelegate.java:100)
+	at org.hibernate.exception.internal.StandardSQLExceptionConverter.convert(StandardSQLExceptionConverter.java:58)
+	at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:108)
+	at org.hibernate.engine.jdbc.spi.SqlExceptionHelper.convert(SqlExceptionHelper.java:94)
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.acquireConnectionIfNeeded(LogicalConnectionManagedImpl.java:116)
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.getPhysicalConnection(LogicalConnectionManagedImpl.java:143)
+	at org.springframework.orm.jpa.vendor.HibernateJpaDialect.beginTransaction(HibernateJpaDialect.java:164)
+	at org.springframework.orm.jpa.JpaTransactionManager.doBegin(JpaTransactionManager.java:420)
+	... 91 common frames omitted
+Caused by: java.sql.SQLRecoverableException: IO 오류: The Network Adapter could not establish the connection (CONNECTION_ID=DobIfCIjRqK1gWafIURIGg==)
+	at oracle.jdbc.driver.T4CConnection.handleLogonNetException(T4CConnection.java:905)
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:710)
+	at oracle.jdbc.driver.PhysicalConnection.connect(PhysicalConnection.java:1095)
+	at oracle.jdbc.driver.T4CDriverExtension.getConnection(T4CDriverExtension.java:90)
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:733)
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:649)
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:137)
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:360)
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:202)
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:461)
+	at com.zaxxer.hikari.pool.HikariPool.checkFailFast(HikariPool.java:550)
+	at com.zaxxer.hikari.pool.HikariPool.<init>(HikariPool.java:98)
+	at com.zaxxer.hikari.HikariDataSource.getConnection(HikariDataSource.java:111)
+	at org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProviderImpl.getConnection(DatasourceConnectionProviderImpl.java:122)
+	at org.hibernate.internal.NonContextualJdbcConnectionAccess.obtainConnection(NonContextualJdbcConnectionAccess.java:46)
+	at org.hibernate.resource.jdbc.internal.LogicalConnectionManagedImpl.acquireConnectionIfNeeded(LogicalConnectionManagedImpl.java:113)
+	... 94 common frames omitted
+Caused by: oracle.net.ns.NetException: The Network Adapter could not establish the connection (CONNECTION_ID=DobIfCIjRqK1gWafIURIGg==)
+	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:729)
+	at oracle.net.resolver.AddrResolution.resolveAndExecute(AddrResolution.java:629)
+	at oracle.net.ns.NSProtocol.establishConnection(NSProtocol.java:965)
+	at oracle.net.ns.NSProtocol.connect(NSProtocol.java:351)
+	at oracle.jdbc.driver.T4CConnection.connect(T4CConnection.java:2653)
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:669)
+	... 108 common frames omitted
+Caused by: java.io.IOException: Connection timed out: connect, socket connect lapse 21055 ms. 192.168.1.67 1521  30000 (1/1) true
+	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:429)
+	at oracle.net.nt.TcpNTAdapter.doLocalDNSLookupConnect(TcpNTAdapter.java:311)
+	at oracle.net.nt.TcpNTAdapter.connect(TcpNTAdapter.java:273)
+	at oracle.net.nt.ConnOption.connect(ConnOption.java:231)
+	at oracle.net.nt.ConnStrategy.executeConnOption(ConnStrategy.java:1028)
+	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:687)
+	... 113 common frames omitted
+Caused by: java.net.ConnectException: Connection timed out: connect
+	at java.base/sun.nio.ch.Net.connect0(Native Method)
+	at java.base/sun.nio.ch.Net.connect(Net.java:579)
+	at java.base/sun.nio.ch.Net.connect(Net.java:586)
+	at java.base/sun.nio.ch.SocketChannelImpl.connect(SocketChannelImpl.java:853)
+	at java.base/java.nio.channels.SocketChannel.open(SocketChannel.java:285)
+	at oracle.net.nt.TimeoutSocketChannel.connect(TimeoutSocketChannel.java:185)
+	at oracle.net.nt.TimeoutSocketChannel.<init>(TimeoutSocketChannel.java:159)
+	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:388)
+	... 118 common frames omitted
+2026-02-23 09:08:40.428 INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection oracle.jdbc.driver.T4CConnection@12b76f95
+2026-02-23 09:08:40.443 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-02-23 09:08:40.469 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()시작
+2026-02-23 09:08:41.442 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()종료
+2026-02-23 09:08:41.470 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()종료
+2026-02-23 09:08:46.809 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReception()시작
+2026-02-23 09:08:46.809 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-23 09:08:46.812 INFO  k.c.s.r.c.ReceptionController - Reception list request: searchType=null, searchValue=null
+2026-02-23 09:08:46.812 INFO  k.c.s.r.c.ReceptionController - Get reception request: id=5
+2026-02-23 09:08:46.859 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()시작
+2026-02-23 09:08:46.859 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReception()시작
+2026-02-23 09:08:46.909 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()종료
+2026-02-23 09:08:46.939 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()종료
+2026-02-23 09:08:46.977 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-23 09:08:46.978 INFO  k.c.s.r.c.ReceptionController - Reception list request: searchType=null, searchValue=null
+2026-02-23 09:08:46.979 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()시작
+2026-02-23 09:08:47.034 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()종료
+2026-02-23 09:08:47.059 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()종료
+2026-02-23 09:08:47.084 DEBUG org.hibernate.SQL - select re1_0.reception_id,re1_0.arrived_at,re1_0.cancel_reason_code,re1_0.cancel_reason_text,re1_0.created_at,re1_0.created_by,re1_0.department_id,re1_0.department_name,re1_0.doctor_id,re1_0.doctor_name,re1_0.hold_reason_code,re1_0.hold_reason_text,re1_0.inactive_at,re1_0.inactive_reason_code,re1_0.inactive_reason_text,re1_0.is_active,re1_0.note,re1_0.patient_id,re1_0.patient_name,re1_0.reception_no,re1_0.reservation_id,re1_0.scheduled_at,re1_0.status,re1_0.updated_at,re1_0.updated_by,re1_0.visit_type from reception re1_0 where re1_0.reception_id=?
+2026-02-23 09:08:47.086 TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:BIGINT) <- [5]
+2026-02-23 09:08:47.181 INFO  k.co.seoulit.common.aop.LoggerAspect - kr.co.seoulit.reception.mapstruct.ReceptionResMapStructImpl.toDto()시작
+2026-02-23 09:08:47.182 INFO  k.co.seoulit.common.aop.LoggerAspect - kr.co.seoulit.reception.mapstruct.ReceptionResMapStructImpl.toDto()종료
+2026-02-23 09:08:47.182 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReception()종료
+2026-02-23 09:08:47.224 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReception()종료
+2026-02-23 09:08:47.242 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReception()시작
+2026-02-23 09:08:47.242 INFO  k.c.s.r.c.ReceptionController - Get reception request: id=5
+2026-02-23 09:08:47.245 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReception()시작
+2026-02-23 09:08:47.246 DEBUG org.hibernate.SQL - select re1_0.reception_id,re1_0.arrived_at,re1_0.cancel_reason_code,re1_0.cancel_reason_text,re1_0.created_at,re1_0.created_by,re1_0.department_id,re1_0.department_name,re1_0.doctor_id,re1_0.doctor_name,re1_0.hold_reason_code,re1_0.hold_reason_text,re1_0.inactive_at,re1_0.inactive_reason_code,re1_0.inactive_reason_text,re1_0.is_active,re1_0.note,re1_0.patient_id,re1_0.patient_name,re1_0.reception_no,re1_0.reservation_id,re1_0.scheduled_at,re1_0.status,re1_0.updated_at,re1_0.updated_by,re1_0.visit_type from reception re1_0 where re1_0.reception_id=?
+2026-02-23 09:08:47.246 TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:BIGINT) <- [5]
+2026-02-23 09:08:47.272 INFO  k.co.seoulit.common.aop.LoggerAspect - kr.co.seoulit.reception.mapstruct.ReceptionResMapStructImpl.toDto()시작
+2026-02-23 09:08:47.277 INFO  k.co.seoulit.common.aop.LoggerAspect - kr.co.seoulit.reception.mapstruct.ReceptionResMapStructImpl.toDto()종료
+2026-02-23 09:08:47.277 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReception()종료
+2026-02-23 09:08:47.309 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReception()종료
+2026-02-23 09:08:57.602 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.EmergencyReceptionController.getEmergencyReceptions()시작
+2026-02-23 09:08:57.603 INFO  k.c.s.r.c.EmergencyReceptionController - 응급 접수 목록 요청: searchType=null, searchValue=null
+2026-02-23 09:08:57.640 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.EmergencyReceptionServiceImpl.getEmergencyReceptionList()시작
+2026-02-23 09:08:58.092 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.EmergencyReceptionServiceImpl.getEmergencyReceptionList()종료
+2026-02-23 09:08:58.335 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.EmergencyReceptionController.getEmergencyReceptions()종료
+2026-02-23 09:08:58.355 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.EmergencyReceptionController.getEmergencyReceptions()시작
+2026-02-23 09:08:58.355 INFO  k.c.s.r.c.EmergencyReceptionController - 응급 접수 목록 요청: searchType=null, searchValue=null
+2026-02-23 09:08:58.357 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.EmergencyReceptionServiceImpl.getEmergencyReceptionList()시작
+2026-02-23 09:08:58.754 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.EmergencyReceptionServiceImpl.getEmergencyReceptionList()종료
+2026-02-23 09:08:59.948 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.EmergencyReceptionController.getEmergencyReceptions()종료
+2026-02-23 09:09:02.670 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.InpatientReceptionController.getInpatientReceptions()시작
+2026-02-23 09:09:02.671 INFO  k.c.s.r.c.InpatientReceptionController - 입원 접수 목록 요청: searchType=null, searchValue=null
+2026-02-23 09:09:02.919 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.InpatientReceptionServiceImpl.getInpatientReceptionList()시작
+2026-02-23 09:09:02.942 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.InpatientReceptionServiceImpl.getInpatientReceptionList()종료
+2026-02-23 09:09:02.950 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.InpatientReceptionController.getInpatientReceptions()종료
+2026-02-23 09:09:02.970 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.InpatientReceptionController.getInpatientReceptions()시작
+2026-02-23 09:09:02.970 INFO  k.c.s.r.c.InpatientReceptionController - 입원 접수 목록 요청: searchType=null, searchValue=null
+2026-02-23 09:09:02.972 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.InpatientReceptionServiceImpl.getInpatientReceptionList()시작
+2026-02-23 09:09:03.196 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.InpatientReceptionServiceImpl.getInpatientReceptionList()종료
+2026-02-23 09:09:03.232 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.InpatientReceptionController.getInpatientReceptions()종료
+2026-02-23 09:09:07.550 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReservationController.getReservations()시작
+2026-02-23 09:09:07.551 INFO  k.c.s.r.c.ReservationController - 예약 목록 요청: searchType=null, searchValue=null
+2026-02-23 09:09:07.629 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReservationServiceImpl.getReservationList()시작
+2026-02-23 09:09:07.670 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReservationServiceImpl.getReservationList()종료
+2026-02-23 09:09:07.680 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReservationController.getReservations()종료
+2026-02-23 09:09:07.703 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReservationController.getReservations()시작
+2026-02-23 09:09:07.708 INFO  k.c.s.r.c.ReservationController - 예약 목록 요청: searchType=null, searchValue=null
+2026-02-23 09:09:07.709 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReservationServiceImpl.getReservationList()시작
+2026-02-23 09:09:07.733 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReservationServiceImpl.getReservationList()종료
+2026-02-23 09:09:07.775 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReservationController.getReservations()종료
+2026-02-23 09:09:15.684 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-23 09:09:15.684 INFO  k.c.s.r.c.ReceptionController - Reception list request: searchType=null, searchValue=null
+2026-02-23 09:09:15.696 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()시작
+2026-02-23 09:09:15.714 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()종료
+2026-02-23 09:09:15.722 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()종료
+2026-02-23 09:09:15.751 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-23 09:09:15.751 INFO  k.c.s.r.c.ReceptionController - Reception list request: searchType=null, searchValue=null
+2026-02-23 09:09:15.751 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()시작
+2026-02-23 09:09:15.766 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()종료
+2026-02-23 09:09:15.775 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()종료
+2026-02-23 09:09:48.145 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-23 09:09:48.148 INFO  k.c.s.r.c.ReceptionController - Reception list request: searchType=null, searchValue=null
+2026-02-23 09:09:48.201 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()시작
+2026-02-23 09:09:48.222 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()종료
+2026-02-23 09:09:48.235 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()종료
+2026-02-23 09:09:48.335 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-23 09:09:48.336 INFO  k.c.s.r.c.ReceptionController - Reception list request: searchType=null, searchValue=null
+2026-02-23 09:09:48.363 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()시작
+2026-02-23 09:09:48.384 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()종료
+2026-02-23 09:09:48.399 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()종료
+2026-02-23 09:09:51.008 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.EmergencyReceptionController.getEmergencyReceptions()시작
+2026-02-23 09:09:51.009 INFO  k.c.s.r.c.EmergencyReceptionController - 응급 접수 목록 요청: searchType=null, searchValue=null
+2026-02-23 09:09:51.018 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.EmergencyReceptionServiceImpl.getEmergencyReceptionList()시작
+2026-02-23 09:09:51.062 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.EmergencyReceptionServiceImpl.getEmergencyReceptionList()종료
+2026-02-23 09:09:51.075 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.EmergencyReceptionController.getEmergencyReceptions()종료
+2026-02-23 09:09:51.116 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.EmergencyReceptionController.getEmergencyReceptions()시작
+2026-02-23 09:09:51.117 INFO  k.c.s.r.c.EmergencyReceptionController - 응급 접수 목록 요청: searchType=null, searchValue=null
+2026-02-23 09:09:51.118 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.EmergencyReceptionServiceImpl.getEmergencyReceptionList()시작
+2026-02-23 09:09:51.177 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.EmergencyReceptionServiceImpl.getEmergencyReceptionList()종료
+2026-02-23 09:09:51.209 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.EmergencyReceptionController.getEmergencyReceptions()종료
+2026-02-23 09:10:15.315 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.InpatientReceptionController.getInpatientReceptions()시작
+2026-02-23 09:10:15.315 INFO  k.c.s.r.c.InpatientReceptionController - 입원 접수 목록 요청: searchType=null, searchValue=null
+2026-02-23 09:10:15.361 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.InpatientReceptionServiceImpl.getInpatientReceptionList()시작
+2026-02-23 09:10:15.457 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.InpatientReceptionServiceImpl.getInpatientReceptionList()종료
+2026-02-23 09:10:15.525 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.InpatientReceptionController.getInpatientReceptions()종료
+2026-02-23 09:10:15.563 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.InpatientReceptionController.getInpatientReceptions()시작
+2026-02-23 09:10:15.563 INFO  k.c.s.r.c.InpatientReceptionController - 입원 접수 목록 요청: searchType=null, searchValue=null
+2026-02-23 09:10:15.564 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.InpatientReceptionServiceImpl.getInpatientReceptionList()시작
+2026-02-23 09:10:15.660 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.InpatientReceptionServiceImpl.getInpatientReceptionList()종료
+2026-02-23 09:10:15.695 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.InpatientReceptionController.getInpatientReceptions()종료
+2026-02-23 09:10:39.064 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReservationController.getReservations()시작
+2026-02-23 09:10:39.064 INFO  k.c.s.r.c.ReservationController - 예약 목록 요청: searchType=null, searchValue=null
+2026-02-23 09:10:39.115 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReservationServiceImpl.getReservationList()시작
+2026-02-23 09:10:39.162 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReservationServiceImpl.getReservationList()종료
+2026-02-23 09:10:39.216 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReservationController.getReservations()종료
+2026-02-23 09:10:39.249 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReservationController.getReservations()시작
+2026-02-23 09:10:39.249 INFO  k.c.s.r.c.ReservationController - 예약 목록 요청: searchType=null, searchValue=null
+2026-02-23 09:10:39.250 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReservationServiceImpl.getReservationList()시작
+2026-02-23 09:10:39.314 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReservationServiceImpl.getReservationList()종료
+2026-02-23 09:10:39.367 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReservationController.getReservations()종료
+2026-02-23 09:11:09.243 WARN  k.c.s.c.h.GlobalExceptionHandler - No resource found
+org.springframework.web.servlet.resource.NoResourceFoundException: No static resource api/receptions/dashboard/checklist.
+	at org.springframework.web.servlet.resource.ResourceHttpRequestHandler.handleRequest(ResourceHttpRequestHandler.java:585)
+	at org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter.handle(HttpRequestHandlerAdapter.java:52)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:389)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:904)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1741)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1190)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2026-02-23 09:11:09.243 WARN  k.c.s.c.h.GlobalExceptionHandler - No resource found
+org.springframework.web.servlet.resource.NoResourceFoundException: No static resource api/receptions/dashboard/schedules.
+	at org.springframework.web.servlet.resource.ResourceHttpRequestHandler.handleRequest(ResourceHttpRequestHandler.java:585)
+	at org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter.handle(HttpRequestHandlerAdapter.java:52)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:389)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:904)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1741)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1190)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2026-02-23 09:11:09.284 WARN  k.c.s.c.h.GlobalExceptionHandler - No resource found
+org.springframework.web.servlet.resource.NoResourceFoundException: No static resource api/receptions/dashboard/checklist.
+	at org.springframework.web.servlet.resource.ResourceHttpRequestHandler.handleRequest(ResourceHttpRequestHandler.java:585)
+	at org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter.handle(HttpRequestHandlerAdapter.java:52)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:389)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:904)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1741)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1190)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2026-02-23 09:11:09.284 WARN  k.c.s.c.h.GlobalExceptionHandler - No resource found
+org.springframework.web.servlet.resource.NoResourceFoundException: No static resource api/receptions/dashboard/schedules.
+	at org.springframework.web.servlet.resource.ResourceHttpRequestHandler.handleRequest(ResourceHttpRequestHandler.java:585)
+	at org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter.handle(HttpRequestHandlerAdapter.java:52)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:389)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:904)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1741)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1190)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2026-02-23 09:14:41.681 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-23 09:14:41.681 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-23 09:14:41.681 INFO  k.c.s.r.c.ReceptionController - Reception list request: searchType=null, searchValue=null
+2026-02-23 09:14:41.681 INFO  k.c.s.r.c.ReceptionController - Reception list request: searchType=null, searchValue=null
+2026-02-23 09:14:41.847 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()시작
+2026-02-23 09:14:41.847 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()시작
+2026-02-23 09:14:41.885 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()종료
+2026-02-23 09:14:41.895 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()종료
+2026-02-23 09:14:41.915 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()종료
+2026-02-23 09:14:41.916 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()종료
+2026-02-23 09:15:15.113 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-23 09:15:15.114 INFO  k.c.s.r.c.ReceptionController - Reception list request: searchType=null, searchValue=null
+2026-02-23 09:15:15.142 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-23 09:15:15.142 INFO  k.c.s.r.c.ReceptionController - Reception list request: searchType=null, searchValue=null
+2026-02-23 09:15:15.156 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()시작
+2026-02-23 09:15:15.158 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()시작
+2026-02-23 09:15:15.195 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()종료
+2026-02-23 09:15:15.196 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()종료
+2026-02-23 09:15:15.250 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()종료
+2026-02-23 09:15:15.250 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()종료
+2026-02-23 10:26:49.588 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-23 10:26:49.593 INFO  k.c.s.r.c.ReceptionController - Reception list request: searchType=null, searchValue=null
+2026-02-23 10:26:49.614 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()시작
+2026-02-23 10:26:49.634 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()종료
+2026-02-23 10:26:49.641 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()종료
+2026-02-23 10:26:49.659 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-23 10:26:49.659 INFO  k.c.s.r.c.ReceptionController - Reception list request: searchType=null, searchValue=null
+2026-02-23 10:26:49.659 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()시작
+2026-02-23 10:26:49.675 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()종료
+2026-02-23 10:26:49.683 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()종료
+2026-02-23 10:26:49.795 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReception()시작
+2026-02-23 10:26:49.795 INFO  k.c.s.r.c.ReceptionController - Get reception request: id=5
+2026-02-23 10:26:49.798 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReception()시작
+2026-02-23 10:26:49.807 DEBUG org.hibernate.SQL - select re1_0.reception_id,re1_0.arrived_at,re1_0.cancel_reason_code,re1_0.cancel_reason_text,re1_0.created_at,re1_0.created_by,re1_0.department_id,re1_0.department_name,re1_0.doctor_id,re1_0.doctor_name,re1_0.hold_reason_code,re1_0.hold_reason_text,re1_0.inactive_at,re1_0.inactive_reason_code,re1_0.inactive_reason_text,re1_0.is_active,re1_0.note,re1_0.patient_id,re1_0.patient_name,re1_0.reception_no,re1_0.reservation_id,re1_0.scheduled_at,re1_0.status,re1_0.updated_at,re1_0.updated_by,re1_0.visit_type from reception re1_0 where re1_0.reception_id=?
+2026-02-23 10:26:49.809 TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:BIGINT) <- [5]
+2026-02-23 10:26:49.822 INFO  k.co.seoulit.common.aop.LoggerAspect - kr.co.seoulit.reception.mapstruct.ReceptionResMapStructImpl.toDto()시작
+2026-02-23 10:26:49.822 INFO  k.co.seoulit.common.aop.LoggerAspect - kr.co.seoulit.reception.mapstruct.ReceptionResMapStructImpl.toDto()종료
+2026-02-23 10:26:49.823 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReception()종료
+2026-02-23 10:26:49.829 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReception()종료
+2026-02-23 10:26:57.208 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.EmergencyReceptionController.getEmergencyReceptions()시작
+2026-02-23 10:26:57.208 INFO  k.c.s.r.c.EmergencyReceptionController - 응급 접수 목록 요청: searchType=null, searchValue=null
+2026-02-23 10:26:57.232 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.EmergencyReceptionServiceImpl.getEmergencyReceptionList()시작
+2026-02-23 10:26:57.281 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.EmergencyReceptionServiceImpl.getEmergencyReceptionList()종료
+2026-02-23 10:26:57.286 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.EmergencyReceptionController.getEmergencyReceptions()종료
+2026-02-23 10:26:57.320 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.EmergencyReceptionController.getEmergencyReceptions()시작
+2026-02-23 10:26:57.320 INFO  k.c.s.r.c.EmergencyReceptionController - 응급 접수 목록 요청: searchType=null, searchValue=null
+2026-02-23 10:26:57.320 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.EmergencyReceptionServiceImpl.getEmergencyReceptionList()시작
+2026-02-23 10:26:57.338 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.EmergencyReceptionServiceImpl.getEmergencyReceptionList()종료
+2026-02-23 10:26:57.344 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.EmergencyReceptionController.getEmergencyReceptions()종료
+2026-02-23 10:27:42.540 WARN  k.c.s.c.h.GlobalExceptionHandler - No resource found
+org.springframework.web.servlet.resource.NoResourceFoundException: No static resource api/receptions/dashboard/checklist.
+	at org.springframework.web.servlet.resource.ResourceHttpRequestHandler.handleRequest(ResourceHttpRequestHandler.java:585)
+	at org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter.handle(HttpRequestHandlerAdapter.java:52)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:389)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:904)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1741)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1190)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2026-02-23 10:27:42.540 WARN  k.c.s.c.h.GlobalExceptionHandler - No resource found
+org.springframework.web.servlet.resource.NoResourceFoundException: No static resource api/receptions/dashboard/schedules.
+	at org.springframework.web.servlet.resource.ResourceHttpRequestHandler.handleRequest(ResourceHttpRequestHandler.java:585)
+	at org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter.handle(HttpRequestHandlerAdapter.java:52)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:389)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:904)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1741)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1190)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2026-02-23 10:27:42.572 WARN  k.c.s.c.h.GlobalExceptionHandler - No resource found
+org.springframework.web.servlet.resource.NoResourceFoundException: No static resource api/receptions/dashboard/checklist.
+	at org.springframework.web.servlet.resource.ResourceHttpRequestHandler.handleRequest(ResourceHttpRequestHandler.java:585)
+	at org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter.handle(HttpRequestHandlerAdapter.java:52)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:389)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:904)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1741)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1190)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2026-02-23 10:27:42.572 WARN  k.c.s.c.h.GlobalExceptionHandler - No resource found
+org.springframework.web.servlet.resource.NoResourceFoundException: No static resource api/receptions/dashboard/schedules.
+	at org.springframework.web.servlet.resource.ResourceHttpRequestHandler.handleRequest(ResourceHttpRequestHandler.java:585)
+	at org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter.handle(HttpRequestHandlerAdapter.java:52)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:389)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:904)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1741)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1190)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Thread.java:842)
+2026-02-23 10:41:26.987 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-23 10:41:26.987 INFO  k.c.s.r.c.ReceptionController - Reception list request: searchType=null, searchValue=null
+2026-02-23 10:41:27.027 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()시작
+2026-02-23 10:41:27.050 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()종료
+2026-02-23 10:41:27.065 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()종료
+2026-02-23 10:41:27.094 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-23 10:41:27.094 INFO  k.c.s.r.c.ReceptionController - Reception list request: searchType=null, searchValue=null
+2026-02-23 10:41:27.094 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()시작
+2026-02-23 10:41:27.106 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()종료
+2026-02-23 10:41:27.112 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()종료
+2026-02-23 10:41:27.229 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReception()시작
+2026-02-23 10:41:27.229 INFO  k.c.s.r.c.ReceptionController - Get reception request: id=5
+2026-02-23 10:41:27.230 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReception()시작
+2026-02-23 10:41:27.235 DEBUG org.hibernate.SQL - select re1_0.reception_id,re1_0.arrived_at,re1_0.cancel_reason_code,re1_0.cancel_reason_text,re1_0.created_at,re1_0.created_by,re1_0.department_id,re1_0.department_name,re1_0.doctor_id,re1_0.doctor_name,re1_0.hold_reason_code,re1_0.hold_reason_text,re1_0.inactive_at,re1_0.inactive_reason_code,re1_0.inactive_reason_text,re1_0.is_active,re1_0.note,re1_0.patient_id,re1_0.patient_name,re1_0.reception_no,re1_0.reservation_id,re1_0.scheduled_at,re1_0.status,re1_0.updated_at,re1_0.updated_by,re1_0.visit_type from reception re1_0 where re1_0.reception_id=?
+2026-02-23 10:41:27.236 TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:BIGINT) <- [5]
+2026-02-23 10:41:27.243 INFO  k.co.seoulit.common.aop.LoggerAspect - kr.co.seoulit.reception.mapstruct.ReceptionResMapStructImpl.toDto()시작
+2026-02-23 10:41:27.244 INFO  k.co.seoulit.common.aop.LoggerAspect - kr.co.seoulit.reception.mapstruct.ReceptionResMapStructImpl.toDto()종료
+2026-02-23 10:41:27.244 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReception()종료
+2026-02-23 10:41:27.260 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReception()종료
+2026-02-23 11:01:21.531 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-23 11:01:21.537 INFO  k.c.s.r.c.ReceptionController - Reception list request: searchType=null, searchValue=null
+2026-02-23 11:01:21.550 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()시작
+2026-02-23 11:01:21.585 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()종료
+2026-02-23 11:01:21.592 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()종료
+2026-02-23 11:01:21.615 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-23 11:01:21.615 INFO  k.c.s.r.c.ReceptionController - Reception list request: searchType=null, searchValue=null
+2026-02-23 11:01:21.615 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()시작
+2026-02-23 11:01:21.629 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()종료
+2026-02-23 11:01:21.639 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()종료
+2026-02-23 11:08:28.416 INFO  o.s.api.AbstractOpenApiResource - Init duration for springdoc-openapi is: 454 ms
+2026-02-23 11:12:01.579 INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-02-23 11:12:01.588 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-02-23 11:12:01.648 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2026-02-23 11:12:07.763 INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2026-02-23 11:12:07.830 INFO  kr.co.seoulit.ReceptionApplication - Starting ReceptionApplication using Java 17.0.12 with PID 68812 (D:\서울IT교육센터\dev\teamwork\project\backend\hospital_reception_backend\reception_back\build\classes\java\main started by USER in D:\서울IT교육센터\dev\teamwork\project\backend\hospital_reception_backend\reception_back)
+2026-02-23 11:12:07.831 INFO  kr.co.seoulit.ReceptionApplication - No active profile set, falling back to 1 default profile: "default"
+2026-02-23 11:12:09.041 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-23 11:12:09.043 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-02-23 11:12:09.261 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 208 ms. Found 9 JPA repository interfaces.
+2026-02-23 11:12:09.288 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-23 11:12:09.290 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-02-23 11:12:09.311 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.common.audit.AuditLogRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-23 11:12:09.311 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.DepartmentRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-23 11:12:09.311 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.DoctorRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-23 11:12:09.312 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.PatientRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-23 11:12:09.312 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.ReceptionEmergencyRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-23 11:12:09.312 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.ReceptionInpatientRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-23 11:12:09.313 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.ReceptionRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-23 11:12:09.313 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.ReceptionStatusHistoryRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-23 11:12:09.313 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.ReservationRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-23 11:12:09.313 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 12 ms. Found 0 Redis repository interfaces.
+2026-02-23 11:12:10.210 INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8283 (http)
+2026-02-23 11:12:10.224 INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8283"]
+2026-02-23 11:12:10.226 INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-02-23 11:12:10.227 INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.26]
+2026-02-23 11:12:10.313 INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-02-23 11:12:10.314 INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 2410 ms
+2026-02-23 11:12:10.586 INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-02-23 11:12:10.656 INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.5.2.Final
+2026-02-23 11:12:10.695 INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-02-23 11:12:11.106 INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-02-23 11:12:11.141 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-02-23 11:12:11.505 INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection oracle.jdbc.driver.T4CConnection@2ba9f743
+2026-02-23 11:12:11.508 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-02-23 11:12:11.534 WARN  org.hibernate.orm.deprecation - HHH90000026: Oracle10gDialect has been deprecated; use org.hibernate.community.dialect.OracleLegacyDialect instead
+2026-02-23 11:12:12.932 INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-02-23 11:12:12.936 INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-02-23 11:12:14.582 WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-02-23 11:12:14.618 INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2026-02-23 11:12:15.576 INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8283"]
+2026-02-23 11:12:15.605 INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8283 (http) with context path '/'
+2026-02-23 11:12:15.616 INFO  kr.co.seoulit.ReceptionApplication - Started ReceptionApplication in 8.466 seconds (process running for 9.884)
+2026-02-23 11:12:21.058 INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-02-23 11:12:21.059 INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-02-23 11:12:21.061 INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+2026-02-23 11:12:22.549 INFO  o.s.api.AbstractOpenApiResource - Init duration for springdoc-openapi is: 944 ms
+2026-02-23 11:14:18.391 INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-02-23 11:14:18.395 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-02-23 11:14:18.800 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2026-02-23 11:14:32.983 INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2026-02-23 11:14:33.057 INFO  kr.co.seoulit.ReceptionApplication - Starting ReceptionApplication using Java 17.0.12 with PID 70648 (D:\서울IT교육센터\dev\teamwork\project\backend\hospital_reception_backend\reception_back\build\classes\java\main started by USER in D:\서울IT교육센터\dev\teamwork\project\backend\hospital_reception_backend\reception_back)
+2026-02-23 11:14:33.059 INFO  kr.co.seoulit.ReceptionApplication - No active profile set, falling back to 1 default profile: "default"
+2026-02-23 11:14:34.425 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-23 11:14:34.427 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-02-23 11:14:34.702 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 263 ms. Found 9 JPA repository interfaces.
+2026-02-23 11:14:34.728 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-23 11:14:34.730 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-02-23 11:14:34.754 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.common.audit.AuditLogRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-23 11:14:34.754 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.DepartmentRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-23 11:14:34.754 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.DoctorRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-23 11:14:34.755 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.PatientRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-23 11:14:34.756 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.ReceptionEmergencyRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-23 11:14:34.756 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.ReceptionInpatientRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-23 11:14:34.756 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.ReceptionRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-23 11:14:34.757 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.ReceptionStatusHistoryRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-23 11:14:34.757 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.ReservationRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-23 11:14:34.757 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 15 ms. Found 0 Redis repository interfaces.
+2026-02-23 11:14:35.872 INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8283 (http)
+2026-02-23 11:14:35.885 INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8283"]
+2026-02-23 11:14:35.887 INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-02-23 11:14:35.888 INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.26]
+2026-02-23 11:14:36.004 INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-02-23 11:14:36.006 INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 2869 ms
+2026-02-23 11:14:36.365 INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-02-23 11:14:36.468 INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.5.2.Final
+2026-02-23 11:14:36.529 INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-02-23 11:14:37.033 INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-02-23 11:14:37.070 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-02-23 11:14:37.573 INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection oracle.jdbc.driver.T4CConnection@414e8b31
+2026-02-23 11:14:37.576 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-02-23 11:14:37.616 WARN  org.hibernate.orm.deprecation - HHH90000026: Oracle10gDialect has been deprecated; use org.hibernate.community.dialect.OracleLegacyDialect instead
+2026-02-23 11:14:39.787 INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-02-23 11:14:39.792 INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-02-23 11:14:41.755 WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-02-23 11:14:41.802 INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2026-02-23 11:14:43.149 INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8283"]
+2026-02-23 11:14:43.185 INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8283 (http) with context path '/'
+2026-02-23 11:14:43.200 INFO  kr.co.seoulit.ReceptionApplication - Started ReceptionApplication in 11.446 seconds (process running for 13.115)
+2026-02-23 11:14:43.276 INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-02-23 11:14:43.276 INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-02-23 11:14:43.278 INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 2 ms
+2026-02-23 11:14:44.871 INFO  o.s.api.AbstractOpenApiResource - Init duration for springdoc-openapi is: 1091 ms
+2026-02-23 11:15:07.257 INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-02-23 11:15:07.259 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-02-23 11:15:07.335 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2026-02-23 11:15:15.040 INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2026-02-23 11:15:15.106 INFO  kr.co.seoulit.ReceptionApplication - Starting ReceptionApplication using Java 17.0.12 with PID 69744 (D:\서울IT교육센터\dev\teamwork\project\backend\hospital_reception_backend\reception_back\build\classes\java\main started by USER in D:\서울IT교육센터\dev\teamwork\project\backend\hospital_reception_backend\reception_back)
+2026-02-23 11:15:15.108 INFO  kr.co.seoulit.ReceptionApplication - No active profile set, falling back to 1 default profile: "default"
+2026-02-23 11:15:16.277 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-23 11:15:16.279 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-02-23 11:15:16.531 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 245 ms. Found 9 JPA repository interfaces.
+2026-02-23 11:15:16.553 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-23 11:15:16.555 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-02-23 11:15:16.577 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.common.audit.AuditLogRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-23 11:15:16.578 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.DepartmentRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-23 11:15:16.578 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.DoctorRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-23 11:15:16.579 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.PatientRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-23 11:15:16.579 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.ReceptionEmergencyRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-23 11:15:16.579 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.ReceptionInpatientRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-23 11:15:16.580 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.ReceptionRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-23 11:15:16.581 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.ReceptionStatusHistoryRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-23 11:15:16.581 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.ReservationRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-23 11:15:16.582 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 15 ms. Found 0 Redis repository interfaces.
+2026-02-23 11:15:17.542 INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8283 (http)
+2026-02-23 11:15:17.553 INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8283"]
+2026-02-23 11:15:17.555 INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-02-23 11:15:17.556 INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.26]
+2026-02-23 11:15:17.656 INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-02-23 11:15:17.657 INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 2487 ms
+2026-02-23 11:15:18.001 INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-02-23 11:15:18.121 INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.5.2.Final
+2026-02-23 11:15:18.182 INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-02-23 11:15:18.662 INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-02-23 11:15:18.702 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-02-23 11:15:19.103 INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection oracle.jdbc.driver.T4CConnection@2ba9f743
+2026-02-23 11:15:19.106 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-02-23 11:15:19.134 WARN  org.hibernate.orm.deprecation - HHH90000026: Oracle10gDialect has been deprecated; use org.hibernate.community.dialect.OracleLegacyDialect instead
+2026-02-23 11:15:20.906 INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-02-23 11:15:20.910 INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-02-23 11:15:22.848 WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-02-23 11:15:22.890 INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2026-02-23 11:15:24.171 INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8283"]
+2026-02-23 11:15:24.198 INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8283 (http) with context path '/'
+2026-02-23 11:15:24.210 INFO  kr.co.seoulit.ReceptionApplication - Started ReceptionApplication in 9.71 seconds (process running for 11.079)
+2026-02-23 11:15:24.335 INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-02-23 11:15:24.335 INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-02-23 11:15:24.337 INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 2 ms
+2026-02-23 11:15:25.993 INFO  o.s.api.AbstractOpenApiResource - Init duration for springdoc-openapi is: 1026 ms
+2026-02-23 11:31:40.131 INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-02-23 11:31:40.134 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-02-23 11:31:40.214 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2026-02-23 11:31:46.148 INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2026-02-23 11:31:46.206 INFO  kr.co.seoulit.ReceptionApplication - Starting ReceptionApplication using Java 17.0.12 with PID 69944 (D:\서울IT교육센터\dev\teamwork\project\backend\hospital_reception_backend\reception_back\build\classes\java\main started by USER in D:\서울IT교육센터\dev\teamwork\project\backend\hospital_reception_backend\reception_back)
+2026-02-23 11:31:46.207 INFO  kr.co.seoulit.ReceptionApplication - No active profile set, falling back to 1 default profile: "default"
+2026-02-23 11:31:47.942 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-23 11:31:47.944 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-02-23 11:31:48.181 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 228 ms. Found 9 JPA repository interfaces.
+2026-02-23 11:31:48.205 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-23 11:31:48.207 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-02-23 11:31:48.234 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.common.audit.AuditLogRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-23 11:31:48.234 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.DepartmentRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-23 11:31:48.235 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.DoctorRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-23 11:31:48.235 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.PatientRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-23 11:31:48.236 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.ReceptionEmergencyRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-23 11:31:48.236 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.ReceptionInpatientRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-23 11:31:48.237 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.ReceptionRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-23 11:31:48.237 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.ReceptionStatusHistoryRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-23 11:31:48.238 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.ReservationRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-23 11:31:48.238 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 16 ms. Found 0 Redis repository interfaces.
+2026-02-23 11:31:49.257 INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8283 (http)
+2026-02-23 11:31:49.268 INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8283"]
+2026-02-23 11:31:49.270 INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-02-23 11:31:49.271 INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.26]
+2026-02-23 11:31:49.357 INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-02-23 11:31:49.359 INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 3084 ms
+2026-02-23 11:31:49.639 INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-02-23 11:31:49.718 INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.5.2.Final
+2026-02-23 11:31:49.755 INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-02-23 11:31:50.130 INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-02-23 11:31:50.168 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-02-23 11:31:50.581 INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection oracle.jdbc.driver.T4CConnection@b90c5a5
+2026-02-23 11:31:50.584 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-02-23 11:31:50.612 WARN  org.hibernate.orm.deprecation - HHH90000026: Oracle10gDialect has been deprecated; use org.hibernate.community.dialect.OracleLegacyDialect instead
+2026-02-23 11:31:52.105 INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-02-23 11:31:52.109 INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-02-23 11:31:53.810 WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-02-23 11:31:53.849 INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2026-02-23 11:31:54.773 INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8283"]
+2026-02-23 11:31:54.801 INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8283 (http) with context path '/'
+2026-02-23 11:31:54.813 INFO  kr.co.seoulit.ReceptionApplication - Started ReceptionApplication in 9.241 seconds (process running for 10.917)
+2026-02-23 11:32:30.499 INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-02-23 11:32:30.500 INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-02-23 11:32:30.502 INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 2 ms
+2026-02-23 11:32:30.573 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-23 11:32:30.573 INFO  k.c.s.r.c.ReceptionController - Reception list request: searchType=null, searchValue=null
+2026-02-23 11:32:30.592 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()시작
+2026-02-23 11:32:30.742 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()종료
+2026-02-23 11:32:30.763 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()종료
+2026-02-23 11:32:30.850 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-23 11:32:30.850 INFO  k.c.s.r.c.ReceptionController - Reception list request: searchType=null, searchValue=null
+2026-02-23 11:32:30.850 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()시작
+2026-02-23 11:32:30.866 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()종료
+2026-02-23 11:32:30.874 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()종료
+2026-02-23 11:32:30.945 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReception()시작
+2026-02-23 11:32:30.945 INFO  k.c.s.r.c.ReceptionController - Get reception request: id=5
+2026-02-23 11:32:30.951 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReception()시작
+2026-02-23 11:32:31.021 DEBUG org.hibernate.SQL - select re1_0.reception_id,re1_0.arrived_at,re1_0.cancel_reason_code,re1_0.cancel_reason_text,re1_0.created_at,re1_0.created_by,re1_0.department_id,re1_0.department_name,re1_0.doctor_id,re1_0.doctor_name,re1_0.hold_reason_code,re1_0.hold_reason_text,re1_0.inactive_at,re1_0.inactive_reason_code,re1_0.inactive_reason_text,re1_0.is_active,re1_0.note,re1_0.patient_id,re1_0.patient_name,re1_0.reception_no,re1_0.reservation_id,re1_0.scheduled_at,re1_0.status,re1_0.updated_at,re1_0.updated_by,re1_0.visit_type from reception re1_0 where re1_0.reception_id=?
+2026-02-23 11:32:31.023 TRACE org.hibernate.orm.jdbc.bind - binding parameter (1:BIGINT) <- [5]
+2026-02-23 11:32:31.051 INFO  k.co.seoulit.common.aop.LoggerAspect - kr.co.seoulit.reception.mapstruct.ReceptionResMapStructImpl.toDto()시작
+2026-02-23 11:32:31.052 INFO  k.co.seoulit.common.aop.LoggerAspect - kr.co.seoulit.reception.mapstruct.ReceptionResMapStructImpl.toDto()종료
+2026-02-23 11:32:31.052 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReception()종료
+2026-02-23 11:32:31.061 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReception()종료
+2026-02-23 11:37:08.525 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.MenuController.getMenus()시작
+2026-02-23 11:37:08.526 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.MenuController.getMenus()종료
+2026-02-23 11:59:55.017 INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-02-23 11:59:55.019 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-02-23 11:59:55.078 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.

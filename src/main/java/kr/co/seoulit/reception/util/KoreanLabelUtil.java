@@ -19,13 +19,18 @@ public final class KoreanLabelUtil {
 
     static {
         STATUS_LABEL.put("WAITING", "대기");
-        STATUS_LABEL.put("CALLED", "호출");
+        STATUS_LABEL.put("TRIAGE", "분류중");
         STATUS_LABEL.put("IN_PROGRESS", "진료중");
+        STATUS_LABEL.put("OBSERVATION", "관찰중");
         STATUS_LABEL.put("COMPLETED", "완료");
-        STATUS_LABEL.put("PAYMENT_WAIT", "수납대기");
+        STATUS_LABEL.put("TRANSFERRED", "전원");
         STATUS_LABEL.put("ON_HOLD", "보류");
         STATUS_LABEL.put("CANCELED", "취소");
-        STATUS_LABEL.put("INACTIVE", "비활성");
+
+        // Legacy aliases for backward compatibility
+        STATUS_LABEL.put("CALLED", "분류중");
+        STATUS_LABEL.put("PAYMENT_WAIT", "관찰중");
+        STATUS_LABEL.put("INACTIVE", "전원");
         STATUS_LABEL.put("RESERVED", "예약");
 
         VISIT_TYPE_LABEL.put("OUTPATIENT", "외래");
@@ -69,7 +74,7 @@ public final class KoreanLabelUtil {
             return mapped != null ? mapped : trimmed;
         }
         if (departmentId != null) {
-            return DEPARTMENT_BY_ID.getOrDefault(departmentId, "진료과 " + departmentId);
+            return DEPARTMENT_BY_ID.getOrDefault(departmentId, "진료과" + departmentId);
         }
         return trimmed;
     }
