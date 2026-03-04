@@ -1,0 +1,315 @@
+2026-02-28 13:18:17.964 INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.1.Final
+2026-02-28 13:18:18.349 INFO  kr.co.seoulit.ReceptionApplication - Starting ReceptionApplication using Java 17.0.12 with PID 40752 (D:\서울IT교육센터\dev\teamwork\project\backend\hospital_reception_backend\reception_back\build\classes\java\main started by USER in D:\서울IT교육센터\dev\teamwork\project\backend\hospital_reception_backend\reception_back)
+2026-02-28 13:18:18.352 INFO  kr.co.seoulit.ReceptionApplication - No active profile set, falling back to 1 default profile: "default"
+2026-02-28 13:18:22.947 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-28 13:18:22.950 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-02-28 13:18:23.438 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 449 ms. Found 9 JPA repository interfaces.
+2026-02-28 13:18:23.507 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Multiple Spring Data modules found, entering strict repository configuration mode
+2026-02-28 13:18:23.509 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-02-28 13:18:23.541 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.common.audit.AuditLogRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-28 13:18:23.542 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.DepartmentRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-28 13:18:23.542 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.DoctorRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-28 13:18:23.543 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.PatientRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-28 13:18:23.544 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.ReceptionEmergencyRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-28 13:18:23.545 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.ReceptionInpatientRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-28 13:18:23.546 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.ReceptionRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-28 13:18:23.546 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.ReceptionStatusHistoryRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-28 13:18:23.547 INFO  o.s.d.r.c.RepositoryConfigurationExtensionSupport - Spring Data Redis - Could not safely identify store assignment for repository candidate interface kr.co.seoulit.reception.repository.ReservationRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-02-28 13:18:23.547 INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 20 ms. Found 0 Redis repository interfaces.
+2026-02-28 13:18:25.587 INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8283 (http)
+2026-02-28 13:18:25.604 INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8283"]
+2026-02-28 13:18:25.607 INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-02-28 13:18:25.607 INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.26]
+2026-02-28 13:18:25.741 INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-02-28 13:18:25.742 INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 7180 ms
+2026-02-28 13:18:26.392 INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-02-28 13:18:26.698 INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.5.2.Final
+2026-02-28 13:18:26.916 INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-02-28 13:18:27.781 INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-02-28 13:18:27.886 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2026-02-28 13:18:28.571 INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection oracle.jdbc.driver.T4CConnection@6df31abf
+2026-02-28 13:18:28.574 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2026-02-28 13:18:28.715 WARN  org.hibernate.orm.deprecation - HHH90000026: Oracle10gDialect has been deprecated; use org.hibernate.community.dialect.OracleLegacyDialect instead
+2026-02-28 13:18:31.591 INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-02-28 13:18:31.597 INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-02-28 13:18:36.031 WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-02-28 13:18:36.103 INFO  o.s.b.a.w.s.WelcomePageHandlerMapping - Adding welcome page: class path resource [static/index.html]
+2026-02-28 13:18:41.264 INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8283"]
+2026-02-28 13:18:41.558 INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8283 (http) with context path '/'
+2026-02-28 13:18:41.588 INFO  kr.co.seoulit.ReceptionApplication - Started ReceptionApplication in 25.341 seconds (process running for 37.783)
+2026-02-28 13:24:14.805 INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-02-28 13:24:14.806 INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-02-28 13:24:14.816 INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 8 ms
+2026-02-28 13:24:15.115 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-28 13:24:15.116 INFO  k.c.s.r.c.ReceptionController - Reception list request: searchType=null, searchValue=null
+2026-02-28 13:24:15.126 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()시작
+2026-02-28 13:24:15.450 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()종료
+2026-02-28 13:24:15.461 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()종료
+2026-02-28 13:24:15.603 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-28 13:24:15.605 INFO  k.c.s.r.c.ReceptionController - Reception list request: searchType=null, searchValue=null
+2026-02-28 13:24:15.605 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()시작
+2026-02-28 13:24:15.635 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()종료
+2026-02-28 13:24:15.641 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()종료
+2026-02-28 13:25:41.933 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-28 13:25:41.935 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReservationController.getReservations()시작
+2026-02-28 13:25:41.934 INFO  k.c.s.r.c.ReceptionController - Reception list request: searchType=null, searchValue=null
+2026-02-28 13:25:41.936 INFO  k.c.s.r.c.ReservationController - 예약 목록 요청: searchType=null, searchValue=null
+2026-02-28 13:25:41.951 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()시작
+2026-02-28 13:25:41.952 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReservationServiceImpl.getReservationList()시작
+2026-02-28 13:25:41.975 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReservationServiceImpl.getReservationList()종료
+2026-02-28 13:25:41.991 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReservationController.getReservations()종료
+2026-02-28 13:25:41.992 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()종료
+2026-02-28 13:25:42.001 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()종료
+2026-02-28 13:25:42.064 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-28 13:25:42.064 INFO  k.c.s.r.c.ReceptionController - Reception list request: searchType=null, searchValue=null
+2026-02-28 13:25:42.068 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()시작
+2026-02-28 13:25:42.120 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()종료
+2026-02-28 13:25:42.137 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()종료
+2026-02-28 13:25:42.218 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-28 13:25:42.219 INFO  k.c.s.r.c.ReceptionController - Reception list request: searchType=null, searchValue=null
+2026-02-28 13:25:42.222 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()시작
+2026-02-28 13:25:42.254 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()종료
+2026-02-28 13:25:42.260 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()종료
+2026-02-28 13:25:46.462 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReservationController.getReservations()시작
+2026-02-28 13:25:46.463 INFO  k.c.s.r.c.ReservationController - 예약 목록 요청: searchType=null, searchValue=null
+2026-02-28 13:25:47.497 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReservationServiceImpl.getReservationList()시작
+2026-02-28 13:25:47.517 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReservationServiceImpl.getReservationList()종료
+2026-02-28 13:25:47.526 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReservationController.getReservations()종료
+2026-02-28 13:25:47.541 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReservationController.getReservations()시작
+2026-02-28 13:25:47.542 INFO  k.c.s.r.c.ReservationController - 예약 목록 요청: searchType=null, searchValue=null
+2026-02-28 13:25:47.549 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReservationServiceImpl.getReservationList()시작
+2026-02-28 13:25:47.562 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReservationServiceImpl.getReservationList()종료
+2026-02-28 13:25:47.568 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReservationController.getReservations()종료
+2026-02-28 13:41:42.801 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.EmergencyReceptionController.getEmergencyReceptions()시작
+2026-02-28 13:41:42.804 INFO  k.c.s.r.c.EmergencyReceptionController - 응급 접수 목록 요청: searchType=null, searchValue=null
+2026-02-28 13:41:42.817 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.EmergencyReceptionServiceImpl.getEmergencyReceptionList()시작
+2026-02-28 13:41:42.860 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.EmergencyReceptionServiceImpl.getEmergencyReceptionList()종료
+2026-02-28 13:41:42.869 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.EmergencyReceptionController.getEmergencyReceptions()종료
+2026-02-28 13:41:42.875 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.EmergencyReceptionController.getEmergencyReceptions()시작
+2026-02-28 13:41:42.875 INFO  k.c.s.r.c.EmergencyReceptionController - 응급 접수 목록 요청: searchType=null, searchValue=null
+2026-02-28 13:41:42.875 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.EmergencyReceptionServiceImpl.getEmergencyReceptionList()시작
+2026-02-28 13:41:42.909 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.EmergencyReceptionServiceImpl.getEmergencyReceptionList()종료
+2026-02-28 13:41:42.918 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.EmergencyReceptionController.getEmergencyReceptions()종료
+2026-02-28 13:47:41.340 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReservationController.getReservations()시작
+2026-02-28 13:47:41.341 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-28 13:47:41.341 INFO  k.c.s.r.c.ReceptionController - Reception list request: searchType=null, searchValue=null
+2026-02-28 13:47:41.341 INFO  k.c.s.r.c.ReservationController - 예약 목록 요청: searchType=null, searchValue=null
+2026-02-28 13:47:41.348 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReservationServiceImpl.getReservationList()시작
+2026-02-28 13:47:41.350 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()시작
+2026-02-28 13:47:41.379 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReservationServiceImpl.getReservationList()종료
+2026-02-28 13:47:41.384 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReservationController.getReservations()종료
+2026-02-28 13:47:41.391 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()종료
+2026-02-28 13:47:41.399 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()종료
+2026-02-28 13:47:41.461 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-28 13:47:41.461 INFO  k.c.s.r.c.ReceptionController - Reception list request: searchType=null, searchValue=null
+2026-02-28 13:47:41.466 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()시작
+2026-02-28 13:47:41.504 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()종료
+2026-02-28 13:47:41.510 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()종료
+2026-02-28 13:47:41.556 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-28 13:47:41.563 INFO  k.c.s.r.c.ReceptionController - Reception list request: searchType=null, searchValue=null
+2026-02-28 13:47:41.565 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()시작
+2026-02-28 13:47:41.603 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()종료
+2026-02-28 13:47:41.609 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()종료
+2026-02-28 13:47:44.728 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReservationController.getReservations()시작
+2026-02-28 13:47:44.729 INFO  k.c.s.r.c.ReservationController - 예약 목록 요청: searchType=null, searchValue=null
+2026-02-28 13:47:44.737 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReservationServiceImpl.getReservationList()시작
+2026-02-28 13:47:44.752 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReservationServiceImpl.getReservationList()종료
+2026-02-28 13:47:44.757 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReservationController.getReservations()종료
+2026-02-28 13:47:44.763 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReservationController.getReservations()시작
+2026-02-28 13:47:44.763 INFO  k.c.s.r.c.ReservationController - 예약 목록 요청: searchType=null, searchValue=null
+2026-02-28 13:47:44.764 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReservationServiceImpl.getReservationList()시작
+2026-02-28 13:47:44.778 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReservationServiceImpl.getReservationList()종료
+2026-02-28 13:47:44.785 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReservationController.getReservations()종료
+2026-02-28 13:47:50.258 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReservationController.getReservations()시작
+2026-02-28 13:47:50.259 INFO  k.c.s.r.c.ReservationController - 예약 목록 요청: searchType=null, searchValue=null
+2026-02-28 13:47:50.259 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-28 13:47:50.259 INFO  k.c.s.r.c.ReceptionController - Reception list request: searchType=null, searchValue=null
+2026-02-28 13:47:50.271 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReservationServiceImpl.getReservationList()시작
+2026-02-28 13:47:50.272 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()시작
+2026-02-28 13:47:50.288 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReservationServiceImpl.getReservationList()종료
+2026-02-28 13:47:50.300 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReservationController.getReservations()종료
+2026-02-28 13:47:50.321 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()종료
+2026-02-28 13:47:50.330 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()종료
+2026-02-28 13:47:50.375 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-28 13:47:50.376 INFO  k.c.s.r.c.ReceptionController - Reception list request: searchType=null, searchValue=null
+2026-02-28 13:47:50.376 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()시작
+2026-02-28 13:47:50.407 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()종료
+2026-02-28 13:47:50.414 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()종료
+2026-02-28 13:47:50.492 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-28 13:47:50.493 INFO  k.c.s.r.c.ReceptionController - Reception list request: searchType=null, searchValue=null
+2026-02-28 13:47:50.493 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()시작
+2026-02-28 13:47:50.528 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()종료
+2026-02-28 13:47:50.537 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()종료
+2026-02-28 13:47:52.531 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReservationController.getReservations()시작
+2026-02-28 13:47:52.532 INFO  k.c.s.r.c.ReservationController - 예약 목록 요청: searchType=null, searchValue=null
+2026-02-28 13:47:52.540 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReservationServiceImpl.getReservationList()시작
+2026-02-28 13:47:52.552 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReservationServiceImpl.getReservationList()종료
+2026-02-28 13:47:52.559 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReservationController.getReservations()종료
+2026-02-28 13:47:52.570 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReservationController.getReservations()시작
+2026-02-28 13:47:52.570 INFO  k.c.s.r.c.ReservationController - 예약 목록 요청: searchType=null, searchValue=null
+2026-02-28 13:47:52.583 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReservationServiceImpl.getReservationList()시작
+2026-02-28 13:47:52.600 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReservationServiceImpl.getReservationList()종료
+2026-02-28 13:47:52.616 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReservationController.getReservations()종료
+2026-02-28 13:48:08.588 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReservationController.getReservations()시작
+2026-02-28 13:48:08.589 INFO  k.c.s.r.c.ReservationController - 예약 목록 요청: searchType=null, searchValue=null
+2026-02-28 13:48:08.688 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReservationServiceImpl.getReservationList()시작
+2026-02-28 13:48:08.707 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReservationServiceImpl.getReservationList()종료
+2026-02-28 13:48:08.773 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReservationController.getReservations()종료
+2026-02-28 13:48:08.812 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReservationController.getReservations()시작
+2026-02-28 13:48:08.826 INFO  k.c.s.r.c.ReservationController - 예약 목록 요청: searchType=null, searchValue=null
+2026-02-28 13:48:08.827 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReservationServiceImpl.getReservationList()시작
+2026-02-28 13:48:08.876 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReservationServiceImpl.getReservationList()종료
+2026-02-28 13:48:08.903 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReservationController.getReservations()종료
+2026-02-28 13:48:22.366 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReservationController.getReservations()시작
+2026-02-28 13:48:22.366 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-28 13:48:22.366 INFO  k.c.s.r.c.ReservationController - 예약 목록 요청: searchType=null, searchValue=null
+2026-02-28 13:48:22.367 INFO  k.c.s.r.c.ReceptionController - Reception list request: searchType=null, searchValue=null
+2026-02-28 13:48:22.434 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReservationServiceImpl.getReservationList()시작
+2026-02-28 13:48:22.434 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()시작
+2026-02-28 13:48:22.444 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReservationServiceImpl.getReservationList()종료
+2026-02-28 13:48:22.494 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReservationController.getReservations()종료
+2026-02-28 13:48:22.523 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()종료
+2026-02-28 13:48:22.543 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()종료
+2026-02-28 13:48:22.566 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-28 13:48:22.566 INFO  k.c.s.r.c.ReceptionController - Reception list request: searchType=null, searchValue=null
+2026-02-28 13:48:22.567 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()시작
+2026-02-28 13:48:22.608 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()종료
+2026-02-28 13:48:22.621 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()종료
+2026-02-28 13:48:22.629 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-28 13:48:22.629 INFO  k.c.s.r.c.ReceptionController - Reception list request: searchType=null, searchValue=null
+2026-02-28 13:48:22.630 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()시작
+2026-02-28 13:48:22.679 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()종료
+2026-02-28 13:48:22.688 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()종료
+2026-02-28 13:48:38.558 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReservationController.getReservations()시작
+2026-02-28 13:48:38.559 INFO  k.c.s.r.c.ReservationController - 예약 목록 요청: searchType=null, searchValue=null
+2026-02-28 13:48:38.574 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReservationServiceImpl.getReservationList()시작
+2026-02-28 13:48:38.590 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReservationServiceImpl.getReservationList()종료
+2026-02-28 13:48:38.595 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReservationController.getReservations()종료
+2026-02-28 13:48:38.608 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReservationController.getReservations()시작
+2026-02-28 13:48:38.609 INFO  k.c.s.r.c.ReservationController - 예약 목록 요청: searchType=null, searchValue=null
+2026-02-28 13:48:38.610 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReservationServiceImpl.getReservationList()시작
+2026-02-28 13:48:38.623 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReservationServiceImpl.getReservationList()종료
+2026-02-28 13:48:38.629 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReservationController.getReservations()종료
+2026-02-28 13:48:56.379 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.EmergencyReceptionController.getEmergencyReceptions()시작
+2026-02-28 13:48:56.380 INFO  k.c.s.r.c.EmergencyReceptionController - 응급 접수 목록 요청: searchType=null, searchValue=null
+2026-02-28 13:48:56.388 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.EmergencyReceptionServiceImpl.getEmergencyReceptionList()시작
+2026-02-28 13:48:56.407 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.EmergencyReceptionServiceImpl.getEmergencyReceptionList()종료
+2026-02-28 13:48:56.414 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.EmergencyReceptionController.getEmergencyReceptions()종료
+2026-02-28 13:48:56.425 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.EmergencyReceptionController.getEmergencyReceptions()시작
+2026-02-28 13:48:56.425 INFO  k.c.s.r.c.EmergencyReceptionController - 응급 접수 목록 요청: searchType=null, searchValue=null
+2026-02-28 13:48:56.425 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.EmergencyReceptionServiceImpl.getEmergencyReceptionList()시작
+2026-02-28 13:48:56.454 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.EmergencyReceptionServiceImpl.getEmergencyReceptionList()종료
+2026-02-28 13:48:56.458 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.EmergencyReceptionController.getEmergencyReceptions()종료
+2026-02-28 13:49:11.364 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.InpatientReceptionController.getInpatientReceptions()시작
+2026-02-28 13:49:11.364 INFO  k.c.s.r.c.InpatientReceptionController - 입원 접수 목록 요청: searchType=null, searchValue=null
+2026-02-28 13:49:11.383 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.InpatientReceptionServiceImpl.getInpatientReceptionList()시작
+2026-02-28 13:49:11.422 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.InpatientReceptionServiceImpl.getInpatientReceptionList()종료
+2026-02-28 13:49:11.427 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.InpatientReceptionController.getInpatientReceptions()종료
+2026-02-28 13:49:11.437 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.InpatientReceptionController.getInpatientReceptions()시작
+2026-02-28 13:49:11.437 INFO  k.c.s.r.c.InpatientReceptionController - 입원 접수 목록 요청: searchType=null, searchValue=null
+2026-02-28 13:49:11.438 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.InpatientReceptionServiceImpl.getInpatientReceptionList()시작
+2026-02-28 13:49:11.461 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.InpatientReceptionServiceImpl.getInpatientReceptionList()종료
+2026-02-28 13:49:11.469 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.InpatientReceptionController.getInpatientReceptions()종료
+2026-02-28 13:54:43.905 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReservationController.getReservations()시작
+2026-02-28 13:54:43.905 INFO  k.c.s.r.c.ReservationController - 예약 목록 요청: searchType=null, searchValue=null
+2026-02-28 13:54:43.907 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-28 13:54:43.907 INFO  k.c.s.r.c.ReceptionController - Reception list request: searchType=null, searchValue=null
+2026-02-28 13:54:43.922 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReservationServiceImpl.getReservationList()시작
+2026-02-28 13:54:43.924 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()시작
+2026-02-28 13:54:43.940 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReservationServiceImpl.getReservationList()종료
+2026-02-28 13:54:43.950 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReservationController.getReservations()종료
+2026-02-28 13:54:43.960 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()종료
+2026-02-28 13:54:43.970 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()종료
+2026-02-28 13:54:44.021 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-28 13:54:44.021 INFO  k.c.s.r.c.ReceptionController - Reception list request: searchType=null, searchValue=null
+2026-02-28 13:54:44.022 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()시작
+2026-02-28 13:54:44.056 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()종료
+2026-02-28 13:54:44.066 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()종료
+2026-02-28 13:54:44.144 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-28 13:54:44.144 INFO  k.c.s.r.c.ReceptionController - Reception list request: searchType=null, searchValue=null
+2026-02-28 13:54:44.145 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()시작
+2026-02-28 13:54:44.193 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()종료
+2026-02-28 13:54:44.200 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()종료
+2026-02-28 13:54:46.528 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReservationController.getReservations()시작
+2026-02-28 13:54:46.528 INFO  k.c.s.r.c.ReservationController - 예약 목록 요청: searchType=null, searchValue=null
+2026-02-28 13:54:46.536 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReservationServiceImpl.getReservationList()시작
+2026-02-28 13:54:46.553 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReservationServiceImpl.getReservationList()종료
+2026-02-28 13:54:46.561 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReservationController.getReservations()종료
+2026-02-28 13:54:46.575 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReservationController.getReservations()시작
+2026-02-28 13:54:46.576 INFO  k.c.s.r.c.ReservationController - 예약 목록 요청: searchType=null, searchValue=null
+2026-02-28 13:54:46.577 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReservationServiceImpl.getReservationList()시작
+2026-02-28 13:54:46.593 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReservationServiceImpl.getReservationList()종료
+2026-02-28 13:54:46.603 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReservationController.getReservations()종료
+2026-02-28 13:54:50.311 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.EmergencyReceptionController.getEmergencyReceptions()시작
+2026-02-28 13:54:50.311 INFO  k.c.s.r.c.EmergencyReceptionController - 응급 접수 목록 요청: searchType=null, searchValue=null
+2026-02-28 13:54:50.388 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.EmergencyReceptionServiceImpl.getEmergencyReceptionList()시작
+2026-02-28 13:54:50.426 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.EmergencyReceptionServiceImpl.getEmergencyReceptionList()종료
+2026-02-28 13:54:50.438 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.EmergencyReceptionController.getEmergencyReceptions()종료
+2026-02-28 13:54:50.445 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.EmergencyReceptionController.getEmergencyReceptions()시작
+2026-02-28 13:54:50.445 INFO  k.c.s.r.c.EmergencyReceptionController - 응급 접수 목록 요청: searchType=null, searchValue=null
+2026-02-28 13:54:50.446 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.EmergencyReceptionServiceImpl.getEmergencyReceptionList()시작
+2026-02-28 13:54:50.508 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.EmergencyReceptionServiceImpl.getEmergencyReceptionList()종료
+2026-02-28 13:54:50.520 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.EmergencyReceptionController.getEmergencyReceptions()종료
+2026-02-28 13:54:52.404 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReservationController.getReservations()시작
+2026-02-28 13:54:52.405 INFO  k.c.s.r.c.ReservationController - 예약 목록 요청: searchType=null, searchValue=null
+2026-02-28 13:54:52.493 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReservationServiceImpl.getReservationList()시작
+2026-02-28 13:54:52.512 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReservationServiceImpl.getReservationList()종료
+2026-02-28 13:54:52.536 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReservationController.getReservations()종료
+2026-02-28 13:54:52.557 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReservationController.getReservations()시작
+2026-02-28 13:54:52.558 INFO  k.c.s.r.c.ReservationController - 예약 목록 요청: searchType=null, searchValue=null
+2026-02-28 13:54:52.558 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReservationServiceImpl.getReservationList()시작
+2026-02-28 13:54:52.586 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReservationServiceImpl.getReservationList()종료
+2026-02-28 13:54:52.618 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReservationController.getReservations()종료
+2026-02-28 13:55:30.822 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReservationController.getReservations()시작
+2026-02-28 13:55:30.822 INFO  k.c.s.r.c.ReservationController - 예약 목록 요청: searchType=null, searchValue=null
+2026-02-28 13:55:30.831 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReservationServiceImpl.getReservationList()시작
+2026-02-28 13:55:30.853 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReservationServiceImpl.getReservationList()종료
+2026-02-28 13:55:30.865 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReservationController.getReservations()종료
+2026-02-28 13:57:35.974 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.EmergencyReceptionController.getEmergencyReceptions()시작
+2026-02-28 13:57:35.974 INFO  k.c.s.r.c.EmergencyReceptionController - 응급 접수 목록 요청: searchType=null, searchValue=null
+2026-02-28 13:57:35.987 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.EmergencyReceptionServiceImpl.getEmergencyReceptionList()시작
+2026-02-28 13:57:36.009 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.EmergencyReceptionServiceImpl.getEmergencyReceptionList()종료
+2026-02-28 13:57:36.018 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.EmergencyReceptionController.getEmergencyReceptions()종료
+2026-02-28 13:57:36.031 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.EmergencyReceptionController.getEmergencyReceptions()시작
+2026-02-28 13:57:36.034 INFO  k.c.s.r.c.EmergencyReceptionController - 응급 접수 목록 요청: searchType=null, searchValue=null
+2026-02-28 13:57:36.034 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.EmergencyReceptionServiceImpl.getEmergencyReceptionList()시작
+2026-02-28 13:57:36.064 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.EmergencyReceptionServiceImpl.getEmergencyReceptionList()종료
+2026-02-28 13:57:36.072 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.EmergencyReceptionController.getEmergencyReceptions()종료
+2026-02-28 13:57:38.817 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.InpatientReceptionController.getInpatientReceptions()시작
+2026-02-28 13:57:38.817 INFO  k.c.s.r.c.InpatientReceptionController - 입원 접수 목록 요청: searchType=null, searchValue=null
+2026-02-28 13:57:38.836 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.InpatientReceptionServiceImpl.getInpatientReceptionList()시작
+2026-02-28 13:57:38.872 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.InpatientReceptionServiceImpl.getInpatientReceptionList()종료
+2026-02-28 13:57:38.884 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.InpatientReceptionController.getInpatientReceptions()종료
+2026-02-28 13:57:38.894 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.InpatientReceptionController.getInpatientReceptions()시작
+2026-02-28 13:57:38.896 INFO  k.c.s.r.c.InpatientReceptionController - 입원 접수 목록 요청: searchType=null, searchValue=null
+2026-02-28 13:57:38.900 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.InpatientReceptionServiceImpl.getInpatientReceptionList()시작
+2026-02-28 13:57:38.921 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.InpatientReceptionServiceImpl.getInpatientReceptionList()종료
+2026-02-28 13:57:38.936 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.InpatientReceptionController.getInpatientReceptions()종료
+2026-02-28 14:01:51.111 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.EmergencyReceptionController.getEmergencyReceptions()시작
+2026-02-28 14:01:51.112 INFO  k.c.s.r.c.EmergencyReceptionController - 응급 접수 목록 요청: searchType=null, searchValue=null
+2026-02-28 14:01:51.119 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.EmergencyReceptionServiceImpl.getEmergencyReceptionList()시작
+2026-02-28 14:01:51.144 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.EmergencyReceptionServiceImpl.getEmergencyReceptionList()종료
+2026-02-28 14:01:51.177 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.EmergencyReceptionController.getEmergencyReceptions()종료
+2026-02-28 14:01:58.245 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-28 14:01:58.245 INFO  k.c.s.r.c.ReceptionController - Reception list request: searchType=null, searchValue=null
+2026-02-28 14:01:58.259 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()시작
+2026-02-28 14:01:58.294 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()종료
+2026-02-28 14:01:58.300 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()종료
+2026-02-28 14:01:58.310 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()시작
+2026-02-28 14:01:58.310 INFO  k.c.s.r.c.ReceptionController - Reception list request: searchType=null, searchValue=null
+2026-02-28 14:01:58.311 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()시작
+2026-02-28 14:01:58.358 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.ReceptionServiceImpl.getReceptionList()종료
+2026-02-28 14:01:58.369 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.ReceptionController.getReceptions()종료
+2026-02-28 14:02:06.552 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.EmergencyReceptionController.getEmergencyReceptions()시작
+2026-02-28 14:02:06.552 INFO  k.c.s.r.c.EmergencyReceptionController - 응급 접수 목록 요청: searchType=null, searchValue=null
+2026-02-28 14:02:06.558 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.EmergencyReceptionServiceImpl.getEmergencyReceptionList()시작
+2026-02-28 14:02:06.579 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.EmergencyReceptionServiceImpl.getEmergencyReceptionList()종료
+2026-02-28 14:02:06.586 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.EmergencyReceptionController.getEmergencyReceptions()종료
+2026-02-28 14:02:06.591 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.EmergencyReceptionController.getEmergencyReceptions()시작
+2026-02-28 14:02:06.592 INFO  k.c.s.r.c.EmergencyReceptionController - 응급 접수 목록 요청: searchType=null, searchValue=null
+2026-02-28 14:02:06.598 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.EmergencyReceptionServiceImpl.getEmergencyReceptionList()시작
+2026-02-28 14:02:06.621 INFO  k.co.seoulit.common.aop.LoggerAspect - ServiceImpl  : kr.co.seoulit.reception.service.EmergencyReceptionServiceImpl.getEmergencyReceptionList()종료
+2026-02-28 14:02:06.627 INFO  k.co.seoulit.common.aop.LoggerAspect - Controller  : kr.co.seoulit.reception.controller.EmergencyReceptionController.getEmergencyReceptions()종료
+2026-02-28 14:29:58.945 INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-02-28 14:29:58.955 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2026-02-28 14:29:59.022 INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.

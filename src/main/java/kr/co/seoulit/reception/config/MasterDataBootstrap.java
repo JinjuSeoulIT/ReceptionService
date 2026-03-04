@@ -20,6 +20,7 @@ public class MasterDataBootstrap implements ApplicationRunner {
         upsertDepartment(2L, "외과");
         upsertDepartment(3L, "정형외과");
         upsertDepartment(4L, "신경외과");
+        upsertDepartment(5L, "응급의학과");
 
         upsertDoctor(1L, "송태민", 1L);
         upsertDoctor(2L, "이현석", 2L);
