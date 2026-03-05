@@ -30,8 +30,8 @@
             r.visit_type = 'INPATIENT'
             <if test="searchValue != null and searchValue != ''">
                 <choose>
-                    <when test="searchType == 'patientId'">
-                        AND r.patient_id = #{searchValue}
+                    <when test="searchType == 'patientName'">
+                        AND r.patient_name = #{searchValue}
                     </when>
                     <when test="searchType == 'status'">
                         AND r.status = #{searchValue}
