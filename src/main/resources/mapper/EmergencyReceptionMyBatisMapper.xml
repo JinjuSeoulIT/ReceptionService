@@ -3,6 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
+<<<<<<< HEAD
 <mapper namespace="kr.co.seoulit.reception.repository.EmergencyReceptionMyBatisMapper">
 
     <select id="selectEmergencyReceptions" resultType="kr.co.seoulit.reception.dto.EmergencyReceptionDTO">
@@ -33,6 +34,57 @@
         e.triage_note
         FROM reception r
         JOIN reception_emergency e ON r.reception_id = e.reception_id
+=======
+<mapper namespace="kr.co.seoulit.reception.emergency.mapper.EmergencyReceptionMapper">
+
+    <select id="selectEmergencyReceptions" resultType="kr.co.seoulit.reception.emergency.dto.EmergencyReceptionDTO">
+        SELECT
+            r.reception_id,
+            r.reception_no,
+            r.patient_id,
+            NVL(p.name, r.patient_name) AS patient_name,
+            r.visit_type,
+            r.department_id,
+            NVL(d.name, r.department_name) AS department_name,
+            r.doctor_id,
+            NVL(doc.full_name, r.doctor_name) AS doctor_name,
+            r.reservation_id,
+            r.scheduled_at,
+            r.arrived_at,
+            r.status,
+            r.note,
+            NVL(r.is_active, 1) AS is_active,
+            TO_NUMBER(REGEXP_SUBSTR(t.triage_level_cd, '[0-9]+')) AS triage_level,
+            ed.emergency_note AS chief_complaint,
+            ed.temperature AS vital_temp,
+            TO_NUMBER(REGEXP_SUBSTR(ed.blood_pressure, '^[0-9]+')) AS vital_bp_systolic,
+            TO_NUMBER(REGEXP_SUBSTR(ed.blood_pressure, '[0-9]+$')) AS vital_bp_diastolic,
+            ed.pulse_rate AS vital_hr,
+            CAST(NULL AS NUMBER) AS vital_rr,
+            CAST(NULL AS NUMBER) AS vital_spo2,
+            ed.arrival_transport_cd AS arrival_mode,
+            t.triage_note,
+            r.created_at,
+            r.updated_at
+        FROM HOSPITAL.RECEPTION r
+        LEFT JOIN HOSPITAL.patient p ON p.patient_id = r.patient_id
+        LEFT JOIN HOSPITAL.departments d ON d.id = r.department_id
+        LEFT JOIN HOSPITAL.staff doc ON doc.id = r.doctor_id
+        LEFT JOIN HOSPITAL.emergency_detail ed ON ed.reception_id = r.reception_id
+        LEFT JOIN (
+            SELECT triage_latest.*
+            FROM (
+                SELECT
+                    et.*,
+                    ROW_NUMBER() OVER (
+                        PARTITION BY et.reception_id
+                        ORDER BY et.triage_datetime DESC, et.emergency_triage_id DESC
+                    ) AS rn
+                FROM HOSPITAL.emergency_triage et
+            ) triage_latest
+            WHERE triage_latest.rn = 1
+        ) t ON t.reception_id = r.reception_id
+>>>>>>> 4ce2497 (- 접수 핵심 4개 + 확장 테이블 연동 로직 반영)
         <where>
             r.visit_type = 'EMERGENCY'
             <if test="searchValue != null and searchValue != ''">
@@ -44,7 +96,12 @@
                         AND r.status = #{searchValue}
                     </when>
                     <when test="searchType == 'triageLevel'">
+<<<<<<< HEAD
                         AND e.triage_level = #{searchValue}
+=======
+                        AND TO_NUMBER(REGEXP_SUBSTR(t.triage_level_cd, '[0-9]+')) =
+                            TO_NUMBER(REGEXP_SUBSTR(#{searchValue}, '^[0-9]+$'))
+>>>>>>> 4ce2497 (- 접수 핵심 4개 + 확장 테이블 연동 로직 반영)
                     </when>
                 </choose>
             </if>
@@ -53,3 +110,9 @@
     </select>
 
 </mapper>
+<<<<<<< HEAD
+=======
+
+
+
+>>>>>>> 4ce2497 (- 접수 핵심 4개 + 확장 테이블 연동 로직 반영)

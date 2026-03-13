@@ -61,3 +61,4 @@ public class MinioStorageService {
         return trimmed;
     }
 }
+

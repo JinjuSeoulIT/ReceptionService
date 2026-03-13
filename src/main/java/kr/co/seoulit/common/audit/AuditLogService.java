@@ -74,3 +74,9 @@ public class AuditLogService {
         return dto;
     }
 }
+<<<<<<< HEAD:src/main/java/kr/co/seoulit/common/audit/AuditLogService.java
+=======
+
+
+
+>>>>>>> 4ce2497 (- 접수 핵심 4개 + 확장 테이블 연동 로직 반영):src/main/java/kr/co/seoulit/reception/common/audit/AuditLogService.java

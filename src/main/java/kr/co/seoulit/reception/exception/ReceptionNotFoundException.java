@@ -5,3 +5,4 @@ public class ReceptionNotFoundException extends RuntimeException {
         super(message);
     }
 }
+

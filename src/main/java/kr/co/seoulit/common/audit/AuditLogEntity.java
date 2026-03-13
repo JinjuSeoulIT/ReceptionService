@@ -58,3 +58,4 @@ public class AuditLogEntity {
     @Column(name = "diff_json", columnDefinition = "json")
     private String diffJson;
 }
+

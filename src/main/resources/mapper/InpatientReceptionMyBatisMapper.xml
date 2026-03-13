@@ -3,6 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
+<<<<<<< HEAD
 <mapper namespace="kr.co.seoulit.reception.repository.InpatientReceptionMyBatisMapper">
 
     <select id="selectInpatientReceptions" resultType="kr.co.seoulit.reception.dto.InpatientReceptionDTO">
@@ -26,6 +27,50 @@
         i.room_id
         FROM reception r
         JOIN reception_inpatient i ON r.reception_id = i.reception_id
+=======
+<mapper namespace="kr.co.seoulit.reception.inpatient.mapper.InpatientReceptionMapper">
+
+    <select id="selectInpatientReceptions" resultType="kr.co.seoulit.reception.inpatient.dto.InpatientReceptionDTO">
+        SELECT
+            r.reception_id,
+            r.reception_no,
+            r.patient_id,
+            NVL(p.name, r.patient_name) AS patient_name,
+            r.visit_type,
+            r.department_id,
+            NVL(d.name, r.department_name) AS department_name,
+            r.doctor_id,
+            NVL(doc.full_name, r.doctor_name) AS doctor_name,
+            r.reservation_id,
+            r.scheduled_at,
+            r.arrived_at,
+            r.status,
+            r.note,
+            NVL(r.is_active, 1) AS is_active,
+            ia.admission_datetime AS admission_plan_at,
+            ba.ward_id,
+            ba.room_id,
+            r.created_at,
+            r.updated_at
+        FROM HOSPITAL.RECEPTION r
+        LEFT JOIN HOSPITAL.patient p ON p.patient_id = r.patient_id
+        LEFT JOIN HOSPITAL.departments d ON d.id = r.department_id
+        LEFT JOIN HOSPITAL.staff doc ON doc.id = r.doctor_id
+        LEFT JOIN HOSPITAL.inpatient_admission ia ON ia.reception_id = r.reception_id
+        LEFT JOIN (
+            SELECT bed_latest.*
+            FROM (
+                SELECT
+                    iba.*,
+                    ROW_NUMBER() OVER (
+                        PARTITION BY iba.inpatient_admission_id
+                        ORDER BY iba.assignment_datetime DESC, iba.bed_assignment_id DESC
+                    ) AS rn
+                FROM HOSPITAL.inpatient_bed_assignment iba
+            ) bed_latest
+            WHERE bed_latest.rn = 1
+        ) ba ON ba.inpatient_admission_id = ia.inpatient_admission_id
+>>>>>>> 4ce2497 (- 접수 핵심 4개 + 확장 테이블 연동 로직 반영)
         <where>
             r.visit_type = 'INPATIENT'
             <if test="searchValue != null and searchValue != ''">
@@ -37,10 +82,17 @@
                         AND r.status = #{searchValue}
                     </when>
                     <when test="searchType == 'wardId'">
+<<<<<<< HEAD
                         AND i.ward_id = #{searchValue}
                     </when>
                     <when test="searchType == 'roomId'">
                         AND i.room_id = #{searchValue}
+=======
+                        AND ba.ward_id = TO_NUMBER(REGEXP_SUBSTR(#{searchValue}, '^[0-9]+$'))
+                    </when>
+                    <when test="searchType == 'roomId'">
+                        AND ba.room_id = TO_NUMBER(REGEXP_SUBSTR(#{searchValue}, '^[0-9]+$'))
+>>>>>>> 4ce2497 (- 접수 핵심 4개 + 확장 테이블 연동 로직 반영)
                     </when>
                 </choose>
             </if>
@@ -49,3 +101,9 @@
     </select>
 
 </mapper>
+<<<<<<< HEAD
+=======
+
+
+
+>>>>>>> 4ce2497 (- 접수 핵심 4개 + 확장 테이블 연동 로직 반영)

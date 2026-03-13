@@ -3,6 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
+<<<<<<< HEAD
 <mapper namespace="kr.co.seoulit.reception.repository.ReceptionMyBatisMapper">
 
     <select id="selectReceptions" resultType="kr.co.seoulit.reception.dto.ReceptionDTO">
@@ -37,6 +38,45 @@
         LEFT JOIN patient p ON p.patient_id = r.patient_id
         LEFT JOIN department d ON d.department_id = r.department_id
         LEFT JOIN doctor doc ON doc.doctor_id = r.doctor_id
+=======
+<mapper namespace="kr.co.seoulit.reception.outpatient.mapper.OutpatientReceptionMapper">
+
+    <select id="selectReceptions" resultType="kr.co.seoulit.reception.outpatient.dto.OutpatientReceptionDTO">
+        SELECT
+            r.reception_id,
+            r.reception_no,
+            r.patient_id,
+            NVL(p.name, r.patient_name) AS patient_name,
+            r.visit_type,
+            r.department_id,
+            NVL(d.name, r.department_name) AS department_name,
+            r.doctor_id,
+            NVL(doc.full_name, r.doctor_name) AS doctor_name,
+            r.reservation_id,
+            r.scheduled_at,
+            r.arrived_at,
+            r.status,
+            NVL(r.note, od.primary_symptom) AS note,
+            NVL(r.is_active, 1) AS is_active,
+            r.inactive_at,
+            r.inactive_reason_code,
+            r.inactive_reason_text,
+            r.cancel_reason_code,
+            r.cancel_reason_text,
+            r.hold_reason_code,
+            r.hold_reason_text,
+            TO_NUMBER(REGEXP_SUBSTR(TRIM(r.created_by), '^[0-9]+$')) AS created_by,
+            TO_NUMBER(REGEXP_SUBSTR(TRIM(r.updated_by), '^[0-9]+$')) AS updated_by,
+            r.created_at,
+            r.updated_at
+        FROM HOSPITAL.RECEPTION r
+        LEFT JOIN HOSPITAL.patient p ON p.patient_id = r.patient_id
+        LEFT JOIN HOSPITAL.departments d ON d.id = r.department_id
+        LEFT JOIN HOSPITAL.staff doc ON doc.id = r.doctor_id
+        LEFT JOIN HOSPITAL.reception_outpatient_detail od
+            ON od.reception_id = r.reception_id
+           AND NVL(od.active_yn, 'Y') = 'Y'
+>>>>>>> 4ce2497 (- 접수 핵심 4개 + 확장 테이블 연동 로직 반영)
         <where>
             <if test="searchValue != null and searchValue != ''">
                 <choose>
@@ -70,6 +110,7 @@
         ORDER BY r.reception_id
     </select>
 
+<<<<<<< HEAD
     <select id="selectQueue" resultType="kr.co.seoulit.reception.dto.ReceptionDTO">
         SELECT
         r.reception_id,
@@ -105,6 +146,48 @@
         <where>
             r.is_active = 1
             AND r.status IN ('WAITING', 'CALLED')
+=======
+    <select id="selectQueue" resultType="kr.co.seoulit.reception.outpatient.dto.OutpatientReceptionDTO">
+        SELECT
+            r.reception_id,
+            r.reception_no,
+            r.patient_id,
+            NVL(p.name, r.patient_name) AS patient_name,
+            r.visit_type,
+            r.department_id,
+            NVL(d.name, r.department_name) AS department_name,
+            r.doctor_id,
+            NVL(doc.full_name, r.doctor_name) AS doctor_name,
+            r.reservation_id,
+            r.scheduled_at,
+            r.arrived_at,
+            NVL(q.queue_status_cd, r.status) AS status,
+            NVL(r.note, od.primary_symptom) AS note,
+            NVL(r.is_active, 1) AS is_active,
+            r.inactive_at,
+            r.inactive_reason_code,
+            r.inactive_reason_text,
+            r.cancel_reason_code,
+            r.cancel_reason_text,
+            r.hold_reason_code,
+            r.hold_reason_text,
+            TO_NUMBER(REGEXP_SUBSTR(TRIM(r.created_by), '^[0-9]+$')) AS created_by,
+            TO_NUMBER(REGEXP_SUBSTR(TRIM(r.updated_by), '^[0-9]+$')) AS updated_by,
+            r.created_at,
+            r.updated_at
+        FROM HOSPITAL.RECEPTION_WAITING_QUEUE q
+        INNER JOIN HOSPITAL.RECEPTION r
+            ON r.reception_id = q.reception_id
+        LEFT JOIN HOSPITAL.patient p ON p.patient_id = r.patient_id
+        LEFT JOIN HOSPITAL.departments d ON d.id = r.department_id
+        LEFT JOIN HOSPITAL.staff doc ON doc.id = r.doctor_id
+        LEFT JOIN HOSPITAL.reception_outpatient_detail od
+            ON od.reception_id = r.reception_id
+           AND NVL(od.active_yn, 'Y') = 'Y'
+        <where>
+            q.queue_status_cd IN ('WAITING', 'CALLED')
+            AND NVL(q.active_yn, 'Y') = 'Y'
+>>>>>>> 4ce2497 (- 접수 핵심 4개 + 확장 테이블 연동 로직 반영)
             <if test="departmentId != null">
                 AND r.department_id = #{departmentId}
             </if>
@@ -115,7 +198,17 @@
                 AND TRUNC(r.created_at) = TO_DATE(#{date}, 'YYYY-MM-DD')
             </if>
         </where>
+<<<<<<< HEAD
         ORDER BY CASE WHEN r.scheduled_at IS NULL THEN 1 ELSE 0 END, r.scheduled_at, r.created_at
     </select>
 
 </mapper>
+=======
+        ORDER BY q.queue_order_no ASC, q.created_at ASC, r.reception_id ASC
+    </select>
+
+</mapper>
+
+
+
+>>>>>>> 4ce2497 (- 접수 핵심 4개 + 확장 테이블 연동 로직 반영)

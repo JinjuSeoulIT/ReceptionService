@@ -14,3 +14,4 @@ public interface AuditLogRepository extends JpaRepository<AuditLogEntity, Long> 
             LocalDateTime to
     );
 }
+

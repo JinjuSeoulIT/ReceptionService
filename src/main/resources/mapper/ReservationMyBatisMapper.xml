@@ -3,6 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
+<<<<<<< HEAD
 <mapper namespace="kr.co.seoulit.reception.repository.ReservationMyBatisMapper">
 
     <select id="selectReservations" resultType="kr.co.seoulit.reception.dto.ReservationDTO">
@@ -41,11 +42,65 @@
                     </when>
                     <when test="searchType == 'status'">
                         AND status = #{searchValue}
+=======
+<mapper namespace="kr.co.seoulit.reception.reservation.mapper.ReservationReceptionMapper">
+
+    <select id="selectReservations" resultType="kr.co.seoulit.reception.reservation.dto.ReservationReceptionDTO">
+        SELECT
+            rs.reservation_id,
+            rs.reservation_no,
+            rs.patient_id,
+            NVL(p.name, rs.patient_name) AS patient_name,
+            rs.department_id,
+            NVL(d.name, rs.department_name) AS department_name,
+            rs.doctor_id,
+            NVL(doc.full_name, rs.doctor_name) AS doctor_name,
+            rs.reserved_at,
+            rs.status,
+            rs.note,
+            NVL(rs.is_active, 1) AS is_active,
+            rs.inactive_at,
+            rs.inactive_reason_code,
+            rs.inactive_reason_text,
+            rs.canceled_at,
+            rs.cancel_reason_code,
+            rs.cancel_reason_text,
+            rs.created_by,
+            rs.updated_by,
+            rs.created_at,
+            rs.updated_at
+        FROM HOSPITAL.RESERVATION rs
+        LEFT JOIN HOSPITAL.patient p ON p.patient_id = rs.patient_id
+        LEFT JOIN HOSPITAL.departments d ON d.id = rs.department_id
+        LEFT JOIN HOSPITAL.staff doc ON doc.id = rs.doctor_id
+        <where>
+            1 = 1
+            <if test="searchValue != null and searchValue != ''">
+                <choose>
+                    <when test="searchType == 'reservationNo'">
+                        AND rs.reservation_no = #{searchValue}
+                    </when>
+                    <when test="searchType == 'patientId'">
+                        AND rs.patient_id = #{searchValue}
+                    </when>
+                    <when test="searchType == 'status'">
+                        AND rs.status = #{searchValue}
+>>>>>>> 4ce2497 (- 접수 핵심 4개 + 확장 테이블 연동 로직 반영)
                     </when>
                 </choose>
             </if>
         </where>
+<<<<<<< HEAD
         ORDER BY reservation_id
     </select>
 
 </mapper>
+=======
+        ORDER BY rs.reservation_id DESC
+    </select>
+
+</mapper>
+
+
+
+>>>>>>> 4ce2497 (- 접수 핵심 4개 + 확장 테이블 연동 로직 반영)
