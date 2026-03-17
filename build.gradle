@@ -60,3 +60,10 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+
+tasks.named('compileJava') {
+    // Keep only legacy service/util excluded; controllers are compiled again.
+    exclude 'kr/co/seoulit/reception/service/**'
+    exclude 'kr/co/seoulit/reception/util/**'
+}
