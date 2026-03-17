@@ -35,3 +35,11 @@ out/
 
 ### VS Code ###
 .vscode/
+# Local runtime/cache artifacts
+.gradle-home/
+logs/
+*.log
+*.bak
+*.bak_*
+nul
+gradle.properties

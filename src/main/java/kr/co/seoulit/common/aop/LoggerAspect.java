@@ -21,15 +21,9 @@ public class LoggerAspect {
         if (name.contains("Controller")) {
             type = "Controller  : ";
         } else if (name.contains("Service")) {
-<<<<<<< HEAD:src/main/java/kr/co/seoulit/common/aop/LoggerAspect.java
-            type = "ServiceImpl  : ";
-        } else if (name.contains("Mapper")) {
-            type = "Mapper  : ";
-=======
             type = "서비스    : ";
         } else if (name.contains("Mapper")) {
             type = "매퍼      : ";
->>>>>>> 4ce2497 (- 접수 핵심 4개 + 확장 테이블 연동 로직 반영):src/main/java/kr/co/seoulit/reception/common/aop/LoggerAspect.java
         }
 
         String method = name + "." + joinPoint.getSignature().getName() + "()";

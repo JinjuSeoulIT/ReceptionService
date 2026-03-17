@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ReservationEntity {
+public class ReservationReceptionEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ_RESERVATION")
@@ -93,9 +93,6 @@ public class ReservationEntity {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 }
-<<<<<<<< HEAD:src/main/java/kr/co/seoulit/reception/outpatient/entity/ReservationEntity.java
-========
 
 
 
->>>>>>>> 4ce2497 (- 접수 핵심 4개 + 확장 테이블 연동 로직 반영):src/main/java/kr/co/seoulit/reception/reservation/entity/ReservationReceptionEntity.java

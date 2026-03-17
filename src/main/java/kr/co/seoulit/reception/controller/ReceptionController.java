@@ -4,9 +4,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.co.seoulit.common.api.ApiResponse;
-import kr.co.seoulit.reception.dto.ReceptionDTO;
-import kr.co.seoulit.reception.dto.ReceptionStatusHistoryDTO;
-import kr.co.seoulit.reception.dto.ReceptionStatusUpdateRequest;
+import kr.co.seoulit.reception.outpatient.dto.OutpatientReceptionDTO;
+import kr.co.seoulit.reception.outpatient.dto.OutpatientReceptionStatusHistoryDTO;
+import kr.co.seoulit.reception.outpatient.dto.OutpatientReceptionStatusUpdateRequest;
 import kr.co.seoulit.reception.service.ReceptionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +35,7 @@ public class ReceptionController {
 
     @Operation(summary = "외래 접수 목록 조회", description = "외래 접수 목록 조회")
     @GetMapping
-    public ResponseEntity<ApiResponse<List<ReceptionDTO>>> getReceptions(
+    public ResponseEntity<ApiResponse<List<OutpatientReceptionDTO>>> getReceptions(
             @Parameter(description = "검색 타입") @RequestParam(required = false) String searchType,
             @Parameter(description = "검색 값") @RequestParam(required = false) String searchValue,
             @Parameter(description = "시작일 YYYY-MM-DD") @RequestParam(required = false) String dateFrom,
@@ -52,34 +52,34 @@ public class ReceptionController {
         searchCondition.put("departmentId", departmentId);
         searchCondition.put("doctorId", doctorId);
 
-        List<ReceptionDTO> list = receptionService.getReceptionList(searchCondition);
+        List<OutpatientReceptionDTO> list = receptionService.getReceptionList(searchCondition);
         return ResponseEntity.ok(new ApiResponse<>(true, "외래 접수 목록 조회 완료", list));
     }
 
     @Operation(summary = "외래 접수 대기열 조회", description = "외래 접수 대기열 조회")
     @GetMapping("/queue")
-    public ResponseEntity<ApiResponse<List<ReceptionDTO>>> getReceptionQueue(
+    public ResponseEntity<ApiResponse<List<OutpatientReceptionDTO>>> getReceptionQueue(
             @Parameter(description = "진료과 ID") @RequestParam(required = false) Long departmentId,
             @Parameter(description = "의사 ID") @RequestParam(required = false) Long doctorId,
             @Parameter(description = "조회일 YYYY-MM-DD") @RequestParam(required = false) String date
     ) {
-        List<ReceptionDTO> list = receptionService.getReceptionQueue(departmentId, doctorId, date);
+        List<OutpatientReceptionDTO> list = receptionService.getReceptionQueue(departmentId, doctorId, date);
         return ResponseEntity.ok(new ApiResponse<>(true, "외래 접수 대기열 조회 완료", list));
     }
 
     @Operation(summary = "외래 접수 상세 조회", description = "외래 접수 상세 조회")
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<ReceptionDTO>> getReception(
+    public ResponseEntity<ApiResponse<OutpatientReceptionDTO>> getReception(
             @Parameter(description = "접수 ID") @PathVariable Long id
     ) {
         log.info("Get reception request: id={}", id);
-        ReceptionDTO dto = receptionService.getReception(id);
+        OutpatientReceptionDTO dto = receptionService.getReception(id);
         return ResponseEntity.ok(new ApiResponse<>(true, "외래 접수 상세 조회 완료", dto));
     }
 
     @Operation(summary = "외래 접수 등록", description = "외래 접수 등록")
     @PostMapping
-    public ResponseEntity<ApiResponse<Boolean>> createReception(@RequestBody ReceptionDTO reception) {
+    public ResponseEntity<ApiResponse<Boolean>> createReception(@RequestBody OutpatientReceptionDTO reception) {
         log.info("Create reception request: receptionNo={}", reception.getReceptionNo());
         receptionService.createReception(reception);
         return ResponseEntity.ok(new ApiResponse<>(true, "외래 접수 등록 완료", true));
@@ -89,7 +89,7 @@ public class ReceptionController {
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<Boolean>> updateReception(
             @Parameter(description = "접수 ID") @PathVariable Long id,
-            @RequestBody ReceptionDTO reception
+            @RequestBody OutpatientReceptionDTO reception
     ) {
         log.info("Update reception request: id={}", id);
         receptionService.updateReception(id, reception);
@@ -98,12 +98,12 @@ public class ReceptionController {
 
     @Operation(summary = "외래 접수 상태 변경", description = "외래 접수 상태 변경")
     @PatchMapping("/{id}/status")
-    public ResponseEntity<ApiResponse<ReceptionDTO>> updateReceptionStatus(
+    public ResponseEntity<ApiResponse<OutpatientReceptionDTO>> updateReceptionStatus(
             @Parameter(description = "접수 ID") @PathVariable Long id,
-            @RequestBody ReceptionStatusUpdateRequest request
+            @RequestBody OutpatientReceptionStatusUpdateRequest request
     ) {
         log.info("Update reception status request: id={}, status={}", id, request.getStatus());
-        ReceptionDTO updated = receptionService.updateReceptionStatus(
+        OutpatientReceptionDTO updated = receptionService.updateReceptionStatus(
                 id,
                 request.getStatus(),
                 request.getChangedBy(),
@@ -115,10 +115,10 @@ public class ReceptionController {
 
     @Operation(summary = "외래 접수 상태 이력 조회", description = "외래 접수 상태 이력 조회")
     @GetMapping("/{id}/status-history")
-    public ResponseEntity<ApiResponse<List<ReceptionStatusHistoryDTO>>> getStatusHistory(
+    public ResponseEntity<ApiResponse<List<OutpatientReceptionStatusHistoryDTO>>> getStatusHistory(
             @Parameter(description = "접수 ID") @PathVariable Long id
     ) {
-        List<ReceptionStatusHistoryDTO> list = receptionService.getReceptionStatusHistory(id);
+        List<OutpatientReceptionStatusHistoryDTO> list = receptionService.getReceptionStatusHistory(id);
         return ResponseEntity.ok(new ApiResponse<>(true, "외래 접수 상태 이력 조회 완료", list));
     }
 }

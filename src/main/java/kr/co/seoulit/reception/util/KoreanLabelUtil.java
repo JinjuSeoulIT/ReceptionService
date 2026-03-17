@@ -4,11 +4,11 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import kr.co.seoulit.reception.dto.EmergencyReceptionDTO;
+import kr.co.seoulit.reception.emergency.dto.EmergencyReceptionDTO;
 import kr.co.seoulit.reception.dto.InpatientReceptionDTO;
-import kr.co.seoulit.reception.dto.ReceptionDTO;
-import kr.co.seoulit.reception.dto.ReceptionStatusHistoryDTO;
-import kr.co.seoulit.reception.dto.ReservationDTO;
+import kr.co.seoulit.reception.outpatient.dto.OutpatientReceptionDTO;
+import kr.co.seoulit.reception.outpatient.dto.OutpatientReceptionStatusHistoryDTO;
+import kr.co.seoulit.reception.reservation.dto.ReservationReceptionDTO;
 
 public final class KoreanLabelUtil {
 
@@ -79,7 +79,7 @@ public final class KoreanLabelUtil {
         return trimmed;
     }
 
-    public static ReceptionDTO toKorean(ReceptionDTO dto) {
+    public static OutpatientReceptionDTO toKorean(OutpatientReceptionDTO dto) {
         if (dto == null) return null;
         dto.setStatus(toKoreanStatus(dto.getStatus()));
         dto.setVisitType(toKoreanVisitType(dto.getVisitType()));
@@ -103,14 +103,14 @@ public final class KoreanLabelUtil {
         return dto;
     }
 
-    public static ReservationDTO toKorean(ReservationDTO dto) {
+    public static ReservationReceptionDTO toKorean(ReservationReceptionDTO dto) {
         if (dto == null) return null;
         dto.setStatus(toKoreanStatus(dto.getStatus()));
         dto.setDepartmentName(toKoreanDepartmentName(dto.getDepartmentName(), dto.getDepartmentId()));
         return dto;
     }
 
-    public static ReceptionStatusHistoryDTO toKorean(ReceptionStatusHistoryDTO dto) {
+    public static OutpatientReceptionStatusHistoryDTO toKorean(OutpatientReceptionStatusHistoryDTO dto) {
         if (dto == null) return null;
         dto.setFromStatus(toKoreanStatus(dto.getFromStatus()));
         dto.setToStatus(toKoreanStatus(dto.getToStatus()));

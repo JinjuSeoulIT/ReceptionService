@@ -1,10 +1,10 @@
 package kr.co.seoulit.reception.service;
 
 import kr.co.seoulit.common.audit.AuditLogService;
-import kr.co.seoulit.reception.dto.ReceptionDTO;
-import kr.co.seoulit.reception.dto.ReceptionStatusHistoryDTO;
-import kr.co.seoulit.reception.entity.ReceptionEntity;
-import kr.co.seoulit.reception.entity.ReceptionStatusHistoryEntity;
+import kr.co.seoulit.reception.outpatient.dto.OutpatientReceptionDTO;
+import kr.co.seoulit.reception.outpatient.dto.OutpatientReceptionStatusHistoryDTO;
+import kr.co.seoulit.reception.outpatient.entity.OutpatientReceptionEntity;
+import kr.co.seoulit.reception.outpatient.entity.OutpatientReceptionStatusHistoryEntity;
 import kr.co.seoulit.reception.exception.ReceptionNotFoundException;
 import kr.co.seoulit.reception.mapstruct.ReceptionReqMapStruct;
 import kr.co.seoulit.reception.mapstruct.ReceptionResMapStruct;
@@ -46,7 +46,7 @@ public class ReceptionServiceImpl implements ReceptionService {
     private final DoctorRepository doctorRepository;
 
     @Override
-    public List<ReceptionDTO> getReceptionList(Map<String, Object> searchCondition) {
+    public List<OutpatientReceptionDTO> getReceptionList(Map<String, Object> searchCondition) {
         String searchType = (String) searchCondition.get("searchType");
         String searchValue = (String) searchCondition.get("searchValue");
         String dateFrom = (String) searchCondition.get("dateFrom");
@@ -73,8 +73,8 @@ public class ReceptionServiceImpl implements ReceptionService {
 
     @Override
     @Cacheable(key = "#receptionId", value = "RECEPTION")
-    public ReceptionDTO getReception(Long receptionId) {
-        ReceptionEntity entity = receptionRepository.findById(receptionId)
+    public OutpatientReceptionDTO getReception(Long receptionId) {
+        OutpatientReceptionEntity entity = receptionRepository.findById(receptionId)
                 .orElseThrow(() -> new ReceptionNotFoundException(
                         "접수 ID " + receptionId + "에 해당하는 접수 정보가 없습니다."
                 ));
@@ -82,7 +82,7 @@ public class ReceptionServiceImpl implements ReceptionService {
     }
 
     @Override
-    public List<ReceptionDTO> getReceptionQueue(Long departmentId, Long doctorId, String date) {
+    public List<OutpatientReceptionDTO> getReceptionQueue(Long departmentId, Long doctorId, String date) {
         try {
             return receptionMyBatisMapper.selectQueue(departmentId, doctorId, date)
                     .stream()
@@ -96,7 +96,7 @@ public class ReceptionServiceImpl implements ReceptionService {
 
     @Override
     @Transactional
-    public void createReception(ReceptionDTO reception) {
+    public void createReception(OutpatientReceptionDTO reception) {
         if (reception.getReceptionNo() == null || reception.getReceptionNo().isBlank()) {
             throw new IllegalArgumentException("접수번호는 필수입니다.");
         }
@@ -111,7 +111,7 @@ public class ReceptionServiceImpl implements ReceptionService {
             throw new IllegalArgumentException("이미 존재하는 접수번호입니다: " + reception.getReceptionNo());
         }
 
-        ReceptionEntity entity = receptionReqMapStruct.toEntity(reception);
+        OutpatientReceptionEntity entity = receptionReqMapStruct.toEntity(reception);
         entity.setPatientId(resolveOrCreatePatientId(entity.getPatientId(), entity.getPatientName()));
         if (entity.getPatientName() == null || entity.getPatientName().isBlank()) {
             entity.setPatientName(resolvePatientName(entity.getPatientId()));
@@ -129,7 +129,7 @@ public class ReceptionServiceImpl implements ReceptionService {
         if (entity.getIsActive() == null) {
             entity.setIsActive(true);
         }
-        ReceptionEntity saved = receptionRepository.save(entity);
+        OutpatientReceptionEntity saved = receptionRepository.save(entity);
         auditLogService.log(
                 "RECEPTION",
                 saved.getReceptionId(),
@@ -145,13 +145,13 @@ public class ReceptionServiceImpl implements ReceptionService {
     @Override
     @Transactional
     @CacheEvict(value = "RECEPTION", key = "#receptionId")
-    public void updateReception(Long receptionId, ReceptionDTO reception) {
-        ReceptionEntity existing = receptionRepository.findById(receptionId)
+    public void updateReception(Long receptionId, OutpatientReceptionDTO reception) {
+        OutpatientReceptionEntity existing = receptionRepository.findById(receptionId)
                 .orElseThrow(() -> new ReceptionNotFoundException(
                         "접수 ID " + receptionId + "에 해당하는 접수 정보가 없습니다."
                 ));
 
-        ReceptionDTO before = receptionResMapStruct.toDto(existing);
+        OutpatientReceptionDTO before = receptionResMapStruct.toDto(existing);
 
         if (reception.getReceptionNo() != null && !reception.getReceptionNo().isBlank()) {
             existing.setReceptionNo(reception.getReceptionNo());
@@ -231,7 +231,7 @@ public class ReceptionServiceImpl implements ReceptionService {
         if (reception.getStatus() != null && !reception.getStatus().isBlank()) {
             existing.setStatus(reception.getStatus());
         }
-        ReceptionEntity saved = receptionRepository.save(existing);
+        OutpatientReceptionEntity saved = receptionRepository.save(existing);
         auditLogService.log(
                 "RECEPTION",
                 saved.getReceptionId(),
@@ -247,24 +247,24 @@ public class ReceptionServiceImpl implements ReceptionService {
     @Override
     @Transactional
     @CacheEvict(value = "RECEPTION", key = "#receptionId")
-    public ReceptionDTO updateReceptionStatus(
+    public OutpatientReceptionDTO updateReceptionStatus(
             Long receptionId,
             String status,
             Long changedBy,
             String reasonCode,
             String reasonText
     ) {
-        ReceptionEntity existing = receptionRepository.findById(receptionId)
+        OutpatientReceptionEntity existing = receptionRepository.findById(receptionId)
                 .orElseThrow(() -> new ReceptionNotFoundException(
                         "접수 ID " + receptionId + "에 해당하는 접수 정보가 없습니다."
                 ));
 
-        ReceptionDTO before = receptionResMapStruct.toDto(existing);
+        OutpatientReceptionDTO before = receptionResMapStruct.toDto(existing);
         String fromStatus = existing.getStatus();
         existing.setStatus(status);
-        ReceptionEntity saved = receptionRepository.save(existing);
+        OutpatientReceptionEntity saved = receptionRepository.save(existing);
 
-        ReceptionStatusHistoryEntity history = new ReceptionStatusHistoryEntity();
+        OutpatientReceptionStatusHistoryEntity history = new OutpatientReceptionStatusHistoryEntity();
         history.setReceptionId(receptionId);
         history.setFromStatus(fromStatus);
         history.setToStatus(status);
@@ -288,7 +288,7 @@ public class ReceptionServiceImpl implements ReceptionService {
     }
 
     @Override
-    public List<ReceptionStatusHistoryDTO> getReceptionStatusHistory(Long receptionId) {
+    public List<OutpatientReceptionStatusHistoryDTO> getReceptionStatusHistory(Long receptionId) {
         try {
             return receptionStatusHistoryRepository.findByReceptionIdOrderByChangedAtAsc(receptionId)
                     .stream()
@@ -300,7 +300,7 @@ public class ReceptionServiceImpl implements ReceptionService {
         }
     }
 
-    private List<ReceptionDTO> fallbackReceptionList(
+    private List<OutpatientReceptionDTO> fallbackReceptionList(
             String searchType,
             String searchValue,
             String dateFrom,
@@ -341,7 +341,7 @@ public class ReceptionServiceImpl implements ReceptionService {
                 .collect(Collectors.toList());
     }
 
-    private List<ReceptionDTO> fallbackQueueList(Long departmentId, Long doctorId, String date) {
+    private List<OutpatientReceptionDTO> fallbackQueueList(Long departmentId, Long doctorId, String date) {
         LocalDate target = parseDate(date);
         return StreamSupport.stream(receptionRepository.findAll().spliterator(), false)
                 .map(receptionResMapStruct::toDto)
@@ -373,8 +373,8 @@ public class ReceptionServiceImpl implements ReceptionService {
         }
     }
 
-    private ReceptionStatusHistoryDTO toHistoryDto(ReceptionStatusHistoryEntity entity) {
-        ReceptionStatusHistoryDTO dto = new ReceptionStatusHistoryDTO();
+    private OutpatientReceptionStatusHistoryDTO toHistoryDto(OutpatientReceptionStatusHistoryEntity entity) {
+        OutpatientReceptionStatusHistoryDTO dto = new OutpatientReceptionStatusHistoryDTO();
         dto.setStatusHistoryId(entity.getStatusHistoryId());
         dto.setReceptionId(entity.getReceptionId());
         dto.setFromStatus(entity.getFromStatus());

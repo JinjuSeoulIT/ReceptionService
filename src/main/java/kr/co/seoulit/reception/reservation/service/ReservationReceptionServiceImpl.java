@@ -1,6 +1,6 @@
 package kr.co.seoulit.reception.reservation.service;
 
-import kr.co.seoulit.reception.common.audit.AuditLogService;
+import kr.co.seoulit.common.audit.AuditLogService;
 import kr.co.seoulit.reception.mapstruct.ReservationReqMapStruct;
 import kr.co.seoulit.reception.mapstruct.ReservationResMapStruct;
 import kr.co.seoulit.reception.reservation.dto.ReservationReceptionDTO;

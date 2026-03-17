@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "reservation_booking_rule", schema = "HOSPITAL")
+@Table(name = "reservation_booking_rule")
 @Getter
 @Setter
 @NoArgsConstructor

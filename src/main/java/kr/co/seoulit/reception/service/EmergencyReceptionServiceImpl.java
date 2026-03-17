@@ -1,8 +1,8 @@
 package kr.co.seoulit.reception.service;
 
-import kr.co.seoulit.reception.dto.EmergencyReceptionDTO;
+import kr.co.seoulit.reception.emergency.dto.EmergencyReceptionDTO;
 import kr.co.seoulit.reception.entity.ReceptionEmergencyEntity;
-import kr.co.seoulit.reception.entity.ReceptionEntity;
+import kr.co.seoulit.reception.outpatient.entity.OutpatientReceptionEntity;
 import kr.co.seoulit.reception.repository.DepartmentRepository;
 import kr.co.seoulit.reception.repository.DoctorRepository;
 import kr.co.seoulit.reception.repository.EmergencyReceptionMyBatisMapper;
@@ -64,7 +64,7 @@ public class EmergencyReceptionServiceImpl implements EmergencyReceptionService 
 
     @Override
     public EmergencyReceptionDTO getEmergencyReception(Long receptionId) {
-        ReceptionEntity reception = receptionRepository.findById(receptionId)
+        OutpatientReceptionEntity reception = receptionRepository.findById(receptionId)
                 .orElseThrow(() -> new IllegalArgumentException("Emergency reception not found: " + receptionId));
         ReceptionEmergencyEntity emergency = emergencyRepository.findById(receptionId)
                 .orElseThrow(() -> new IllegalArgumentException("Emergency detail not found: " + receptionId));
@@ -88,7 +88,7 @@ public class EmergencyReceptionServiceImpl implements EmergencyReceptionService 
             throw new IllegalArgumentException("triageLevel and chiefComplaint are required");
         }
 
-        ReceptionEntity reception = new ReceptionEntity();
+        OutpatientReceptionEntity reception = new OutpatientReceptionEntity();
         reception.setReceptionNo(request.getReceptionNo());
         Long resolvedPatientId = resolveOrCreatePatientId(request.getPatientId(), request.getPatientName());
         reception.setPatientId(resolvedPatientId);
@@ -105,7 +105,7 @@ public class EmergencyReceptionServiceImpl implements EmergencyReceptionService 
         reception.setNote(request.getNote());
         reception.setIsActive(request.getIsActive() != null ? request.getIsActive() : true);
 
-        ReceptionEntity saved = receptionRepository.save(reception);
+        OutpatientReceptionEntity saved = receptionRepository.save(reception);
 
         ReceptionEmergencyEntity emergency = new ReceptionEmergencyEntity();
         emergency.setReceptionId(saved.getReceptionId());
@@ -126,7 +126,7 @@ public class EmergencyReceptionServiceImpl implements EmergencyReceptionService 
     @Override
     @Transactional
     public void updateEmergencyReception(Long receptionId, EmergencyReceptionDTO request) {
-        ReceptionEntity reception = receptionRepository.findById(receptionId)
+        OutpatientReceptionEntity reception = receptionRepository.findById(receptionId)
                 .orElseThrow(() -> new IllegalArgumentException("Emergency reception not found: " + receptionId));
         ReceptionEmergencyEntity emergency = emergencyRepository.findById(receptionId)
                 .orElseThrow(() -> new IllegalArgumentException("Emergency detail not found: " + receptionId));
@@ -203,7 +203,7 @@ public class EmergencyReceptionServiceImpl implements EmergencyReceptionService 
         emergencyRepository.save(emergency);
     }
 
-    private EmergencyReceptionDTO toDto(ReceptionEntity reception, ReceptionEmergencyEntity emergency) {
+    private EmergencyReceptionDTO toDto(OutpatientReceptionEntity reception, ReceptionEmergencyEntity emergency) {
         EmergencyReceptionDTO dto = new EmergencyReceptionDTO();
         dto.setReceptionId(reception.getReceptionId());
         dto.setReceptionNo(reception.getReceptionNo());

@@ -105,9 +105,6 @@ public class ReceptionEntity {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 }
-<<<<<<<< HEAD:src/main/java/kr/co/seoulit/reception/outpatient/entity/ReceptionEntity.java
-========
 
 
 
->>>>>>>> 4ce2497 (- 접수 핵심 4개 + 확장 테이블 연동 로직 반영):src/main/java/kr/co/seoulit/reception/outpatient/entity/OutpatientReceptionEntity.java

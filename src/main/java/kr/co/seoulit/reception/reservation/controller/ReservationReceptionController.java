@@ -3,7 +3,7 @@ package kr.co.seoulit.reception.reservation.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import kr.co.seoulit.reception.common.api.ApiResponse;
+import kr.co.seoulit.common.api.ApiResponse;
 import kr.co.seoulit.reception.reservation.dto.ReservationReceptionDTO;
 import kr.co.seoulit.reception.reservation.dto.ReservationReceptionStatusUpdateRequest;
 import kr.co.seoulit.reception.reservation.service.ReservationReceptionService;

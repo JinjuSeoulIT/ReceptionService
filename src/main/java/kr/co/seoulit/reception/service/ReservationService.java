@@ -1,18 +1,18 @@
 package kr.co.seoulit.reception.service;
 
-import kr.co.seoulit.reception.dto.ReservationDTO;
+import kr.co.seoulit.reception.reservation.dto.ReservationReceptionDTO;
 
 import java.util.List;
 import java.util.Map;
 
 public interface ReservationService {
-    List<ReservationDTO> getReservationList(Map<String, Object> searchCondition);
+    List<ReservationReceptionDTO> getReservationList(Map<String, Object> searchCondition);
 
-    ReservationDTO getReservation(Long reservationId);
+    ReservationReceptionDTO getReservation(Long reservationId);
 
-    void createReservation(ReservationDTO reservation);
+    void createReservation(ReservationReceptionDTO reservation);
 
-    void updateReservation(Long reservationId, ReservationDTO reservation);
+    void updateReservation(Long reservationId, ReservationReceptionDTO reservation);
 
-    ReservationDTO updateReservationStatus(Long reservationId, String status, Long changedBy, String reasonCode, String reasonText);
+    ReservationReceptionDTO updateReservationStatus(Long reservationId, String status, Long changedBy, String reasonCode, String reasonText);
 }

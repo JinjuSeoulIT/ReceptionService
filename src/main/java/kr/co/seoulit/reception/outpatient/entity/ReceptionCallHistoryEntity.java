@@ -14,7 +14,7 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "reception_call_history", schema = "HOSPITAL")
+@Table(name = "reception_call_history")
 @Getter
 @Setter
 @NoArgsConstructor

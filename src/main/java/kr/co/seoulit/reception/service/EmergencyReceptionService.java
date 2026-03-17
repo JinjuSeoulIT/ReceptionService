@@ -1,6 +1,6 @@
 package kr.co.seoulit.reception.service;
 
-import kr.co.seoulit.reception.dto.EmergencyReceptionDTO;
+import kr.co.seoulit.reception.emergency.dto.EmergencyReceptionDTO;
 
 import java.util.List;
 import java.util.Map;

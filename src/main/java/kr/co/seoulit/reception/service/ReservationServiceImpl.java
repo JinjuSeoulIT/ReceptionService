@@ -1,9 +1,9 @@
 package kr.co.seoulit.reception.service;
 
 import kr.co.seoulit.common.audit.AuditLogService;
-import kr.co.seoulit.reception.dto.ReservationDTO;
+import kr.co.seoulit.reception.reservation.dto.ReservationReceptionDTO;
 import kr.co.seoulit.reception.entity.PatientEntity;
-import kr.co.seoulit.reception.entity.ReservationEntity;
+import kr.co.seoulit.reception.reservation.entity.ReservationReceptionEntity;
 import kr.co.seoulit.reception.mapstruct.ReservationReqMapStruct;
 import kr.co.seoulit.reception.mapstruct.ReservationResMapStruct;
 import kr.co.seoulit.reception.repository.DepartmentRepository;
@@ -39,7 +39,7 @@ public class ReservationServiceImpl implements ReservationService {
     private final DoctorRepository doctorRepository;
 
     @Override
-    public List<ReservationDTO> getReservationList(Map<String, Object> searchCondition) {
+    public List<ReservationReceptionDTO> getReservationList(Map<String, Object> searchCondition) {
         String searchType = (String) searchCondition.get("searchType");
         String searchValue = (String) searchCondition.get("searchValue");
         return reservationMyBatisMapper.selectReservations(searchType, searchValue)
@@ -50,15 +50,15 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     @Cacheable(key = "#reservationId", value = "RESERVATION")
-    public ReservationDTO getReservation(Long reservationId) {
-        ReservationEntity entity = reservationRepository.findById(reservationId)
+    public ReservationReceptionDTO getReservation(Long reservationId) {
+        ReservationReceptionEntity entity = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new IllegalArgumentException("예약 ID를 찾을 수 없습니다: " + reservationId));
         return KoreanLabelUtil.toKorean(reservationResMapStruct.toDto(entity));
     }
 
     @Override
     @Transactional
-    public void createReservation(ReservationDTO reservation) {
+    public void createReservation(ReservationReceptionDTO reservation) {
         if (reservation.getReservationNo() == null || reservation.getReservationNo().isBlank()) {
             throw new IllegalArgumentException("예약번호는 필수입니다.");
         }
@@ -69,7 +69,7 @@ public class ReservationServiceImpl implements ReservationService {
             throw new IllegalArgumentException("예약 시간은 필수입니다.");
         }
 
-        ReservationEntity entity = reservationReqMapStruct.toEntity(reservation);
+        ReservationReceptionEntity entity = reservationReqMapStruct.toEntity(reservation);
         entity.setPatientId(resolveOrCreatePatientId(entity.getPatientId(), entity.getPatientName()));
         if (entity.getPatientName() == null || entity.getPatientName().isBlank()) {
             String resolvedName = resolvePatientNameOrNull(entity.getPatientId());
@@ -89,7 +89,7 @@ public class ReservationServiceImpl implements ReservationService {
         if (entity.getIsActive() == null) {
             entity.setIsActive(true);
         }
-        ReservationEntity saved = reservationRepository.save(entity);
+        ReservationReceptionEntity saved = reservationRepository.save(entity);
         auditLogService.log(
                 "RESERVATION",
                 saved.getReservationId(),
@@ -105,11 +105,11 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     @Transactional
     @CacheEvict(value = "RESERVATION", key = "#reservationId")
-    public void updateReservation(Long reservationId, ReservationDTO reservation) {
-        ReservationEntity existing = reservationRepository.findById(reservationId)
+    public void updateReservation(Long reservationId, ReservationReceptionDTO reservation) {
+        ReservationReceptionEntity existing = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new IllegalArgumentException("예약 ID를 찾을 수 없습니다: " + reservationId));
 
-        ReservationDTO before = reservationResMapStruct.toDto(existing);
+        ReservationReceptionDTO before = reservationResMapStruct.toDto(existing);
 
         if (reservation.getReservationNo() != null && !reservation.getReservationNo().isBlank()) {
             existing.setReservationNo(reservation.getReservationNo());
@@ -189,7 +189,7 @@ public class ReservationServiceImpl implements ReservationService {
             existing.setUpdatedBy(reservation.getUpdatedBy());
         }
 
-        ReservationEntity saved = reservationRepository.save(existing);
+        ReservationReceptionEntity saved = reservationRepository.save(existing);
         auditLogService.log(
                 "RESERVATION",
                 saved.getReservationId(),
@@ -205,17 +205,17 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     @Transactional
     @CacheEvict(value = "RESERVATION", key = "#reservationId")
-    public ReservationDTO updateReservationStatus(
+    public ReservationReceptionDTO updateReservationStatus(
             Long reservationId,
             String status,
             Long changedBy,
             String reasonCode,
             String reasonText
     ) {
-        ReservationEntity existing = reservationRepository.findById(reservationId)
+        ReservationReceptionEntity existing = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new IllegalArgumentException("예약 ID를 찾을 수 없습니다: " + reservationId));
 
-        ReservationDTO before = reservationResMapStruct.toDto(existing);
+        ReservationReceptionDTO before = reservationResMapStruct.toDto(existing);
 
         existing.setStatus(status);
         existing.setUpdatedBy(changedBy);
@@ -231,7 +231,7 @@ public class ReservationServiceImpl implements ReservationService {
             existing.setInactiveReasonText(reasonText);
         }
 
-        ReservationEntity saved = reservationRepository.save(existing);
+        ReservationReceptionEntity saved = reservationRepository.save(existing);
         auditLogService.log(
                 "RESERVATION",
                 saved.getReservationId(),

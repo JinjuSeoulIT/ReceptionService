@@ -21,11 +21,7 @@ public class AuditLogDTO {
     @Schema(description = "작업 유형")
     private String action;
 
-<<<<<<< HEAD:src/main/java/kr/co/seoulit/common/audit/AuditLogDTO.java
-    @Schema(description = "처리자 ID")
-=======
     @Schema(description = "작업자 식별자")
->>>>>>> 4ce2497 (- 접수 핵심 4개 + 확장 테이블 연동 로직 반영):src/main/java/kr/co/seoulit/reception/common/audit/AuditLogDTO.java
     private Long actorId;
 
     @Schema(description = "발생 일시")
@@ -45,8 +41,4 @@ public class AuditLogDTO {
 
     @Schema(description = "변경 차이 JSON")
     private String diffJson;
-<<<<<<< HEAD:src/main/java/kr/co/seoulit/common/audit/AuditLogDTO.java
 }
-=======
-}
->>>>>>> 4ce2497 (- 접수 핵심 4개 + 확장 테이블 연동 로직 반영):src/main/java/kr/co/seoulit/reception/common/audit/AuditLogDTO.java

@@ -49,9 +49,6 @@ public class ReceptionStatusHistoryEntity {
     @Column(name = "reason_text", length = 255)
     private String reasonText;
 }
-<<<<<<<< HEAD:src/main/java/kr/co/seoulit/reception/outpatient/entity/ReceptionStatusHistoryEntity.java
-========
 
 
 
->>>>>>>> 4ce2497 (- 접수 핵심 4개 + 확장 테이블 연동 로직 반영):src/main/java/kr/co/seoulit/reception/outpatient/entity/OutpatientReceptionStatusHistoryEntity.java

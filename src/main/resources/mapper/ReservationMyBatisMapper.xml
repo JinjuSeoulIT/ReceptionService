@@ -3,46 +3,6 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<<<<<<< HEAD
-<mapper namespace="kr.co.seoulit.reception.repository.ReservationMyBatisMapper">
-
-    <select id="selectReservations" resultType="kr.co.seoulit.reception.dto.ReservationDTO">
-        SELECT
-        reservation_id,
-        reservation_no,
-        patient_id,
-        patient_name,
-        department_id,
-        department_name,
-        doctor_id,
-        doctor_name,
-        reserved_at,
-        status,
-        note,
-        is_active,
-        inactive_at,
-        inactive_reason_code,
-        inactive_reason_text,
-        canceled_at,
-        cancel_reason_code,
-        cancel_reason_text,
-        created_by,
-        updated_by,
-        created_at,
-        updated_at
-        FROM reservation
-        <where>
-            <if test="searchValue != null and searchValue != ''">
-                <choose>
-                    <when test="searchType == 'reservationNo'">
-                        AND reservation_no = #{searchValue}
-                    </when>
-                    <when test="searchType == 'patientId'">
-                        AND patient_id = #{searchValue}
-                    </when>
-                    <when test="searchType == 'status'">
-                        AND status = #{searchValue}
-=======
 <mapper namespace="kr.co.seoulit.reception.reservation.mapper.ReservationReceptionMapper">
 
     <select id="selectReservations" resultType="kr.co.seoulit.reception.reservation.dto.ReservationReceptionDTO">
@@ -69,10 +29,10 @@
             rs.updated_by,
             rs.created_at,
             rs.updated_at
-        FROM HOSPITAL.RESERVATION rs
-        LEFT JOIN HOSPITAL.patient p ON p.patient_id = rs.patient_id
-        LEFT JOIN HOSPITAL.departments d ON d.id = rs.department_id
-        LEFT JOIN HOSPITAL.staff doc ON doc.id = rs.doctor_id
+        FROM RESERVATION rs
+        LEFT JOIN patient p ON p.patient_id = rs.patient_id
+        LEFT JOIN departments d ON d.id = rs.department_id
+        LEFT JOIN staff doc ON doc.id = rs.doctor_id
         <where>
             1 = 1
             <if test="searchValue != null and searchValue != ''">
@@ -85,17 +45,10 @@
                     </when>
                     <when test="searchType == 'status'">
                         AND rs.status = #{searchValue}
->>>>>>> 4ce2497 (- 접수 핵심 4개 + 확장 테이블 연동 로직 반영)
                     </when>
                 </choose>
             </if>
         </where>
-<<<<<<< HEAD
-        ORDER BY reservation_id
-    </select>
-
-</mapper>
-=======
         ORDER BY rs.reservation_id DESC
     </select>
 
@@ -103,4 +56,3 @@
 
 
 
->>>>>>> 4ce2497 (- 접수 핵심 4개 + 확장 테이블 연동 로직 반영)

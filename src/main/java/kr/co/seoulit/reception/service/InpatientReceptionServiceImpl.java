@@ -1,7 +1,7 @@
 package kr.co.seoulit.reception.service;
 
 import kr.co.seoulit.reception.dto.InpatientReceptionDTO;
-import kr.co.seoulit.reception.entity.ReceptionEntity;
+import kr.co.seoulit.reception.outpatient.entity.OutpatientReceptionEntity;
 import kr.co.seoulit.reception.entity.ReceptionInpatientEntity;
 import kr.co.seoulit.reception.repository.DepartmentRepository;
 import kr.co.seoulit.reception.repository.DoctorRepository;
@@ -50,7 +50,7 @@ public class InpatientReceptionServiceImpl implements InpatientReceptionService 
 
     @Override
     public InpatientReceptionDTO getInpatientReception(Long receptionId) {
-        ReceptionEntity reception = receptionRepository.findById(receptionId)
+        OutpatientReceptionEntity reception = receptionRepository.findById(receptionId)
                 .orElseThrow(() -> new IllegalArgumentException("Inpatient reception not found: " + receptionId));
         ReceptionInpatientEntity inpatient = inpatientRepository.findById(receptionId)
                 .orElseThrow(() -> new IllegalArgumentException("Inpatient detail not found: " + receptionId));
@@ -74,7 +74,7 @@ public class InpatientReceptionServiceImpl implements InpatientReceptionService 
             throw new IllegalArgumentException("admissionPlanAt is required");
         }
 
-        ReceptionEntity reception = new ReceptionEntity();
+        OutpatientReceptionEntity reception = new OutpatientReceptionEntity();
         reception.setReceptionNo(request.getReceptionNo());
         reception.setPatientId(request.getPatientId());
         reception.setPatientName(resolvePatientName(request.getPatientId(), request.getPatientName()));
@@ -90,7 +90,7 @@ public class InpatientReceptionServiceImpl implements InpatientReceptionService 
         reception.setNote(request.getNote());
         reception.setIsActive(request.getIsActive() != null ? request.getIsActive() : true);
 
-        ReceptionEntity saved = receptionRepository.save(reception);
+        OutpatientReceptionEntity saved = receptionRepository.save(reception);
 
         ReceptionInpatientEntity inpatient = new ReceptionInpatientEntity();
         inpatient.setReceptionId(saved.getReceptionId());
@@ -104,7 +104,7 @@ public class InpatientReceptionServiceImpl implements InpatientReceptionService 
     @Override
     @Transactional
     public void updateInpatientReception(Long receptionId, InpatientReceptionDTO request) {
-        ReceptionEntity reception = receptionRepository.findById(receptionId)
+        OutpatientReceptionEntity reception = receptionRepository.findById(receptionId)
                 .orElseThrow(() -> new IllegalArgumentException("Inpatient reception not found: " + receptionId));
         ReceptionInpatientEntity inpatient = inpatientRepository.findById(receptionId)
                 .orElseThrow(() -> new IllegalArgumentException("Inpatient detail not found: " + receptionId));
@@ -169,7 +169,7 @@ public class InpatientReceptionServiceImpl implements InpatientReceptionService 
         inpatientRepository.save(inpatient);
     }
 
-    private InpatientReceptionDTO toDto(ReceptionEntity reception, ReceptionInpatientEntity inpatient) {
+    private InpatientReceptionDTO toDto(OutpatientReceptionEntity reception, ReceptionInpatientEntity inpatient) {
         InpatientReceptionDTO dto = new InpatientReceptionDTO();
         dto.setReceptionId(reception.getReceptionId());
         dto.setReceptionNo(reception.getReceptionNo());

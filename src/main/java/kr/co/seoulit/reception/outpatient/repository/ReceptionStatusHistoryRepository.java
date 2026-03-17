@@ -1,12 +1,12 @@
 package kr.co.seoulit.reception.repository;
 
-import kr.co.seoulit.reception.entity.ReceptionStatusHistoryEntity;
+import kr.co.seoulit.reception.outpatient.entity.OutpatientReceptionStatusHistoryEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface ReceptionStatusHistoryRepository extends JpaRepository<ReceptionStatusHistoryEntity, Long> {
-    List<ReceptionStatusHistoryEntity> findByReceptionIdOrderByChangedAtAsc(Long receptionId);
+public interface ReceptionStatusHistoryRepository extends JpaRepository<OutpatientReceptionStatusHistoryEntity, Long> {
+    List<OutpatientReceptionStatusHistoryEntity> findByReceptionIdOrderByChangedAtAsc(Long receptionId);
 }

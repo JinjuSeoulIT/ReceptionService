@@ -4,8 +4,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.co.seoulit.common.api.ApiResponse;
-import kr.co.seoulit.reception.dto.ReservationDTO;
-import kr.co.seoulit.reception.dto.ReservationStatusUpdateRequest;
+import kr.co.seoulit.reception.reservation.dto.ReservationReceptionDTO;
+import kr.co.seoulit.reception.reservation.dto.ReservationReceptionStatusUpdateRequest;
 import kr.co.seoulit.reception.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +34,7 @@ public class ReservationController {
 
     @Operation(summary = "예약 목록 조회", description = "예약 목록 조회")
     @GetMapping
-    public ResponseEntity<ApiResponse<List<ReservationDTO>>> getReservations(
+    public ResponseEntity<ApiResponse<List<ReservationReceptionDTO>>> getReservations(
             @Parameter(description = "검색 유형") @RequestParam(required = false) String searchType,
             @Parameter(description = "검색어") @RequestParam(required = false) String searchValue
     ) {
@@ -43,23 +43,23 @@ public class ReservationController {
         searchCondition.put("searchType", searchType);
         searchCondition.put("searchValue", searchValue);
 
-        List<ReservationDTO> list = reservationService.getReservationList(searchCondition);
+        List<ReservationReceptionDTO> list = reservationService.getReservationList(searchCondition);
         return ResponseEntity.ok(new ApiResponse<>(true, "예약 목록 조회 완료", list));
     }
 
     @Operation(summary = "예약 조회", description = "예약 조회")
     @GetMapping("/{id}")
-    public ResponseEntity<ApiResponse<ReservationDTO>> getReservation(
+    public ResponseEntity<ApiResponse<ReservationReceptionDTO>> getReservation(
             @Parameter(description = "예약 ID") @PathVariable Long id
     ) {
         log.info("예약 조회 요청: id={}", id);
-        ReservationDTO dto = reservationService.getReservation(id);
+        ReservationReceptionDTO dto = reservationService.getReservation(id);
         return ResponseEntity.ok(new ApiResponse<>(true, "예약 조회 완료", dto));
     }
 
     @Operation(summary = "예약 등록", description = "예약 등록")
     @PostMapping
-    public ResponseEntity<ApiResponse<Boolean>> createReservation(@RequestBody ReservationDTO reservation) {
+    public ResponseEntity<ApiResponse<Boolean>> createReservation(@RequestBody ReservationReceptionDTO reservation) {
         log.info("예약 등록 요청: reservationNo={}", reservation.getReservationNo());
         reservationService.createReservation(reservation);
         return ResponseEntity.ok(new ApiResponse<>(true, "예약 등록 완료", true));
@@ -69,7 +69,7 @@ public class ReservationController {
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<Boolean>> updateReservation(
             @Parameter(description = "예약 ID") @PathVariable Long id,
-            @RequestBody ReservationDTO reservation
+            @RequestBody ReservationReceptionDTO reservation
     ) {
         log.info("예약 수정 요청: id={}", id);
         reservationService.updateReservation(id, reservation);
@@ -78,12 +78,12 @@ public class ReservationController {
 
     @Operation(summary = "예약 상태 변경", description = "예약 상태 변경")
     @PatchMapping("/{id}/status")
-    public ResponseEntity<ApiResponse<ReservationDTO>> updateReservationStatus(
+    public ResponseEntity<ApiResponse<ReservationReceptionDTO>> updateReservationStatus(
             @Parameter(description = "예약 ID") @PathVariable Long id,
-            @RequestBody ReservationStatusUpdateRequest request
+            @RequestBody ReservationReceptionStatusUpdateRequest request
     ) {
         log.info("예약 상태 변경 요청: id={}, status={}", id, request.getStatus());
-        ReservationDTO updated = reservationService.updateReservationStatus(
+        ReservationReceptionDTO updated = reservationService.updateReservationStatus(
                 id,
                 request.getStatus(),
                 request.getChangedBy(),

@@ -1,6 +1,6 @@
 package kr.co.seoulit.reception.outpatient.service;
 
-import kr.co.seoulit.reception.common.audit.AuditLogService;
+import kr.co.seoulit.common.audit.AuditLogService;
 import kr.co.seoulit.reception.exception.ReceptionNotFoundException;
 import kr.co.seoulit.reception.mapstruct.ReceptionReqMapStruct;
 import kr.co.seoulit.reception.mapstruct.ReceptionResMapStruct;

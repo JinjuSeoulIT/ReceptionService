@@ -3,38 +3,6 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<<<<<<< HEAD
-<mapper namespace="kr.co.seoulit.reception.repository.EmergencyReceptionMyBatisMapper">
-
-    <select id="selectEmergencyReceptions" resultType="kr.co.seoulit.reception.dto.EmergencyReceptionDTO">
-        SELECT
-        r.reception_id,
-        r.reception_no,
-        r.patient_id,
-        r.visit_type,
-        r.department_id,
-        r.doctor_id,
-        r.reservation_id,
-        r.scheduled_at,
-        r.arrived_at,
-        r.status,
-        r.note,
-        r.is_active,
-        r.created_at,
-        r.updated_at,
-        e.triage_level,
-        e.chief_complaint,
-        e.vital_temp,
-        e.vital_bp_systolic,
-        e.vital_bp_diastolic,
-        e.vital_hr,
-        e.vital_rr,
-        e.vital_spo2,
-        e.arrival_mode,
-        e.triage_note
-        FROM reception r
-        JOIN reception_emergency e ON r.reception_id = e.reception_id
-=======
 <mapper namespace="kr.co.seoulit.reception.emergency.mapper.EmergencyReceptionMapper">
 
     <select id="selectEmergencyReceptions" resultType="kr.co.seoulit.reception.emergency.dto.EmergencyReceptionDTO">
@@ -66,11 +34,11 @@
             t.triage_note,
             r.created_at,
             r.updated_at
-        FROM HOSPITAL.RECEPTION r
-        LEFT JOIN HOSPITAL.patient p ON p.patient_id = r.patient_id
-        LEFT JOIN HOSPITAL.departments d ON d.id = r.department_id
-        LEFT JOIN HOSPITAL.staff doc ON doc.id = r.doctor_id
-        LEFT JOIN HOSPITAL.emergency_detail ed ON ed.reception_id = r.reception_id
+        FROM RECEPTION r
+        LEFT JOIN patient p ON p.patient_id = r.patient_id
+        LEFT JOIN departments d ON d.id = r.department_id
+        LEFT JOIN staff doc ON doc.id = r.doctor_id
+        LEFT JOIN emergency_detail ed ON ed.reception_id = r.reception_id
         LEFT JOIN (
             SELECT triage_latest.*
             FROM (
@@ -80,11 +48,10 @@
                         PARTITION BY et.reception_id
                         ORDER BY et.triage_datetime DESC, et.emergency_triage_id DESC
                     ) AS rn
-                FROM HOSPITAL.emergency_triage et
+                FROM emergency_triage et
             ) triage_latest
             WHERE triage_latest.rn = 1
         ) t ON t.reception_id = r.reception_id
->>>>>>> 4ce2497 (- 접수 핵심 4개 + 확장 테이블 연동 로직 반영)
         <where>
             r.visit_type = 'EMERGENCY'
             <if test="searchValue != null and searchValue != ''">
@@ -96,23 +63,16 @@
                         AND r.status = #{searchValue}
                     </when>
                     <when test="searchType == 'triageLevel'">
-<<<<<<< HEAD
-                        AND e.triage_level = #{searchValue}
-=======
                         AND TO_NUMBER(REGEXP_SUBSTR(t.triage_level_cd, '[0-9]+')) =
                             TO_NUMBER(REGEXP_SUBSTR(#{searchValue}, '^[0-9]+$'))
->>>>>>> 4ce2497 (- 접수 핵심 4개 + 확장 테이블 연동 로직 반영)
                     </when>
                 </choose>
             </if>
         </where>
-        ORDER BY e.triage_level ASC, r.created_at ASC
+        ORDER BY triage_level ASC NULLS LAST, r.created_at ASC
     </select>
 
 </mapper>
-<<<<<<< HEAD
-=======
 
 
 
->>>>>>> 4ce2497 (- 접수 핵심 4개 + 확장 테이블 연동 로직 반영)

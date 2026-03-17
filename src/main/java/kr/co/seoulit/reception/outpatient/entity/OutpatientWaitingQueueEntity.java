@@ -16,7 +16,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "reception_waiting_queue", schema = "HOSPITAL")
+@Table(name = "reception_waiting_queue")
 @Getter
 @Setter
 @NoArgsConstructor

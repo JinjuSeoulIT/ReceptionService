@@ -1,23 +1,23 @@
 package kr.co.seoulit.reception.service;
 
-import kr.co.seoulit.reception.dto.ReceptionDTO;
-import kr.co.seoulit.reception.dto.ReceptionStatusHistoryDTO;
+import kr.co.seoulit.reception.outpatient.dto.OutpatientReceptionDTO;
+import kr.co.seoulit.reception.outpatient.dto.OutpatientReceptionStatusHistoryDTO;
 
 import java.util.List;
 import java.util.Map;
 
 public interface ReceptionService {
-    List<ReceptionDTO> getReceptionList(Map<String, Object> searchCondition);
+    List<OutpatientReceptionDTO> getReceptionList(Map<String, Object> searchCondition);
 
-    ReceptionDTO getReception(Long receptionId);
+    OutpatientReceptionDTO getReception(Long receptionId);
 
-    List<ReceptionDTO> getReceptionQueue(Long departmentId, Long doctorId, String date);
+    List<OutpatientReceptionDTO> getReceptionQueue(Long departmentId, Long doctorId, String date);
 
-    void createReception(ReceptionDTO reception);
+    void createReception(OutpatientReceptionDTO reception);
 
-    void updateReception(Long receptionId, ReceptionDTO reception);
+    void updateReception(Long receptionId, OutpatientReceptionDTO reception);
 
-    ReceptionDTO updateReceptionStatus(Long receptionId, String status, Long changedBy, String reasonCode, String reasonText);
+    OutpatientReceptionDTO updateReceptionStatus(Long receptionId, String status, Long changedBy, String reasonCode, String reasonText);
 
-    List<ReceptionStatusHistoryDTO> getReceptionStatusHistory(Long receptionId);
+    List<OutpatientReceptionStatusHistoryDTO> getReceptionStatusHistory(Long receptionId);
 }
