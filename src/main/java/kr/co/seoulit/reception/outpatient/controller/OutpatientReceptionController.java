@@ -3,31 +3,24 @@ package kr.co.seoulit.reception.outpatient.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import kr.co.seoulit.common.api.ApiResponse;
+import kr.co.seoulit.reception.outpatient.dto.OutpatientCallHistoryDTO;
+import kr.co.seoulit.reception.outpatient.dto.OutpatientClosureReasonDTO;
 import kr.co.seoulit.reception.outpatient.dto.OutpatientReceptionDTO;
+import kr.co.seoulit.reception.outpatient.dto.OutpatientReceptionAuditDTO;
+import kr.co.seoulit.reception.outpatient.dto.OutpatientQualificationItemDTO;
+import kr.co.seoulit.reception.outpatient.dto.OutpatientQualificationSnapshotDTO;
 import kr.co.seoulit.reception.outpatient.dto.OutpatientReceptionStatusHistoryDTO;
 import kr.co.seoulit.reception.outpatient.dto.OutpatientReceptionStatusUpdateRequest;
-import kr.co.seoulit.reception.outpatient.entity.ReceptionAuditEntity;
-import kr.co.seoulit.reception.outpatient.entity.ReceptionCallHistoryEntity;
-import kr.co.seoulit.reception.outpatient.entity.ReceptionClosureReasonEntity;
-import kr.co.seoulit.reception.outpatient.entity.ReceptionQualificationItemEntity;
-import kr.co.seoulit.reception.outpatient.entity.ReceptionQualificationSnapshotEntity;
-import kr.co.seoulit.reception.outpatient.entity.ReceptionSettlementSnapshotEntity;
-import kr.co.seoulit.reception.outpatient.entity.ReceptionVisitClosureEntity;
-import kr.co.seoulit.reception.outpatient.entity.ReceptionVisitClosureHistoryEntity;
-import kr.co.seoulit.reception.outpatient.repository.OutpatientWaitingQueueRepository;
-import kr.co.seoulit.reception.outpatient.repository.ReceptionAuditRepository;
-import kr.co.seoulit.reception.outpatient.repository.ReceptionCallHistoryRepository;
-import kr.co.seoulit.reception.outpatient.repository.ReceptionClosureReasonRepository;
-import kr.co.seoulit.reception.outpatient.repository.ReceptionQualificationItemRepository;
-import kr.co.seoulit.reception.outpatient.repository.ReceptionQualificationSnapshotRepository;
-import kr.co.seoulit.reception.outpatient.repository.ReceptionSettlementSnapshotRepository;
-import kr.co.seoulit.reception.outpatient.repository.ReceptionVisitClosureHistoryRepository;
-import kr.co.seoulit.reception.outpatient.repository.ReceptionVisitClosureRepository;
+import kr.co.seoulit.reception.outpatient.dto.OutpatientSettlementSnapshotDTO;
+import kr.co.seoulit.reception.outpatient.dto.OutpatientVisitClosureDTO;
+import kr.co.seoulit.reception.outpatient.dto.OutpatientVisitClosureHistoryDTO;
 import kr.co.seoulit.reception.outpatient.service.OutpatientReceptionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -39,8 +32,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -49,18 +40,10 @@ import java.util.List;
 @RequestMapping("/api/receptions")
 @Tag(name = "Outpatient Reception", description = "Outpatient reception APIs")
 @Slf4j
+@Validated
 public class OutpatientReceptionController {
 
     private final OutpatientReceptionService receptionService;
-    private final ReceptionQualificationSnapshotRepository qualificationSnapshotRepository;
-    private final ReceptionQualificationItemRepository qualificationItemRepository;
-    private final OutpatientWaitingQueueRepository waitingQueueRepository;
-    private final ReceptionCallHistoryRepository callHistoryRepository;
-    private final ReceptionVisitClosureRepository visitClosureRepository;
-    private final ReceptionClosureReasonRepository closureReasonRepository;
-    private final ReceptionVisitClosureHistoryRepository visitClosureHistoryRepository;
-    private final ReceptionSettlementSnapshotRepository settlementSnapshotRepository;
-    private final ReceptionAuditRepository receptionAuditRepository;
 
     @Operation(summary = "Get outpatient receptions")
     @GetMapping
@@ -108,7 +91,7 @@ public class OutpatientReceptionController {
 
     @Operation(summary = "Create outpatient reception")
     @PostMapping
-    public ResponseEntity<ApiResponse<Boolean>> createReception(@RequestBody OutpatientReceptionDTO reception) {
+    public ResponseEntity<ApiResponse<Boolean>> createReception(@Valid @RequestBody OutpatientReceptionDTO reception) {
         log.info("Create reception request: receptionNo={}", reception.getReceptionNo());
         receptionService.createReception(reception);
         return ResponseEntity.ok(new ApiResponse<>(true, "Reception created", true));
@@ -118,7 +101,7 @@ public class OutpatientReceptionController {
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<Boolean>> updateReception(
             @Parameter(description = "Reception id") @PathVariable Long id,
-            @RequestBody OutpatientReceptionDTO reception
+            @Valid @RequestBody OutpatientReceptionDTO reception
     ) {
         log.info("Update reception request: id={}", id);
         receptionService.updateReception(id, reception);
@@ -148,7 +131,7 @@ public class OutpatientReceptionController {
     @PatchMapping("/{id}/status")
     public ResponseEntity<ApiResponse<OutpatientReceptionDTO>> updateReceptionStatus(
             @Parameter(description = "Reception id") @PathVariable Long id,
-            @RequestBody OutpatientReceptionStatusUpdateRequest request
+            @Valid @RequestBody OutpatientReceptionStatusUpdateRequest request
     ) {
         log.info("Update reception status request: id={}, status={}", id, request.getStatus());
         OutpatientReceptionDTO updated = receptionService.updateReceptionStatus(
@@ -172,91 +155,71 @@ public class OutpatientReceptionController {
 
     @Operation(summary = "Get qualification snapshots")
     @GetMapping("/{id}/qualification-snapshots")
-    public ResponseEntity<ApiResponse<List<ReceptionQualificationSnapshotEntity>>> getQualificationSnapshots(
+    public ResponseEntity<ApiResponse<List<OutpatientQualificationSnapshotDTO>>> getQualificationSnapshots(
             @Parameter(description = "Reception id") @PathVariable Long id
     ) {
-        List<ReceptionQualificationSnapshotEntity> list =
-                qualificationSnapshotRepository.findByReceptionIdOrderBySnapshotDatetimeDesc(id);
+        List<OutpatientQualificationSnapshotDTO> list = receptionService.getQualificationSnapshots(id);
         return ResponseEntity.ok(new ApiResponse<>(true, "Qualification snapshots fetched", list));
     }
 
     @Operation(summary = "Get qualification items")
     @GetMapping("/{id}/qualification-items")
-    public ResponseEntity<ApiResponse<List<ReceptionQualificationItemEntity>>> getQualificationItems(
+    public ResponseEntity<ApiResponse<List<OutpatientQualificationItemDTO>>> getQualificationItems(
             @Parameter(description = "Reception id") @PathVariable Long id
     ) {
-        List<ReceptionQualificationSnapshotEntity> snapshots =
-                qualificationSnapshotRepository.findByReceptionIdOrderBySnapshotDatetimeDesc(id);
-        if (snapshots.isEmpty()) {
-            return ResponseEntity.ok(new ApiResponse<>(true, "Qualification items fetched", Collections.emptyList()));
-        }
-
-        List<ReceptionQualificationItemEntity> items = new ArrayList<>();
-        for (ReceptionQualificationSnapshotEntity snapshot : snapshots) {
-            items.addAll(
-                    qualificationItemRepository.findByQualificationSnapshotIdOrderByDisplayOrderAsc(
-                            snapshot.getQualificationSnapshotId()
-                    )
-            );
-        }
-
+        List<OutpatientQualificationItemDTO> items = receptionService.getLatestQualificationItems(id);
         return ResponseEntity.ok(new ApiResponse<>(true, "Qualification items fetched", items));
     }
 
     @Operation(summary = "Get call history")
     @GetMapping("/{id}/call-history")
-    public ResponseEntity<ApiResponse<List<ReceptionCallHistoryEntity>>> getCallHistory(
+    public ResponseEntity<ApiResponse<List<OutpatientCallHistoryDTO>>> getCallHistory(
             @Parameter(description = "Reception id") @PathVariable Long id
     ) {
-        List<ReceptionCallHistoryEntity> list = waitingQueueRepository.findByReceptionId(id)
-                .map(queue -> callHistoryRepository.findByWaitingQueueIdOrderByCallDatetimeDesc(queue.getWaitingQueueId()))
-                .orElseGet(Collections::emptyList);
+        List<OutpatientCallHistoryDTO> list = receptionService.getCallHistory(id);
         return ResponseEntity.ok(new ApiResponse<>(true, "Call history fetched", list));
     }
 
     @Operation(summary = "Get visit closure")
     @GetMapping("/{id}/visit-closure")
-    public ResponseEntity<ApiResponse<ReceptionVisitClosureEntity>> getVisitClosure(
+    public ResponseEntity<ApiResponse<OutpatientVisitClosureDTO>> getVisitClosure(
             @Parameter(description = "Reception id") @PathVariable Long id
     ) {
-        ReceptionVisitClosureEntity closure = visitClosureRepository.findByReceptionId(id).orElse(null);
+        OutpatientVisitClosureDTO closure = receptionService.getVisitClosure(id);
         return ResponseEntity.ok(new ApiResponse<>(true, "Visit closure fetched", closure));
     }
 
     @Operation(summary = "Get closure reason code list")
     @GetMapping("/closure-reasons")
-    public ResponseEntity<ApiResponse<List<ReceptionClosureReasonEntity>>> getClosureReasons() {
-        List<ReceptionClosureReasonEntity> reasons = closureReasonRepository.findByUsableYnOrderBySortOrderAsc("Y");
+    public ResponseEntity<ApiResponse<List<OutpatientClosureReasonDTO>>> getClosureReasons() {
+        List<OutpatientClosureReasonDTO> reasons = receptionService.getClosureReasons();
         return ResponseEntity.ok(new ApiResponse<>(true, "Closure reasons fetched", reasons));
     }
 
     @Operation(summary = "Get visit closure history")
     @GetMapping("/{id}/visit-closure-history")
-    public ResponseEntity<ApiResponse<List<ReceptionVisitClosureHistoryEntity>>> getVisitClosureHistory(
+    public ResponseEntity<ApiResponse<List<OutpatientVisitClosureHistoryDTO>>> getVisitClosureHistory(
             @Parameter(description = "Reception id") @PathVariable Long id
     ) {
-        List<ReceptionVisitClosureHistoryEntity> list = visitClosureRepository.findByReceptionId(id)
-                .map(closure -> visitClosureHistoryRepository.findByVisitClosureIdOrderByChangedAtDesc(closure.getVisitClosureId()))
-                .orElseGet(Collections::emptyList);
+        List<OutpatientVisitClosureHistoryDTO> list = receptionService.getVisitClosureHistory(id);
         return ResponseEntity.ok(new ApiResponse<>(true, "Visit closure history fetched", list));
     }
 
     @Operation(summary = "Get settlement snapshots")
     @GetMapping("/{id}/settlement-snapshots")
-    public ResponseEntity<ApiResponse<List<ReceptionSettlementSnapshotEntity>>> getSettlementSnapshots(
+    public ResponseEntity<ApiResponse<List<OutpatientSettlementSnapshotDTO>>> getSettlementSnapshots(
             @Parameter(description = "Reception id") @PathVariable Long id
     ) {
-        List<ReceptionSettlementSnapshotEntity> list =
-                settlementSnapshotRepository.findByReceptionIdOrderBySnapshotDatetimeDesc(id);
+        List<OutpatientSettlementSnapshotDTO> list = receptionService.getSettlementSnapshots(id);
         return ResponseEntity.ok(new ApiResponse<>(true, "Settlement snapshots fetched", list));
     }
 
     @Operation(summary = "Get reception audits")
     @GetMapping("/{id}/audits")
-    public ResponseEntity<ApiResponse<List<ReceptionAuditEntity>>> getReceptionAudits(
+    public ResponseEntity<ApiResponse<List<OutpatientReceptionAuditDTO>>> getReceptionAudits(
             @Parameter(description = "Reception id") @PathVariable Long id
     ) {
-        List<ReceptionAuditEntity> list = receptionAuditRepository.findByReceptionIdOrderByChangedAtDesc(id);
+        List<OutpatientReceptionAuditDTO> list = receptionService.getReceptionAudits(id);
         return ResponseEntity.ok(new ApiResponse<>(true, "Reception audits fetched", list));
     }
 }

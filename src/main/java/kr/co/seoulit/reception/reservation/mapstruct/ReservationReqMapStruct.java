@@ -1,4 +1,4 @@
-package kr.co.seoulit.reception.mapstruct;
+package kr.co.seoulit.reception.reservation.mapstruct;
 
 import kr.co.seoulit.common.mapper.EntityReqMapper;
 import kr.co.seoulit.reception.reservation.dto.ReservationReceptionDTO;
@@ -9,6 +9,5 @@ import org.mapstruct.Mapper;
 public interface ReservationReqMapStruct
         extends EntityReqMapper<ReservationReceptionEntity, ReservationReceptionDTO> {
 }
-
 
 

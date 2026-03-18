@@ -12,9 +12,9 @@
             rs.patient_id,
             NVL(p.name, rs.patient_name) AS patient_name,
             rs.department_id,
-            NVL(d.name, rs.department_name) AS department_name,
+            NVL(rs.department_name, d.name) AS department_name,
             rs.doctor_id,
-            NVL(doc.full_name, rs.doctor_name) AS doctor_name,
+            NVL(rs.doctor_name, doc.full_name) AS doctor_name,
             rs.reserved_at,
             rs.status,
             rs.note,
@@ -53,6 +53,5 @@
     </select>
 
 </mapper>
-
 
 

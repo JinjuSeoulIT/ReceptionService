@@ -13,9 +13,9 @@
             NVL(p.name, r.patient_name) AS patient_name,
             r.visit_type,
             r.department_id,
-            NVL(d.name, r.department_name) AS department_name,
+            NVL(r.department_name, d.name) AS department_name,
             r.doctor_id,
-            NVL(doc.full_name, r.doctor_name) AS doctor_name,
+            NVL(r.doctor_name, doc.full_name) AS doctor_name,
             r.reservation_id,
             r.scheduled_at,
             r.arrived_at,
@@ -68,6 +68,5 @@
     </select>
 
 </mapper>
-
 
 

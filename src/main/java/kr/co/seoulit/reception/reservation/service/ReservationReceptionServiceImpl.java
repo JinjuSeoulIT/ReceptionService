@@ -1,8 +1,12 @@
 package kr.co.seoulit.reception.reservation.service;
 
 import kr.co.seoulit.common.audit.AuditLogService;
-import kr.co.seoulit.reception.mapstruct.ReservationReqMapStruct;
-import kr.co.seoulit.reception.mapstruct.ReservationResMapStruct;
+import kr.co.seoulit.common.sequence.ReceptionNumberSequenceClient;
+import kr.co.seoulit.reception.reservation.mapstruct.ReservationReqMapStruct;
+import kr.co.seoulit.reception.reservation.mapstruct.ReservationResMapStruct;
+import kr.co.seoulit.common.client.PatientServiceClient;
+import kr.co.seoulit.reception.repository.DepartmentRepository;
+import kr.co.seoulit.reception.repository.DoctorRepository;
 import kr.co.seoulit.reception.reservation.dto.ReservationReceptionDTO;
 import kr.co.seoulit.reception.reservation.entity.ReservationBookingRuleEntity;
 import kr.co.seoulit.reception.reservation.entity.ReservationDoctorScheduleEntity;
@@ -23,17 +27,20 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class ReservationReceptionServiceImpl implements ReservationReceptionService {
 
-    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
+    private static final Set<String> REASON_REQUIRED_STATUSES = Set.of("CANCELED", "INACTIVE", "HOLD");
+    private static final Map<String, Set<String>> STATUS_TRANSITIONS = createStatusTransitionRules();
 
     private final ReservationReceptionRepository reservationRepository;
     private final ReservationReceptionMapper reservationMyBatisMapper;
@@ -43,7 +50,11 @@ public class ReservationReceptionServiceImpl implements ReservationReceptionServ
     private final ReservationDoctorScheduleRepository reservationDoctorScheduleRepository;
     private final ReservationTimeSlotRepository reservationTimeSlotRepository;
     private final ReservationBookingRuleRepository reservationBookingRuleRepository;
+    private final PatientServiceClient patientServiceClient;
+    private final DepartmentRepository departmentRepository;
+    private final DoctorRepository doctorRepository;
     private final AuditLogService auditLogService;
+    private final ReceptionNumberSequenceClient receptionNumberSequenceClient;
 
     @Override
     public List<ReservationReceptionDTO> getReservationList(Map<String, Object> searchCondition) {
@@ -63,50 +74,64 @@ public class ReservationReceptionServiceImpl implements ReservationReceptionServ
     @Override
     @Transactional
     public void createReservation(ReservationReceptionDTO reservation) {
-        if (reservation.getReservationNo() == null || reservation.getReservationNo().isBlank()) {
-            throw new IllegalArgumentException("reservationNo is required");
-        }
-        if (reservationRepository.existsByReservationNo(reservation.getReservationNo())) {
-            throw new IllegalArgumentException("Duplicated reservationNo: " + reservation.getReservationNo());
-        }
+        String reservationNo = resolveCreateReservationNo(reservation);
         if (reservation.getReservedAt() == null) {
             throw new IllegalArgumentException("reservedAt is required");
         }
+        if (reservation.getDepartmentId() == null) {
+            throw new IllegalArgumentException("departmentId is required");
+        }
+
+        String normalizedStatus = normalizeStatus(defaultIfBlank(reservation.getStatus(), "RESERVED"));
+        assertStatusSupported(normalizedStatus);
+        String reasonCode = resolveReasonCodeForStatus(normalizedStatus, reservation, null);
+        String reasonText = resolveReasonTextForStatus(normalizedStatus, reservation, null);
+        validateReasonIfRequired(normalizedStatus, reasonCode, reasonText);
 
         ReservationReceptionEntity entity = reservationReqMapStruct.toEntity(reservation);
-        entity.setPatientId(resolveOrCreatePatientId(entity.getPatientId(), entity.getPatientName()));
-        if (entity.getPatientName() == null || entity.getPatientName().isBlank()) {
-            entity.setPatientName(resolvePatientName(entity.getPatientId()));
-        }
-        if (entity.getDepartmentName() == null || entity.getDepartmentName().isBlank()) {
-            entity.setDepartmentName(resolveDepartmentName(entity.getDepartmentId()));
-        }
-        if (entity.getDoctorId() != null && (entity.getDoctorName() == null || entity.getDoctorName().isBlank())) {
-            entity.setDoctorName(resolveDoctorName(entity.getDoctorId()));
-        }
-        if (entity.getStatus() == null || entity.getStatus().isBlank()) {
-            entity.setStatus("RESERVED");
-        }
+        entity.setReservationNo(reservationNo);
+        entity.setPatientId(resolvePatientId(entity.getPatientId(), entity.getPatientName()));
+        entity.setPatientName(resolvePatientName(entity.getPatientId(), entity.getPatientName()));
+        entity.setDepartmentName(resolveDepartmentName(entity.getDepartmentId(), entity.getDepartmentName()));
+        entity.setDoctorName(resolveDoctorName(entity.getDoctorId(), entity.getDoctorName()));
+        entity.setStatus(normalizedStatus);
         if (entity.getIsActive() == null) {
             entity.setIsActive(true);
         }
+        applyStatusSideEffects(entity, normalizedStatus, reasonCode, reasonText);
 
         ReservationReceptionEntity saved = reservationRepository.save(entity);
         ensureBookingRule(saved);
         ReservationDoctorScheduleEntity schedule = ensureDoctorSchedule(saved);
         ensureTimeSlot(saved, schedule);
-        saveReservationStatusHistory(saved.getReservationId(), null, saved.getStatus(), reservation.getCreatedBy(), "Reservation created");
+        saveReservationStatusHistory(saved.getReservationId(), null, saved.getStatus(), reservation.getCreatedBy(), reasonText);
 
         auditLogService.log(
                 "RESERVATION",
                 saved.getReservationId(),
                 "CREATE",
                 reservation.getCreatedBy(),
-                null,
-                null,
+                reasonCode,
+                reasonText,
                 null,
                 reservationResMapStruct.toDto(saved)
         );
+    }
+
+    private String resolveCreateReservationNo(ReservationReceptionDTO reservation) {
+        String requestedReservationNo = trimToNull(reservation.getReservationNo());
+        if (requestedReservationNo != null) {
+            if (reservationRepository.existsByReservationNo(requestedReservationNo)) {
+                throw new IllegalArgumentException("Duplicated reservationNo: " + requestedReservationNo);
+            }
+            return requestedReservationNo;
+        }
+
+        String generatedReservationNo = receptionNumberSequenceClient.nextReceptionNo("RESERVATION");
+        if (reservationRepository.existsByReservationNo(generatedReservationNo)) {
+            throw new IllegalStateException("Generated duplicated reservationNo: " + generatedReservationNo);
+        }
+        return generatedReservationNo;
     }
 
     @Override
@@ -117,69 +142,43 @@ public class ReservationReceptionServiceImpl implements ReservationReceptionServ
                 .orElseThrow(() -> new IllegalArgumentException("Reservation not found. reservationId=" + reservationId));
 
         ReservationReceptionDTO before = reservationResMapStruct.toDto(existing);
-        String beforeStatus = existing.getStatus();
+        String beforeStatus = normalizeStatus(existing.getStatus());
 
-        if (reservation.getReservationNo() != null && !reservation.getReservationNo().isBlank()) {
-            existing.setReservationNo(reservation.getReservationNo());
+        if (trimToNull(reservation.getReservationNo()) != null) {
+            String nextReservationNo = trimToNull(reservation.getReservationNo());
+            if (!Objects.equals(existing.getReservationNo(), nextReservationNo)) {
+                reservationRepository.findByReservationNo(nextReservationNo)
+                        .filter(item -> !Objects.equals(item.getReservationId(), existing.getReservationId()))
+                        .ifPresent(item -> {
+                            throw new IllegalArgumentException("Duplicated reservationNo: " + nextReservationNo);
+                        });
+                existing.setReservationNo(nextReservationNo);
+            }
         }
         if (reservation.getPatientId() != null) {
             existing.setPatientId(reservation.getPatientId());
         }
-        if (reservation.getPatientName() != null) {
-            existing.setPatientName(reservation.getPatientName());
-        }
-        if (reservation.getPatientId() == null && reservation.getPatientName() != null) {
-            existing.setPatientId(resolveOrCreatePatientId(null, reservation.getPatientName()));
-        }
-        if (reservation.getPatientId() != null
-                && (reservation.getPatientName() == null || reservation.getPatientName().isBlank())) {
-            existing.setPatientName(resolvePatientName(reservation.getPatientId()));
+        if (trimToNull(reservation.getPatientName()) != null || reservation.getPatientId() != null) {
+            existing.setPatientId(resolvePatientId(existing.getPatientId(), firstNonBlank(reservation.getPatientName(), existing.getPatientName())));
+            existing.setPatientName(resolvePatientName(existing.getPatientId(), firstNonBlank(reservation.getPatientName(), existing.getPatientName())));
         }
         if (reservation.getDepartmentId() != null) {
             existing.setDepartmentId(reservation.getDepartmentId());
         }
-        if (reservation.getDepartmentName() != null) {
-            existing.setDepartmentName(reservation.getDepartmentName());
-        } else if (reservation.getDepartmentId() != null) {
-            existing.setDepartmentName(resolveDepartmentName(reservation.getDepartmentId()));
+        if (trimToNull(reservation.getDepartmentName()) != null || reservation.getDepartmentId() != null) {
+            existing.setDepartmentName(resolveDepartmentName(existing.getDepartmentId(), firstNonBlank(reservation.getDepartmentName(), existing.getDepartmentName())));
         }
         if (reservation.getDoctorId() != null) {
             existing.setDoctorId(reservation.getDoctorId());
         }
-        if (reservation.getDoctorName() != null) {
-            existing.setDoctorName(reservation.getDoctorName());
-        } else if (reservation.getDoctorId() != null) {
-            existing.setDoctorName(resolveDoctorName(reservation.getDoctorId()));
+        if (trimToNull(reservation.getDoctorName()) != null || reservation.getDoctorId() != null) {
+            existing.setDoctorName(resolveDoctorName(existing.getDoctorId(), firstNonBlank(reservation.getDoctorName(), existing.getDoctorName())));
         }
         if (reservation.getReservedAt() != null) {
             existing.setReservedAt(reservation.getReservedAt());
         }
-        if (reservation.getStatus() != null && !reservation.getStatus().isBlank()) {
-            existing.setStatus(reservation.getStatus());
-        }
         if (reservation.getNote() != null) {
             existing.setNote(reservation.getNote());
-        }
-        if (reservation.getIsActive() != null) {
-            existing.setIsActive(reservation.getIsActive());
-        }
-        if (reservation.getInactiveAt() != null) {
-            existing.setInactiveAt(reservation.getInactiveAt());
-        }
-        if (reservation.getInactiveReasonCode() != null) {
-            existing.setInactiveReasonCode(reservation.getInactiveReasonCode());
-        }
-        if (reservation.getInactiveReasonText() != null) {
-            existing.setInactiveReasonText(reservation.getInactiveReasonText());
-        }
-        if (reservation.getCanceledAt() != null) {
-            existing.setCanceledAt(reservation.getCanceledAt());
-        }
-        if (reservation.getCancelReasonCode() != null) {
-            existing.setCancelReasonCode(reservation.getCancelReasonCode());
-        }
-        if (reservation.getCancelReasonText() != null) {
-            existing.setCancelReasonText(reservation.getCancelReasonText());
         }
         if (reservation.getCreatedBy() != null) {
             existing.setCreatedBy(reservation.getCreatedBy());
@@ -188,17 +187,25 @@ public class ReservationReceptionServiceImpl implements ReservationReceptionServ
             existing.setUpdatedBy(reservation.getUpdatedBy());
         }
 
+        String targetStatus = normalizeStatus(defaultIfBlank(reservation.getStatus(), existing.getStatus()));
+        validateStatusTransition(beforeStatus, targetStatus);
+        String reasonCode = resolveReasonCodeForStatus(targetStatus, reservation, existing);
+        String reasonText = resolveReasonTextForStatus(targetStatus, reservation, existing);
+        validateReasonIfRequired(targetStatus, reasonCode, reasonText);
+        existing.setStatus(targetStatus);
+        applyStatusSideEffects(existing, targetStatus, reasonCode, reasonText);
+
         ReservationReceptionEntity saved = reservationRepository.save(existing);
         ensureBookingRule(saved);
         ReservationDoctorScheduleEntity schedule = ensureDoctorSchedule(saved);
         ensureTimeSlot(saved, schedule);
-        if (!equalsIgnoreCase(beforeStatus, saved.getStatus())) {
+        if (!Objects.equals(beforeStatus, targetStatus)) {
             saveReservationStatusHistory(
                     saved.getReservationId(),
                     beforeStatus,
-                    saved.getStatus(),
+                    targetStatus,
                     reservation.getUpdatedBy(),
-                    "Reservation updated"
+                    reasonText
             );
         }
 
@@ -207,8 +214,8 @@ public class ReservationReceptionServiceImpl implements ReservationReceptionServ
                 saved.getReservationId(),
                 "UPDATE",
                 reservation.getUpdatedBy(),
-                null,
-                null,
+                reasonCode,
+                reasonText,
                 before,
                 reservationResMapStruct.toDto(saved)
         );
@@ -232,39 +239,31 @@ public class ReservationReceptionServiceImpl implements ReservationReceptionServ
                 .orElseThrow(() -> new IllegalArgumentException("Reservation not found. reservationId=" + reservationId));
 
         ReservationReceptionDTO before = reservationResMapStruct.toDto(existing);
-        String beforeStatus = existing.getStatus();
+        String beforeStatus = normalizeStatus(existing.getStatus());
+        String targetStatus = normalizeStatus(status);
+        validateStatusTransition(beforeStatus, targetStatus);
 
-        existing.setStatus(status);
+        String normalizedReasonCode = firstNonBlank(trimToNull(reasonCode), resolveReasonCodeForStatus(targetStatus, null, existing));
+        String normalizedReasonText = firstNonBlank(trimToNull(reasonText), resolveReasonTextForStatus(targetStatus, null, existing));
+        validateReasonIfRequired(targetStatus, normalizedReasonCode, normalizedReasonText);
+
+        existing.setStatus(targetStatus);
         existing.setUpdatedBy(changedBy);
-        if ("CANCELED".equalsIgnoreCase(status) || "CANCELLED".equalsIgnoreCase(status)) {
-            existing.setIsActive(false);
-            existing.setCanceledAt(LocalDateTime.now());
-            existing.setCancelReasonCode(reasonCode);
-            existing.setCancelReasonText(reasonText);
-            existing.setInactiveAt(LocalDateTime.now());
-            existing.setInactiveReasonCode(reasonCode);
-            existing.setInactiveReasonText(reasonText);
-        }
-        if ("INACTIVE".equalsIgnoreCase(status)) {
-            existing.setIsActive(false);
-            existing.setInactiveAt(LocalDateTime.now());
-            existing.setInactiveReasonCode(reasonCode);
-            existing.setInactiveReasonText(reasonText);
-        }
+        applyStatusSideEffects(existing, targetStatus, normalizedReasonCode, normalizedReasonText);
 
         ReservationReceptionEntity saved = reservationRepository.save(existing);
         ensureBookingRule(saved);
         ReservationDoctorScheduleEntity schedule = ensureDoctorSchedule(saved);
         ensureTimeSlot(saved, schedule);
-        saveReservationStatusHistory(saved.getReservationId(), beforeStatus, status, changedBy, reasonText);
+        saveReservationStatusHistory(saved.getReservationId(), beforeStatus, targetStatus, changedBy, normalizedReasonText);
 
         auditLogService.log(
                 "RESERVATION",
                 saved.getReservationId(),
                 "STATUS_CHANGE",
                 changedBy,
-                reasonCode,
-                reasonText,
+                normalizedReasonCode,
+                normalizedReasonText,
                 before,
                 reservationResMapStruct.toDto(saved)
         );
@@ -321,7 +320,10 @@ public class ReservationReceptionServiceImpl implements ReservationReceptionServ
 
         LocalDateTime start = reservation.getReservedAt();
         LocalDateTime end = start.plusMinutes(30);
-        ReservationTimeSlotEntity timeSlot = new ReservationTimeSlotEntity();
+        ReservationTimeSlotEntity timeSlot = reservationTimeSlotRepository
+                .findTopByReservationIdOrderByTimeSlotIdDesc(reservation.getReservationId())
+                .orElseGet(ReservationTimeSlotEntity::new);
+
         timeSlot.setScheduleId(schedule.getScheduleId());
         timeSlot.setSlotStartDatetime(start);
         timeSlot.setSlotEndDatetime(end);
@@ -352,54 +354,220 @@ public class ReservationReceptionServiceImpl implements ReservationReceptionServ
     }
 
     private String mapSlotStatus(String reservationStatus) {
-        if (reservationStatus == null || reservationStatus.isBlank()) {
-            return "RESERVED";
-        }
-        String normalized = reservationStatus.trim().toUpperCase();
-        if ("CANCELED".equals(normalized) || "CANCELLED".equals(normalized)) {
+        String normalized = normalizeStatus(defaultIfBlank(reservationStatus, "RESERVED"));
+        if ("CANCELED".equals(normalized)) {
             return "CANCELED";
         }
-        if ("COMPLETED".equals(normalized) || "DONE".equals(normalized)) {
+        if ("COMPLETED".equals(normalized)) {
             return "COMPLETED";
         }
         return "RESERVED";
     }
 
-    private boolean equalsIgnoreCase(String a, String b) {
-        if (a == null && b == null) {
-            return true;
+    private void validateStatusTransition(String fromStatus, String toStatus) {
+        String normalizedFrom = normalizeStatus(defaultIfBlank(fromStatus, "RESERVED"));
+        String normalizedTo = normalizeStatus(toStatus);
+        assertStatusSupported(normalizedFrom);
+        assertStatusSupported(normalizedTo);
+
+        if (Objects.equals(normalizedFrom, normalizedTo)) {
+            return;
         }
-        if (a == null || b == null) {
-            return false;
+
+        Set<String> allowedTargets = STATUS_TRANSITIONS.getOrDefault(normalizedFrom, Collections.emptySet());
+        if (!allowedTargets.contains(normalizedTo)) {
+            throw new IllegalArgumentException("Invalid status transition: " + normalizedFrom + " -> " + normalizedTo);
         }
-        return a.equalsIgnoreCase(b);
     }
 
-    private Long resolveOrCreatePatientId(Long patientId, String patientName) {
+    private void assertStatusSupported(String status) {
+        if (!STATUS_TRANSITIONS.containsKey(status)) {
+            throw new IllegalArgumentException("Unsupported status: " + status);
+        }
+    }
+
+    private void validateReasonIfRequired(String status, String reasonCode, String reasonText) {
+        if (!REASON_REQUIRED_STATUSES.contains(status)) {
+            return;
+        }
+        if (trimToNull(reasonCode) == null && trimToNull(reasonText) == null) {
+            throw new IllegalArgumentException("Reason is required for status: " + status);
+        }
+    }
+
+    private void applyStatusSideEffects(ReservationReceptionEntity entity, String status, String reasonCode, String reasonText) {
+        String normalizedStatus = normalizeStatus(status);
+        String normalizedReasonCode = trimToNull(reasonCode);
+        String normalizedReasonText = trimToNull(reasonText);
+
+        switch (normalizedStatus) {
+            case "CANCELED" -> {
+                entity.setIsActive(false);
+                entity.setCanceledAt(LocalDateTime.now());
+                entity.setCancelReasonCode(normalizedReasonCode);
+                entity.setCancelReasonText(normalizedReasonText);
+                entity.setInactiveAt(LocalDateTime.now());
+                entity.setInactiveReasonCode(normalizedReasonCode);
+                entity.setInactiveReasonText(normalizedReasonText);
+            }
+            case "INACTIVE" -> {
+                entity.setIsActive(false);
+                entity.setInactiveAt(LocalDateTime.now());
+                entity.setInactiveReasonCode(normalizedReasonCode);
+                entity.setInactiveReasonText(normalizedReasonText);
+            }
+            case "HOLD" -> {
+                entity.setIsActive(true);
+                entity.setInactiveAt(null);
+                entity.setInactiveReasonCode(null);
+                entity.setInactiveReasonText(null);
+                entity.setCanceledAt(null);
+                entity.setCancelReasonCode(null);
+                entity.setCancelReasonText(null);
+            }
+            default -> {
+                entity.setIsActive(true);
+                entity.setInactiveAt(null);
+                entity.setInactiveReasonCode(null);
+                entity.setInactiveReasonText(null);
+                entity.setCanceledAt(null);
+                entity.setCancelReasonCode(null);
+                entity.setCancelReasonText(null);
+            }
+        }
+    }
+
+    private String normalizeStatus(String status) {
+        String normalized = trimToNull(status);
+        if (normalized == null) {
+            throw new IllegalArgumentException("status is required");
+        }
+        normalized = normalized.toUpperCase();
+        return switch (normalized) {
+            case "CANCELLED", "CANCELED" -> "CANCELED";
+            case "DONE" -> "COMPLETED";
+            case "ON_HOLD" -> "HOLD";
+            case "TRANSFERRED" -> "INACTIVE";
+            default -> normalized;
+        };
+    }
+
+    private static Map<String, Set<String>> createStatusTransitionRules() {
+        Map<String, Set<String>> rules = new HashMap<>();
+        rules.put("RESERVED", Set.of("WAITING", "IN_PROGRESS", "HOLD", "CANCELED", "INACTIVE", "COMPLETED"));
+        rules.put("WAITING", Set.of("RESERVED", "IN_PROGRESS", "HOLD", "CANCELED", "INACTIVE", "COMPLETED"));
+        rules.put("IN_PROGRESS", Set.of("HOLD", "CANCELED", "INACTIVE", "COMPLETED"));
+        rules.put("HOLD", Set.of("WAITING", "RESERVED", "IN_PROGRESS", "CANCELED", "INACTIVE"));
+        rules.put("PAYMENT_WAIT", Set.of("COMPLETED", "CANCELED", "INACTIVE"));
+        rules.put("COMPLETED", Collections.emptySet());
+        rules.put("CANCELED", Collections.emptySet());
+        rules.put("INACTIVE", Collections.emptySet());
+        return rules;
+    }
+
+    private String resolveReasonCodeForStatus(String status, ReservationReceptionDTO request, ReservationReceptionEntity existing) {
+        if ("CANCELED".equals(status)) {
+            return firstNonBlank(
+                    request == null ? null : request.getCancelReasonCode(),
+                    existing == null ? null : existing.getCancelReasonCode(),
+                    existing == null ? null : existing.getInactiveReasonCode(),
+                    "USER_CANCEL"
+            );
+        }
+        if ("INACTIVE".equals(status)) {
+            return firstNonBlank(
+                    request == null ? null : request.getInactiveReasonCode(),
+                    existing == null ? null : existing.getInactiveReasonCode(),
+                    "INACTIVE_BY_USER"
+            );
+        }
+        if ("HOLD".equals(status)) {
+            return firstNonBlank("ON_HOLD");
+        }
+        return null;
+    }
+
+    private String resolveReasonTextForStatus(String status, ReservationReceptionDTO request, ReservationReceptionEntity existing) {
+        if ("CANCELED".equals(status)) {
+            return firstNonBlank(
+                    request == null ? null : request.getCancelReasonText(),
+                    existing == null ? null : existing.getCancelReasonText(),
+                    existing == null ? null : existing.getInactiveReasonText()
+            );
+        }
+        if ("INACTIVE".equals(status)) {
+            return firstNonBlank(
+                    request == null ? null : request.getInactiveReasonText(),
+                    existing == null ? null : existing.getInactiveReasonText()
+            );
+        }
+        if ("HOLD".equals(status)) {
+            return firstNonBlank(request == null ? null : request.getNote(), existing == null ? null : existing.getNote());
+        }
+        return null;
+    }
+
+    private Long resolvePatientId(Long patientId, String patientName) {
         if (patientId != null) {
-            return patientId;
+            return patientServiceClient.requirePatientById(patientId).patientId();
         }
-        throw new IllegalArgumentException("patientId is required");
+        String normalizedPatientName = trimToNull(patientName);
+        if (normalizedPatientName == null) {
+            throw new IllegalArgumentException("patientId is required");
+        }
+        return patientServiceClient.requirePatientByName(normalizedPatientName).patientId();
     }
 
-    private String resolvePatientName(Long patientId) {
+    private String resolvePatientName(Long patientId, String fallbackName) {
         if (patientId == null) {
-            return null;
+            throw new IllegalArgumentException("patientId is required");
         }
-        return "PATIENT-" + patientId;
+        PatientServiceClient.PatientSummary patientSummary = patientServiceClient.requirePatientById(patientId);
+        String resolvedName = firstNonBlank(patientSummary.patientName(), fallbackName);
+        if (resolvedName == null) {
+            throw new IllegalArgumentException("patientName not found for patientId=" + patientId);
+        }
+        return resolvedName;
     }
 
-    private String resolveDepartmentName(Long departmentId) {
+    private String resolveDepartmentName(Long departmentId, String fallbackName) {
         if (departmentId == null) {
-            return null;
+            throw new IllegalArgumentException("departmentId is required");
         }
-        return "DEPT-" + departmentId;
+        String fallback = trimToNull(fallbackName);
+        return fallback != null ? fallback : "DEPT-" + departmentId;
     }
 
-    private String resolveDoctorName(Long doctorId) {
+    private String resolveDoctorName(Long doctorId, String fallbackName) {
         if (doctorId == null) {
             return null;
         }
-        return "DOCTOR-" + doctorId;
+        String fallback = trimToNull(fallbackName);
+        return fallback != null ? fallback : "DOCTOR-" + doctorId;
+    }
+
+    private String firstNonBlank(String... values) {
+        if (values == null) {
+            return null;
+        }
+        for (String value : values) {
+            String normalized = trimToNull(value);
+            if (normalized != null) {
+                return normalized;
+            }
+        }
+        return null;
+    }
+
+    private String defaultIfBlank(String value, String defaultValue) {
+        return trimToNull(value) != null ? trimToNull(value) : defaultValue;
+    }
+
+    private String trimToNull(String value) {
+        if (value == null) {
+            return null;
+        }
+        String trimmed = value.trim();
+        return trimmed.isEmpty() ? null : trimmed;
     }
 }

@@ -1,5 +1,6 @@
 package kr.co.seoulit.reception.emergency.service;
 
+import kr.co.seoulit.common.sequence.ReceptionNumberSequenceClient;
 import kr.co.seoulit.reception.emergency.dto.EmergencyReceptionDTO;
 import kr.co.seoulit.reception.emergency.entity.EmergencyReceptionEntity;
 import kr.co.seoulit.reception.emergency.entity.EmergencyTriageEntity;
@@ -7,24 +8,38 @@ import kr.co.seoulit.reception.emergency.mapper.EmergencyReceptionMapper;
 import kr.co.seoulit.reception.emergency.repository.EmergencyReceptionRepository;
 import kr.co.seoulit.reception.emergency.repository.EmergencyTriageRepository;
 import kr.co.seoulit.reception.outpatient.entity.OutpatientReceptionEntity;
+import kr.co.seoulit.common.client.PatientServiceClient;
 import kr.co.seoulit.reception.outpatient.repository.OutpatientReceptionRepository;
+import kr.co.seoulit.reception.repository.DepartmentRepository;
+import kr.co.seoulit.reception.repository.DoctorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class EmergencyReceptionServiceImpl implements EmergencyReceptionService {
 
+    private static final Set<String> REASON_REQUIRED_STATUSES = Set.of("CANCELLED", "INACTIVE", "HOLD");
+    private static final Map<String, Set<String>> STATUS_TRANSITIONS = createStatusTransitionRules();
+
     private final OutpatientReceptionRepository receptionRepository;
     private final EmergencyReceptionRepository emergencyRepository;
     private final EmergencyTriageRepository emergencyTriageRepository;
     private final EmergencyReceptionMapper emergencyMyBatisMapper;
+    private final PatientServiceClient patientServiceClient;
+    private final DepartmentRepository departmentRepository;
+    private final DoctorRepository doctorRepository;
+    private final ReceptionNumberSequenceClient receptionNumberSequenceClient;
 
     @Override
     public List<EmergencyReceptionDTO> getEmergencyReceptionList(Map<String, Object> searchCondition) {
@@ -36,9 +51,9 @@ public class EmergencyReceptionServiceImpl implements EmergencyReceptionService 
     @Override
     public EmergencyReceptionDTO getEmergencyReception(Long receptionId) {
         OutpatientReceptionEntity reception = receptionRepository.findById(receptionId)
-                .orElseThrow(() -> new IllegalArgumentException("응급 접수 정보를 찾을 수 없습니다. receptionId=" + receptionId));
+                .orElseThrow(() -> new IllegalArgumentException("Emergency reception not found. receptionId=" + receptionId));
         EmergencyReceptionEntity emergency = emergencyRepository.findByReceptionId(receptionId)
-                .orElseThrow(() -> new IllegalArgumentException("응급 상세 정보를 찾을 수 없습니다. receptionId=" + receptionId));
+                .orElseThrow(() -> new IllegalArgumentException("Emergency detail not found. receptionId=" + receptionId));
         EmergencyTriageEntity triage = emergencyTriageRepository
                 .findTopByReceptionIdOrderByTriageDatetimeDesc(receptionId)
                 .orElse(null);
@@ -49,34 +64,39 @@ public class EmergencyReceptionServiceImpl implements EmergencyReceptionService 
     @Override
     @Transactional
     public void createEmergencyReception(EmergencyReceptionDTO request) {
-        if (request.getReceptionNo() == null || request.getReceptionNo().isBlank()) {
-            throw new IllegalArgumentException("접수 번호는 필수입니다.");
-        }
+        String receptionNo = resolveCreateReceptionNo(request);
         if (request.getPatientId() == null) {
-            throw new IllegalArgumentException("환자 ID는 필수입니다.");
+            throw new IllegalArgumentException("patientId is required");
         }
         if (request.getDepartmentId() == null) {
-            throw new IllegalArgumentException("진료과 ID는 필수입니다.");
+            throw new IllegalArgumentException("departmentId is required");
         }
-        if (request.getTriageLevel() == null || request.getChiefComplaint() == null || request.getChiefComplaint().isBlank()) {
-            throw new IllegalArgumentException("응급 분류 단계와 주호소는 필수입니다.");
+        if (request.getTriageLevel() == null || trimToNull(request.getChiefComplaint()) == null) {
+            throw new IllegalArgumentException("triageLevel and chiefComplaint are required");
         }
 
+        String normalizedStatus = normalizeStatus(defaultIfBlank(request.getStatus(), "WAITING"));
+        assertStatusSupported(normalizedStatus);
+        String reasonCode = resolveReasonCodeForStatus(normalizedStatus, request, null);
+        String reasonText = resolveReasonTextForStatus(normalizedStatus, request, null);
+        validateReasonIfRequired(normalizedStatus, reasonCode, reasonText);
+
         OutpatientReceptionEntity reception = new OutpatientReceptionEntity();
-        reception.setReceptionNo(request.getReceptionNo());
+        reception.setReceptionNo(receptionNo);
         reception.setPatientId(request.getPatientId());
-        reception.setPatientName(resolvePatientNameWithFallback(request.getPatientId(), request.getPatientName()));
+        reception.setPatientName(resolvePatientName(request.getPatientId(), request.getPatientName()));
         reception.setVisitType("EMERGENCY");
         reception.setDepartmentId(request.getDepartmentId());
-        reception.setDepartmentName(resolveDepartmentNameWithFallback(request.getDepartmentId(), request.getDepartmentName()));
+        reception.setDepartmentName(resolveDepartmentName(request.getDepartmentId(), request.getDepartmentName()));
         reception.setDoctorId(request.getDoctorId());
-        reception.setDoctorName(resolveDoctorNameWithFallback(request.getDoctorId(), request.getDoctorName()));
+        reception.setDoctorName(resolveDoctorName(request.getDoctorId(), request.getDoctorName()));
         reception.setReservationId(request.getReservationId());
         reception.setScheduledAt(request.getScheduledAt());
         reception.setArrivedAt(request.getArrivedAt());
-        reception.setStatus(request.getStatus() != null ? request.getStatus() : "WAITING");
+        reception.setStatus(normalizedStatus);
         reception.setNote(request.getNote());
         reception.setIsActive(request.getIsActive() != null ? request.getIsActive() : true);
+        applyStatusSideEffects(reception, normalizedStatus, reasonCode, reasonText);
 
         OutpatientReceptionEntity saved = receptionRepository.save(reception);
 
@@ -88,7 +108,7 @@ public class EmergencyReceptionServiceImpl implements EmergencyReceptionService 
         emergency.setVitalHr(request.getVitalHr());
         emergency.setArrivalMode(request.getArrivalMode());
         emergency.setArrivalDatetime(request.getArrivedAt());
-        emergency.setActiveYn(toYn(request.getIsActive()));
+        emergency.setActiveYn(toYn(saved.getIsActive()));
         emergencyRepository.save(emergency);
 
         EmergencyTriageEntity triage = new EmergencyTriageEntity();
@@ -96,47 +116,65 @@ public class EmergencyReceptionServiceImpl implements EmergencyReceptionService 
         triage.setTriageLevelCd(toTriageLevelCode(request.getTriageLevel()));
         triage.setTriageDatetime(request.getArrivedAt() != null ? request.getArrivedAt() : LocalDateTime.now());
         triage.setTriageNote(request.getTriageNote());
-        triage.setActiveYn(toYn(request.getIsActive()));
+        triage.setActiveYn(toYn(saved.getIsActive()));
         emergencyTriageRepository.save(triage);
+    }
+
+    private String resolveCreateReceptionNo(EmergencyReceptionDTO request) {
+        String requestedReceptionNo = trimToNull(request.getReceptionNo());
+        if (requestedReceptionNo != null) {
+            if (receptionRepository.existsByReceptionNo(requestedReceptionNo)) {
+                throw new IllegalArgumentException("Duplicated receptionNo: " + requestedReceptionNo);
+            }
+            return requestedReceptionNo;
+        }
+
+        String generatedReceptionNo = receptionNumberSequenceClient.nextReceptionNo("EMERGENCY");
+        if (receptionRepository.existsByReceptionNo(generatedReceptionNo)) {
+            throw new IllegalStateException("Generated duplicated receptionNo: " + generatedReceptionNo);
+        }
+        return generatedReceptionNo;
     }
 
     @Override
     @Transactional
     public void updateEmergencyReception(Long receptionId, EmergencyReceptionDTO request) {
         OutpatientReceptionEntity reception = receptionRepository.findById(receptionId)
-                .orElseThrow(() -> new IllegalArgumentException("응급 접수 정보를 찾을 수 없습니다. receptionId=" + receptionId));
+                .orElseThrow(() -> new IllegalArgumentException("Emergency reception not found. receptionId=" + receptionId));
         EmergencyReceptionEntity emergency = emergencyRepository.findByReceptionId(receptionId)
-                .orElseThrow(() -> new IllegalArgumentException("응급 상세 정보를 찾을 수 없습니다. receptionId=" + receptionId));
+                .orElseThrow(() -> new IllegalArgumentException("Emergency detail not found. receptionId=" + receptionId));
         EmergencyTriageEntity triage = emergencyTriageRepository
                 .findTopByReceptionIdOrderByTriageDatetimeDesc(receptionId)
                 .orElse(null);
 
-        if (request.getReceptionNo() != null && !request.getReceptionNo().isBlank()) {
-            reception.setReceptionNo(request.getReceptionNo());
+        if (trimToNull(request.getReceptionNo()) != null) {
+            String nextReceptionNo = trimToNull(request.getReceptionNo());
+            if (!Objects.equals(reception.getReceptionNo(), nextReceptionNo)) {
+                receptionRepository.findByReceptionNo(nextReceptionNo)
+                        .filter(item -> !Objects.equals(item.getReceptionId(), reception.getReceptionId()))
+                        .ifPresent(item -> {
+                            throw new IllegalArgumentException("Duplicated receptionNo: " + nextReceptionNo);
+                        });
+                reception.setReceptionNo(nextReceptionNo);
+            }
         }
         if (request.getPatientId() != null) {
             reception.setPatientId(request.getPatientId());
         }
-        if (request.getPatientName() != null) {
-            reception.setPatientName(request.getPatientName());
-        } else if (request.getPatientId() != null) {
-            reception.setPatientName(resolvePatientNameWithFallback(request.getPatientId(), null));
+        if (trimToNull(request.getPatientName()) != null || request.getPatientId() != null) {
+            reception.setPatientName(resolvePatientName(reception.getPatientId(), firstNonBlank(request.getPatientName(), reception.getPatientName())));
         }
         if (request.getDepartmentId() != null) {
             reception.setDepartmentId(request.getDepartmentId());
         }
-        if (request.getDepartmentName() != null) {
-            reception.setDepartmentName(request.getDepartmentName());
-        } else if (request.getDepartmentId() != null) {
-            reception.setDepartmentName(resolveDepartmentNameWithFallback(request.getDepartmentId(), null));
+        if (trimToNull(request.getDepartmentName()) != null || request.getDepartmentId() != null) {
+            reception.setDepartmentName(resolveDepartmentName(reception.getDepartmentId(), firstNonBlank(request.getDepartmentName(), reception.getDepartmentName())));
         }
         if (request.getDoctorId() != null) {
             reception.setDoctorId(request.getDoctorId());
         }
-        if (request.getDoctorName() != null) {
-            reception.setDoctorName(request.getDoctorName());
-        } else if (request.getDoctorId() != null) {
-            reception.setDoctorName(resolveDoctorNameWithFallback(request.getDoctorId(), null));
+        if (trimToNull(request.getDoctorName()) != null || request.getDoctorId() != null) {
+            reception.setDoctorName(resolveDoctorName(reception.getDoctorId(), firstNonBlank(request.getDoctorName(), reception.getDoctorName())));
         }
         if (request.getReservationId() != null) {
             reception.setReservationId(request.getReservationId());
@@ -147,15 +185,18 @@ public class EmergencyReceptionServiceImpl implements EmergencyReceptionService 
         if (request.getArrivedAt() != null) {
             reception.setArrivedAt(request.getArrivedAt());
         }
-        if (request.getStatus() != null && !request.getStatus().isBlank()) {
-            reception.setStatus(request.getStatus());
-        }
         if (request.getNote() != null) {
             reception.setNote(request.getNote());
         }
-        if (request.getIsActive() != null) {
-            reception.setIsActive(request.getIsActive());
-        }
+
+        String fromStatus = normalizeStatus(reception.getStatus());
+        String targetStatus = normalizeStatus(defaultIfBlank(request.getStatus(), reception.getStatus()));
+        validateStatusTransition(fromStatus, targetStatus);
+        String reasonCode = resolveReasonCodeForStatus(targetStatus, request, reception);
+        String reasonText = resolveReasonTextForStatus(targetStatus, request, reception);
+        validateReasonIfRequired(targetStatus, reasonCode, reasonText);
+        reception.setStatus(targetStatus);
+        applyStatusSideEffects(reception, targetStatus, reasonCode, reasonText);
 
         if (request.getChiefComplaint() != null) {
             emergency.setChiefComplaint(request.getChiefComplaint());
@@ -178,9 +219,7 @@ public class EmergencyReceptionServiceImpl implements EmergencyReceptionService 
         if (request.getArrivedAt() != null) {
             emergency.setArrivalDatetime(request.getArrivedAt());
         }
-        if (request.getIsActive() != null) {
-            emergency.setActiveYn(toYn(request.getIsActive()));
-        }
+        emergency.setActiveYn(toYn(reception.getIsActive()));
 
         receptionRepository.save(reception);
         emergencyRepository.save(emergency);
@@ -199,7 +238,7 @@ public class EmergencyReceptionServiceImpl implements EmergencyReceptionService 
                 triage.setTriageNote(request.getTriageNote());
             }
             triage.setTriageDatetime(request.getArrivedAt() != null ? request.getArrivedAt() : LocalDateTime.now());
-            triage.setActiveYn(toYn(request.getIsActive()));
+            triage.setActiveYn(toYn(reception.getIsActive()));
             emergencyTriageRepository.save(triage);
         }
     }
@@ -241,34 +280,192 @@ public class EmergencyReceptionServiceImpl implements EmergencyReceptionService 
         return dto;
     }
 
-    private String resolvePatientNameWithFallback(Long patientId, String fallback) {
-        if (fallback != null && !fallback.isBlank()) {
-            return fallback;
+    private void validateStatusTransition(String fromStatus, String toStatus) {
+        String normalizedFrom = normalizeStatus(defaultIfBlank(fromStatus, "WAITING"));
+        String normalizedTo = normalizeStatus(toStatus);
+        assertStatusSupported(normalizedFrom);
+        assertStatusSupported(normalizedTo);
+        if (Objects.equals(normalizedFrom, normalizedTo)) {
+            return;
         }
+        Set<String> allowedTargets = STATUS_TRANSITIONS.getOrDefault(normalizedFrom, Collections.emptySet());
+        if (!allowedTargets.contains(normalizedTo)) {
+            throw new IllegalArgumentException("Invalid status transition: " + normalizedFrom + " -> " + normalizedTo);
+        }
+    }
+
+    private void assertStatusSupported(String status) {
+        if (!STATUS_TRANSITIONS.containsKey(status)) {
+            throw new IllegalArgumentException("Unsupported status: " + status);
+        }
+    }
+
+    private void validateReasonIfRequired(String status, String reasonCode, String reasonText) {
+        if (!REASON_REQUIRED_STATUSES.contains(status)) {
+            return;
+        }
+        if (trimToNull(reasonCode) == null && trimToNull(reasonText) == null) {
+            throw new IllegalArgumentException("Reason is required for status: " + status);
+        }
+    }
+
+    private void applyStatusSideEffects(OutpatientReceptionEntity reception, String status, String reasonCode, String reasonText) {
+        String normalizedStatus = normalizeStatus(status);
+        String normalizedReasonCode = trimToNull(reasonCode);
+        String normalizedReasonText = trimToNull(reasonText);
+
+        switch (normalizedStatus) {
+            case "CANCELLED" -> {
+                reception.setIsActive(false);
+                reception.setInactiveAt(LocalDateTime.now());
+                reception.setCancelReasonCode(normalizedReasonCode);
+                reception.setCancelReasonText(normalizedReasonText);
+                reception.setInactiveReasonCode(normalizedReasonCode);
+                reception.setInactiveReasonText(normalizedReasonText);
+                reception.setHoldReasonCode(null);
+                reception.setHoldReasonText(null);
+            }
+            case "INACTIVE" -> {
+                reception.setIsActive(false);
+                reception.setInactiveAt(LocalDateTime.now());
+                reception.setInactiveReasonCode(normalizedReasonCode);
+                reception.setInactiveReasonText(normalizedReasonText);
+                reception.setCancelReasonCode(null);
+                reception.setCancelReasonText(null);
+                reception.setHoldReasonCode(null);
+                reception.setHoldReasonText(null);
+            }
+            case "HOLD" -> {
+                reception.setIsActive(true);
+                reception.setInactiveAt(null);
+                reception.setInactiveReasonCode(null);
+                reception.setInactiveReasonText(null);
+                reception.setCancelReasonCode(null);
+                reception.setCancelReasonText(null);
+                reception.setHoldReasonCode(normalizedReasonCode);
+                reception.setHoldReasonText(normalizedReasonText);
+            }
+            default -> {
+                reception.setIsActive(true);
+                reception.setInactiveAt(null);
+                reception.setInactiveReasonCode(null);
+                reception.setInactiveReasonText(null);
+                reception.setCancelReasonCode(null);
+                reception.setCancelReasonText(null);
+                reception.setHoldReasonCode(null);
+                reception.setHoldReasonText(null);
+            }
+        }
+    }
+
+    private String normalizeStatus(String status) {
+        String normalized = trimToNull(status);
+        if (normalized == null) {
+            throw new IllegalArgumentException("status is required");
+        }
+        normalized = normalized.toUpperCase();
+        return switch (normalized) {
+            case "CANCELED" -> "CANCELLED";
+            case "REGISTERED" -> "WAITING";
+            case "DONE" -> "COMPLETED";
+            case "ON_HOLD" -> "HOLD";
+            case "OBSERVING" -> "OBSERVATION";
+            case "TRANSFERRED" -> "INACTIVE";
+            case "TRIAGE_PROGRESS" -> "TRIAGE_IN_PROGRESS";
+            default -> normalized;
+        };
+    }
+
+    private static Map<String, Set<String>> createStatusTransitionRules() {
+        Map<String, Set<String>> rules = new HashMap<>();
+        rules.put("RESERVED", Set.of("WAITING", "CANCELLED", "INACTIVE"));
+        rules.put("WAITING", Set.of("CALLED", "TRIAGE", "TRIAGE_IN_PROGRESS", "IN_PROGRESS", "HOLD", "COMPLETED", "CANCELLED", "INACTIVE"));
+        rules.put("CALLED", Set.of("TRIAGE", "TRIAGE_IN_PROGRESS", "IN_PROGRESS", "HOLD", "CANCELLED", "INACTIVE"));
+        rules.put("TRIAGE", Set.of("TRIAGE_IN_PROGRESS", "IN_PROGRESS", "HOLD", "CANCELLED", "INACTIVE"));
+        rules.put("TRIAGE_IN_PROGRESS", Set.of("IN_PROGRESS", "HOLD", "CANCELLED", "INACTIVE"));
+        rules.put("IN_PROGRESS", Set.of("OBSERVATION", "HOLD", "PAYMENT_WAIT", "COMPLETED", "CANCELLED", "INACTIVE"));
+        rules.put("OBSERVATION", Set.of("IN_PROGRESS", "HOLD", "PAYMENT_WAIT", "COMPLETED", "CANCELLED", "INACTIVE"));
+        rules.put("HOLD", Set.of("WAITING", "CALLED", "TRIAGE", "TRIAGE_IN_PROGRESS", "IN_PROGRESS", "CANCELLED", "INACTIVE"));
+        rules.put("PAYMENT_WAIT", Set.of("COMPLETED", "CANCELLED", "INACTIVE"));
+        rules.put("COMPLETED", Set.of("CANCELLED"));
+        rules.put("CANCELLED", Collections.emptySet());
+        rules.put("INACTIVE", Collections.emptySet());
+        return rules;
+    }
+
+    private String resolveReasonCodeForStatus(String status, EmergencyReceptionDTO request, OutpatientReceptionEntity existing) {
+        if ("CANCELLED".equals(status)) {
+            return firstNonBlank(
+                    trimToNull(request == null ? null : request.getNote()) != null ? "CANCELLED_BY_USER" : null,
+                    existing == null ? null : existing.getCancelReasonCode(),
+                    existing == null ? null : existing.getInactiveReasonCode(),
+                    "CANCELLED_BY_USER"
+            );
+        }
+        if ("INACTIVE".equals(status)) {
+            return firstNonBlank(
+                    trimToNull(request == null ? null : request.getNote()) != null ? "INACTIVE_BY_USER" : null,
+                    existing == null ? null : existing.getInactiveReasonCode()
+            );
+        }
+        if ("HOLD".equals(status)) {
+            return firstNonBlank(
+                    trimToNull(request == null ? null : request.getNote()) != null ? "ON_HOLD" : null,
+                    existing == null ? null : existing.getHoldReasonCode()
+            );
+        }
+        return null;
+    }
+
+    private String resolveReasonTextForStatus(String status, EmergencyReceptionDTO request, OutpatientReceptionEntity existing) {
+        if ("CANCELLED".equals(status)) {
+            return firstNonBlank(
+                    request == null ? null : request.getNote(),
+                    existing == null ? null : existing.getCancelReasonText(),
+                    existing == null ? null : existing.getInactiveReasonText()
+            );
+        }
+        if ("INACTIVE".equals(status)) {
+            return firstNonBlank(
+                    request == null ? null : request.getNote(),
+                    existing == null ? null : existing.getInactiveReasonText()
+            );
+        }
+        if ("HOLD".equals(status)) {
+            return firstNonBlank(
+                    request == null ? null : request.getNote(),
+                    existing == null ? null : existing.getHoldReasonText()
+            );
+        }
+        return null;
+    }
+
+    private String resolvePatientName(Long patientId, String fallback) {
         if (patientId == null) {
-            throw new IllegalArgumentException("환자 ID는 필수입니다.");
+            throw new IllegalArgumentException("patientId is required");
         }
-        return "환자-" + patientId;
+        PatientServiceClient.PatientSummary patientSummary = patientServiceClient.requirePatientById(patientId);
+        String resolvedName = firstNonBlank(patientSummary.patientName(), fallback);
+        if (resolvedName == null) {
+            throw new IllegalArgumentException("patientName not found for patientId=" + patientId);
+        }
+        return resolvedName;
     }
 
-    private String resolveDepartmentNameWithFallback(Long departmentId, String fallback) {
-        if (fallback != null && !fallback.isBlank()) {
-            return fallback;
-        }
+    private String resolveDepartmentName(Long departmentId, String fallback) {
         if (departmentId == null) {
-            throw new IllegalArgumentException("진료과 ID는 필수입니다.");
+            throw new IllegalArgumentException("departmentId is required");
         }
-        return "진료과-" + departmentId;
+        String normalizedFallback = trimToNull(fallback);
+        return normalizedFallback != null ? normalizedFallback : "DEPT-" + departmentId;
     }
 
-    private String resolveDoctorNameWithFallback(Long doctorId, String fallback) {
+    private String resolveDoctorName(Long doctorId, String fallback) {
         if (doctorId == null) {
             return null;
         }
-        if (fallback != null && !fallback.isBlank()) {
-            return fallback;
-        }
-        return "의사-" + doctorId;
+        String normalizedFallback = trimToNull(fallback);
+        return normalizedFallback != null ? normalizedFallback : "DOCTOR-" + doctorId;
     }
 
     private String toYn(Boolean value) {
@@ -326,5 +523,30 @@ public class EmergencyReceptionServiceImpl implements EmergencyReceptionService 
         } catch (NumberFormatException ignored) {
             return null;
         }
+    }
+
+    private String firstNonBlank(String... values) {
+        if (values == null) {
+            return null;
+        }
+        for (String value : values) {
+            String normalized = trimToNull(value);
+            if (normalized != null) {
+                return normalized;
+            }
+        }
+        return null;
+    }
+
+    private String defaultIfBlank(String value, String defaultValue) {
+        return trimToNull(value) != null ? trimToNull(value) : defaultValue;
+    }
+
+    private String trimToNull(String value) {
+        if (value == null) {
+            return null;
+        }
+        String trimmed = value.trim();
+        return trimmed.isEmpty() ? null : trimmed;
     }
 }

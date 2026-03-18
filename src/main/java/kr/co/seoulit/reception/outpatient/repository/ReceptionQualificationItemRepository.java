@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface ReceptionQualificationItemRepository extends JpaRepository<ReceptionQualificationItemEntity, Long> {
     List<ReceptionQualificationItemEntity> findByQualificationSnapshotIdOrderByDisplayOrderAsc(Long qualificationSnapshotId);
+
+    void deleteByQualificationSnapshotId(Long qualificationSnapshotId);
 }

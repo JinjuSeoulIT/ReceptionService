@@ -1,11 +1,20 @@
 package kr.co.seoulit.reception.outpatient.service;
 
 import kr.co.seoulit.common.audit.AuditLogService;
+import kr.co.seoulit.common.sequence.ReceptionNumberSequenceClient;
 import kr.co.seoulit.reception.exception.ReceptionNotFoundException;
-import kr.co.seoulit.reception.mapstruct.ReceptionReqMapStruct;
-import kr.co.seoulit.reception.mapstruct.ReceptionResMapStruct;
+import kr.co.seoulit.reception.outpatient.mapstruct.ReceptionReqMapStruct;
+import kr.co.seoulit.reception.outpatient.mapstruct.ReceptionResMapStruct;
+import kr.co.seoulit.reception.outpatient.dto.OutpatientCallHistoryDTO;
+import kr.co.seoulit.reception.outpatient.dto.OutpatientClosureReasonDTO;
+import kr.co.seoulit.reception.outpatient.dto.OutpatientQualificationItemDTO;
+import kr.co.seoulit.reception.outpatient.dto.OutpatientQualificationSnapshotDTO;
+import kr.co.seoulit.reception.outpatient.dto.OutpatientReceptionAuditDTO;
 import kr.co.seoulit.reception.outpatient.dto.OutpatientReceptionDTO;
 import kr.co.seoulit.reception.outpatient.dto.OutpatientReceptionStatusHistoryDTO;
+import kr.co.seoulit.reception.outpatient.dto.OutpatientSettlementSnapshotDTO;
+import kr.co.seoulit.reception.outpatient.dto.OutpatientVisitClosureDTO;
+import kr.co.seoulit.reception.outpatient.dto.OutpatientVisitClosureHistoryDTO;
 import kr.co.seoulit.reception.outpatient.entity.OutpatientReceptionDetailEntity;
 import kr.co.seoulit.reception.outpatient.entity.OutpatientReceptionEntity;
 import kr.co.seoulit.reception.outpatient.entity.OutpatientReceptionStatusHistoryEntity;
@@ -31,6 +40,9 @@ import kr.co.seoulit.reception.outpatient.repository.ReceptionQualificationSnaps
 import kr.co.seoulit.reception.outpatient.repository.ReceptionSettlementSnapshotRepository;
 import kr.co.seoulit.reception.outpatient.repository.ReceptionVisitClosureHistoryRepository;
 import kr.co.seoulit.reception.outpatient.repository.ReceptionVisitClosureRepository;
+import kr.co.seoulit.reception.repository.DepartmentRepository;
+import kr.co.seoulit.reception.repository.DoctorRepository;
+import kr.co.seoulit.common.client.PatientServiceClient;
 import kr.co.seoulit.reception.reservation.entity.ReservationToReceptionHistoryEntity;
 import kr.co.seoulit.reception.reservation.repository.ReservationToReceptionHistoryRepository;
 import lombok.RequiredArgsConstructor;
@@ -41,15 +53,21 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class OutpatientReceptionServiceImpl implements OutpatientReceptionService {
+
+    private static final Set<String> REASON_REQUIRED_STATUSES = Set.of("CANCELLED", "INACTIVE", "HOLD");
+    private static final Map<String, Set<String>> STATUS_TRANSITIONS = createStatusTransitionRules();
 
     private final OutpatientReceptionRepository receptionRepository;
     private final OutpatientReceptionMapper receptionMyBatisMapper;
@@ -67,6 +85,10 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
     private final ReceptionSettlementSnapshotRepository settlementSnapshotRepository;
     private final ReceptionAuditRepository receptionAuditRepository;
     private final ReservationToReceptionHistoryRepository reservationToReceptionHistoryRepository;
+    private final PatientServiceClient patientServiceClient;
+    private final ReceptionNumberSequenceClient receptionNumberSequenceClient;
+    private final DepartmentRepository departmentRepository;
+    private final DoctorRepository doctorRepository;
     private final AuditLogService auditLogService;
 
     @Override
@@ -104,43 +126,36 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
     @Override
     @Transactional
     public void createReception(OutpatientReceptionDTO reception) {
-        if (reception.getReceptionNo() == null || reception.getReceptionNo().isBlank()) {
-            throw new IllegalArgumentException("receptionNo is required");
-        }
-        if ((reception.getPatientId() == null)
-                && (reception.getPatientName() == null || reception.getPatientName().isBlank())) {
-            throw new IllegalArgumentException("patientId or patientName is required");
-        }
+        String receptionNo = resolveCreateReceptionNo(reception);
         if (reception.getDepartmentId() == null) {
             throw new IllegalArgumentException("departmentId is required");
         }
-        if (receptionRepository.existsByReceptionNo(reception.getReceptionNo())) {
-            throw new IllegalArgumentException("Duplicated receptionNo: " + reception.getReceptionNo());
-        }
+
+        String normalizedStatus = normalizeStatus(defaultIfBlank(reception.getStatus(), "WAITING"));
+        assertStatusSupported(normalizedStatus);
+        String reasonCode = resolveReasonCodeForStatus(normalizedStatus, reception, null);
+        String reasonText = resolveReasonTextForStatus(normalizedStatus, reception, null);
+        validateReasonIfRequired(normalizedStatus, reasonCode, reasonText);
 
         OutpatientReceptionEntity entity = receptionReqMapStruct.toEntity(reception);
-        entity.setPatientId(resolveOrCreatePatientId(entity.getPatientId(), entity.getPatientName()));
-        if (entity.getPatientName() == null || entity.getPatientName().isBlank()) {
-            entity.setPatientName(resolvePatientName(entity.getPatientId()));
-        }
-        if (entity.getDepartmentName() == null || entity.getDepartmentName().isBlank()) {
-            entity.setDepartmentName(resolveDepartmentName(entity.getDepartmentId()));
-        }
-        if (entity.getDoctorId() != null && (entity.getDoctorName() == null || entity.getDoctorName().isBlank())) {
-            entity.setDoctorName(resolveDoctorName(entity.getDoctorId()));
-        }
-        if (entity.getStatus() == null || entity.getStatus().isBlank()) {
-            entity.setStatus("WAITING");
-        }
+        entity.setReceptionNo(receptionNo);
+        PatientRef resolvedPatient = resolvePatient(entity.getPatientId(), entity.getPatientName());
+        entity.setPatientId(resolvedPatient.patientId());
+        entity.setPatientName(resolvedPatient.patientName());
+        entity.setDepartmentName(resolveDepartmentName(entity.getDepartmentId(), entity.getDepartmentName()));
+        entity.setDoctorName(resolveDoctorName(entity.getDoctorId(), entity.getDoctorName()));
+        entity.setStatus(normalizedStatus);
+        entity.setVisitType(defaultIfBlank(entity.getVisitType(), "OUTPATIENT"));
         if (entity.getIsActive() == null) {
             entity.setIsActive(true);
         }
+        applyStatusSideEffects(entity, normalizedStatus, reasonCode, reasonText);
 
         OutpatientReceptionEntity saved = receptionRepository.save(entity);
         upsertOutpatientDetail(saved);
         OutpatientWaitingQueueEntity queue = upsertWaitingQueue(saved);
         syncQualificationSnapshot(saved);
-        syncVisitClosure(saved, saved.getStatus(), reception.getCreatedBy(), null, null);
+        syncVisitClosure(saved, saved.getStatus(), reception.getCreatedBy(), reasonCode, reasonText);
         snapshotSettlement(saved);
         saveReceptionAudit(
                 saved.getReceptionId(),
@@ -148,7 +163,7 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
                 "*",
                 null,
                 toAuditValue(saved),
-                null,
+                reasonText,
                 reception.getCreatedBy()
         );
         saveReservationConversionHistory(saved, reception.getCreatedBy(), "SUCCESS", "Reception created");
@@ -159,8 +174,8 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
                 saved.getReceptionId(),
                 "CREATE",
                 reception.getCreatedBy(),
-                null,
-                null,
+                reasonCode,
+                reasonText,
                 null,
                 receptionResMapStruct.toDto(saved)
         );
@@ -177,19 +192,27 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
         String beforeAuditValue = toAuditValue(existing);
         Long beforeReservationId = existing.getReservationId();
 
-        if (reception.getReceptionNo() != null && !reception.getReceptionNo().isBlank()) {
-            existing.setReceptionNo(reception.getReceptionNo());
+        if (trimToNull(reception.getReceptionNo()) != null) {
+            String nextReceptionNo = trimToNull(reception.getReceptionNo());
+            if (!Objects.equals(existing.getReceptionNo(), nextReceptionNo)) {
+                receptionRepository.findByReceptionNo(nextReceptionNo)
+                        .filter(item -> !Objects.equals(item.getReceptionId(), existing.getReceptionId()))
+                        .ifPresent(item -> {
+                            throw new IllegalArgumentException("Duplicated receptionNo: " + nextReceptionNo);
+                        });
+                existing.setReceptionNo(nextReceptionNo);
+            }
         }
         if (reception.getPatientId() != null) {
             existing.setPatientId(reception.getPatientId());
         }
-        if (reception.getPatientName() != null) {
-            existing.setPatientName(reception.getPatientName());
-            if (reception.getPatientId() == null) {
-                existing.setPatientId(resolveOrCreatePatientId(null, reception.getPatientName()));
-            }
-        } else if (reception.getPatientId() != null) {
-            existing.setPatientName(resolvePatientName(reception.getPatientId()));
+        if (trimToNull(reception.getPatientName()) != null || reception.getPatientId() != null) {
+            PatientRef resolvedPatient = resolvePatient(
+                    existing.getPatientId(),
+                    firstNonBlank(reception.getPatientName(), existing.getPatientName())
+            );
+            existing.setPatientId(resolvedPatient.patientId());
+            existing.setPatientName(resolvedPatient.patientName());
         }
         if (reception.getVisitType() != null && !reception.getVisitType().isBlank()) {
             existing.setVisitType(reception.getVisitType());
@@ -197,18 +220,14 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
         if (reception.getDepartmentId() != null) {
             existing.setDepartmentId(reception.getDepartmentId());
         }
-        if (reception.getDepartmentName() != null) {
-            existing.setDepartmentName(reception.getDepartmentName());
-        } else if (reception.getDepartmentId() != null) {
-            existing.setDepartmentName(resolveDepartmentName(reception.getDepartmentId()));
+        if (trimToNull(reception.getDepartmentName()) != null || reception.getDepartmentId() != null) {
+            existing.setDepartmentName(resolveDepartmentName(existing.getDepartmentId(), firstNonBlank(reception.getDepartmentName(), existing.getDepartmentName())));
         }
         if (reception.getDoctorId() != null) {
             existing.setDoctorId(reception.getDoctorId());
         }
-        if (reception.getDoctorName() != null) {
-            existing.setDoctorName(reception.getDoctorName());
-        } else if (reception.getDoctorId() != null) {
-            existing.setDoctorName(resolveDoctorName(reception.getDoctorId()));
+        if (trimToNull(reception.getDoctorName()) != null || reception.getDoctorId() != null) {
+            existing.setDoctorName(resolveDoctorName(existing.getDoctorId(), firstNonBlank(reception.getDoctorName(), existing.getDoctorName())));
         }
         if (reception.getReservationId() != null) {
             existing.setReservationId(reception.getReservationId());
@@ -222,39 +241,23 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
         if (reception.getNote() != null) {
             existing.setNote(reception.getNote());
         }
-        if (reception.getIsActive() != null) {
-            existing.setIsActive(reception.getIsActive());
-        }
-        if (reception.getInactiveAt() != null) {
-            existing.setInactiveAt(reception.getInactiveAt());
-        }
-        if (reception.getInactiveReasonCode() != null) {
-            existing.setInactiveReasonCode(reception.getInactiveReasonCode());
-        }
-        if (reception.getInactiveReasonText() != null) {
-            existing.setInactiveReasonText(reception.getInactiveReasonText());
-        }
-        if (reception.getCancelReasonCode() != null) {
-            existing.setCancelReasonCode(reception.getCancelReasonCode());
-        }
-        if (reception.getCancelReasonText() != null) {
-            existing.setCancelReasonText(reception.getCancelReasonText());
-        }
-        if (reception.getHoldReasonCode() != null) {
-            existing.setHoldReasonCode(reception.getHoldReasonCode());
-        }
-        if (reception.getHoldReasonText() != null) {
-            existing.setHoldReasonText(reception.getHoldReasonText());
-        }
         if (reception.getCreatedBy() != null) {
             existing.setCreatedBy(reception.getCreatedBy());
         }
         if (reception.getUpdatedBy() != null) {
             existing.setUpdatedBy(reception.getUpdatedBy());
         }
-        if (reception.getStatus() != null && !reception.getStatus().isBlank()) {
-            existing.setStatus(reception.getStatus());
-        }
+
+        String fromStatus = normalizeStatus(existing.getStatus());
+        String targetStatus = normalizeStatus(defaultIfBlank(reception.getStatus(), existing.getStatus()));
+        validateStatusTransition(fromStatus, targetStatus);
+
+        String reasonCode = resolveReasonCodeForStatus(targetStatus, reception, existing);
+        String reasonText = resolveReasonTextForStatus(targetStatus, reception, existing);
+        validateReasonIfRequired(targetStatus, reasonCode, reasonText);
+
+        existing.setStatus(targetStatus);
+        applyStatusSideEffects(existing, targetStatus, reasonCode, reasonText);
 
         OutpatientReceptionEntity saved = receptionRepository.save(existing);
         upsertOutpatientDetail(saved);
@@ -262,10 +265,10 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
         syncQualificationSnapshot(saved);
         syncVisitClosure(
                 saved,
-                saved.getStatus(),
+                targetStatus,
                 reception.getUpdatedBy(),
-                firstNonBlank(saved.getCancelReasonCode(), saved.getInactiveReasonCode()),
-                firstNonBlank(saved.getCancelReasonText(), saved.getInactiveReasonText())
+                reasonCode,
+                reasonText
         );
         snapshotSettlement(saved);
         saveReceptionAudit(
@@ -274,9 +277,14 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
                 "*",
                 beforeAuditValue,
                 toAuditValue(saved),
-                firstNonBlank(saved.getCancelReasonText(), saved.getInactiveReasonText()),
+                reasonText,
                 reception.getUpdatedBy()
         );
+
+        if (!Objects.equals(fromStatus, targetStatus)) {
+            saveStatusHistory(saved.getReceptionId(), fromStatus, targetStatus, reception.getUpdatedBy(), reasonCode, reasonText);
+        }
+
         if (beforeReservationId == null && saved.getReservationId() != null) {
             saveReservationConversionHistory(saved, reception.getUpdatedBy(), "SUCCESS", "Reservation linked");
         }
@@ -287,8 +295,8 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
                 saved.getReceptionId(),
                 "UPDATE",
                 reception.getUpdatedBy(),
-                null,
-                null,
+                reasonCode,
+                reasonText,
                 before,
                 receptionResMapStruct.toDto(saved)
         );
@@ -309,6 +317,75 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<OutpatientQualificationSnapshotDTO> getQualificationSnapshots(Long receptionId) {
+        return qualificationSnapshotRepository.findByReceptionIdOrderBySnapshotDatetimeDesc(receptionId)
+                .stream()
+                .map(this::toQualificationSnapshotDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<OutpatientQualificationItemDTO> getLatestQualificationItems(Long receptionId) {
+        return qualificationSnapshotRepository.findTopByReceptionIdOrderBySnapshotDatetimeDesc(receptionId)
+                .map(snapshot -> qualificationItemRepository.findByQualificationSnapshotIdOrderByDisplayOrderAsc(snapshot.getQualificationSnapshotId()))
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(this::toQualificationItemDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<OutpatientCallHistoryDTO> getCallHistory(Long receptionId) {
+        return waitingQueueRepository.findByReceptionId(receptionId)
+                .map(queue -> callHistoryRepository.findByWaitingQueueIdOrderByCallDatetimeDesc(queue.getWaitingQueueId()))
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(this::toCallHistoryDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public OutpatientVisitClosureDTO getVisitClosure(Long receptionId) {
+        return visitClosureRepository.findByReceptionId(receptionId)
+                .map(this::toVisitClosureDto)
+                .orElse(null);
+    }
+
+    @Override
+    public List<OutpatientClosureReasonDTO> getClosureReasons() {
+        return closureReasonRepository.findByUsableYnOrderBySortOrderAsc("Y")
+                .stream()
+                .map(this::toClosureReasonDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<OutpatientVisitClosureHistoryDTO> getVisitClosureHistory(Long receptionId) {
+        return visitClosureRepository.findByReceptionId(receptionId)
+                .map(closure -> visitClosureHistoryRepository.findByVisitClosureIdOrderByChangedAtDesc(closure.getVisitClosureId()))
+                .orElse(Collections.emptyList())
+                .stream()
+                .map(this::toVisitClosureHistoryDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<OutpatientSettlementSnapshotDTO> getSettlementSnapshots(Long receptionId) {
+        return settlementSnapshotRepository.findByReceptionIdOrderBySnapshotDatetimeDesc(receptionId)
+                .stream()
+                .map(this::toSettlementSnapshotDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<OutpatientReceptionAuditDTO> getReceptionAudits(Long receptionId) {
+        return receptionAuditRepository.findByReceptionIdOrderByChangedAtDesc(receptionId)
+                .stream()
+                .map(this::toReceptionAuditDto)
+                .collect(Collectors.toList());
+    }
+
     private OutpatientReceptionDTO doUpdateReceptionStatus(
             Long receptionId,
             String status,
@@ -321,40 +398,31 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
 
         OutpatientReceptionDTO before = receptionResMapStruct.toDto(existing);
         String beforeAuditValue = toAuditValue(existing);
-        String fromStatus = existing.getStatus();
-        existing.setStatus(status);
-        existing.setUpdatedBy(changedBy);
+        String fromStatus = normalizeStatus(existing.getStatus());
+        String targetStatus = normalizeStatus(status);
+        validateStatusTransition(fromStatus, targetStatus);
 
-        if ("CANCELLED".equalsIgnoreCase(status) || "CANCELED".equalsIgnoreCase(status)) {
-            existing.setIsActive(false);
-            existing.setInactiveAt(LocalDateTime.now());
-            existing.setCancelReasonCode(reasonCode);
-            existing.setCancelReasonText(reasonText);
-            existing.setInactiveReasonCode(reasonCode);
-            existing.setInactiveReasonText(reasonText);
-        } else if ("INACTIVE".equalsIgnoreCase(status)) {
-            existing.setIsActive(false);
-            existing.setInactiveAt(LocalDateTime.now());
-            existing.setInactiveReasonCode(reasonCode);
-            existing.setInactiveReasonText(reasonText);
+        String normalizedReasonCode = trimToNull(reasonCode);
+        String normalizedReasonText = trimToNull(reasonText);
+        if (REASON_REQUIRED_STATUSES.contains(targetStatus)) {
+            normalizedReasonCode = firstNonBlank(normalizedReasonCode, resolveReasonCodeForStatus(targetStatus, null, existing));
+            normalizedReasonText = firstNonBlank(normalizedReasonText, resolveReasonTextForStatus(targetStatus, null, existing));
         }
+        validateReasonIfRequired(targetStatus, normalizedReasonCode, normalizedReasonText);
+
+        existing.setStatus(targetStatus);
+        existing.setUpdatedBy(changedBy);
+        applyStatusSideEffects(existing, targetStatus, normalizedReasonCode, normalizedReasonText);
 
         OutpatientReceptionEntity saved = receptionRepository.save(existing);
         upsertOutpatientDetail(saved);
         OutpatientWaitingQueueEntity queue = upsertWaitingQueue(saved);
         syncQualificationSnapshot(saved);
-        syncVisitClosure(saved, status, changedBy, reasonCode, reasonText);
+        syncVisitClosure(saved, targetStatus, changedBy, normalizedReasonCode, normalizedReasonText);
         snapshotSettlement(saved);
         maybeInsertCallHistory(saved, queue, changedBy);
 
-        OutpatientReceptionStatusHistoryEntity history = new OutpatientReceptionStatusHistoryEntity();
-        history.setReceptionId(receptionId);
-        history.setFromStatus(fromStatus);
-        history.setToStatus(status);
-        history.setChangedBy(changedBy);
-        history.setReasonCode(reasonCode);
-        history.setReasonText(reasonText);
-        receptionStatusHistoryRepository.save(history);
+        saveStatusHistory(receptionId, fromStatus, targetStatus, changedBy, normalizedReasonCode, normalizedReasonText);
 
         saveReceptionAudit(
                 saved.getReceptionId(),
@@ -362,7 +430,7 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
                 "STATUS",
                 beforeAuditValue,
                 toAuditValue(saved),
-                reasonText,
+                normalizedReasonText,
                 changedBy
         );
 
@@ -371,13 +439,31 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
                 saved.getReceptionId(),
                 "STATUS_CHANGE",
                 changedBy,
-                reasonCode,
-                reasonText,
+                normalizedReasonCode,
+                normalizedReasonText,
                 before,
                 receptionResMapStruct.toDto(saved)
         );
 
         return receptionResMapStruct.toDto(saved);
+    }
+
+    private void saveStatusHistory(
+            Long receptionId,
+            String fromStatus,
+            String toStatus,
+            Long changedBy,
+            String reasonCode,
+            String reasonText
+    ) {
+        OutpatientReceptionStatusHistoryEntity history = new OutpatientReceptionStatusHistoryEntity();
+        history.setReceptionId(receptionId);
+        history.setFromStatus(fromStatus);
+        history.setToStatus(toStatus);
+        history.setChangedBy(changedBy);
+        history.setReasonCode(reasonCode);
+        history.setReasonText(reasonText);
+        receptionStatusHistoryRepository.save(history);
     }
 
     private OutpatientReceptionStatusHistoryDTO toHistoryDto(OutpatientReceptionStatusHistoryEntity entity) {
@@ -390,6 +476,104 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
         dto.setChangedAt(entity.getChangedAt());
         dto.setReasonCode(entity.getReasonCode());
         dto.setReasonText(entity.getReasonText());
+        return dto;
+    }
+
+    private OutpatientQualificationSnapshotDTO toQualificationSnapshotDto(ReceptionQualificationSnapshotEntity entity) {
+        OutpatientQualificationSnapshotDTO dto = new OutpatientQualificationSnapshotDTO();
+        dto.setQualificationSnapshotId(entity.getQualificationSnapshotId());
+        dto.setReceptionId(entity.getReceptionId());
+        dto.setPatientId(entity.getPatientId());
+        dto.setSnapshotDatetime(entity.getSnapshotDatetime());
+        dto.setResultCd(entity.getResultCd());
+        dto.setPayerTypeCd(entity.getPayerTypeCd());
+        dto.setInsuranceTypeCd(entity.getInsuranceTypeCd());
+        dto.setValidYn(entity.getValidYn());
+        dto.setSourceSystemCd(entity.getSourceSystemCd());
+        return dto;
+    }
+
+    private OutpatientQualificationItemDTO toQualificationItemDto(ReceptionQualificationItemEntity entity) {
+        OutpatientQualificationItemDTO dto = new OutpatientQualificationItemDTO();
+        dto.setQualificationItemId(entity.getQualificationItemId());
+        dto.setQualificationSnapshotId(entity.getQualificationSnapshotId());
+        dto.setItemName(entity.getItemName());
+        dto.setItemValue(entity.getItemValue());
+        dto.setItemStatusCd(entity.getItemStatusCd());
+        dto.setDisplayOrder(entity.getDisplayOrder());
+        return dto;
+    }
+
+    private OutpatientCallHistoryDTO toCallHistoryDto(ReceptionCallHistoryEntity entity) {
+        OutpatientCallHistoryDTO dto = new OutpatientCallHistoryDTO();
+        dto.setCallHistoryId(entity.getCallHistoryId());
+        dto.setWaitingQueueId(entity.getWaitingQueueId());
+        dto.setCallDatetime(entity.getCallDatetime());
+        dto.setCallUserId(entity.getCallUserId());
+        dto.setCallCount(entity.getCallCount());
+        dto.setCallResultCd(entity.getCallResultCd());
+        dto.setRemark(entity.getRemark());
+        return dto;
+    }
+
+    private OutpatientVisitClosureDTO toVisitClosureDto(ReceptionVisitClosureEntity entity) {
+        OutpatientVisitClosureDTO dto = new OutpatientVisitClosureDTO();
+        dto.setVisitClosureId(entity.getVisitClosureId());
+        dto.setReceptionId(entity.getReceptionId());
+        dto.setClosureStatusCd(entity.getClosureStatusCd());
+        dto.setClosureDatetime(entity.getClosureDatetime());
+        dto.setClosureUserId(entity.getClosureUserId());
+        dto.setClosureReasonCd(entity.getClosureReasonCd());
+        dto.setRemark(entity.getRemark());
+        dto.setActiveYn(entity.getActiveYn());
+        return dto;
+    }
+
+    private OutpatientClosureReasonDTO toClosureReasonDto(ReceptionClosureReasonEntity entity) {
+        OutpatientClosureReasonDTO dto = new OutpatientClosureReasonDTO();
+        dto.setClosureReasonCd(entity.getClosureReasonCd());
+        dto.setClosureReasonName(entity.getClosureReasonName());
+        dto.setReasonGroupCd(entity.getReasonGroupCd());
+        dto.setUsableYn(entity.getUsableYn());
+        dto.setSortOrder(entity.getSortOrder());
+        return dto;
+    }
+
+    private OutpatientVisitClosureHistoryDTO toVisitClosureHistoryDto(ReceptionVisitClosureHistoryEntity entity) {
+        OutpatientVisitClosureHistoryDTO dto = new OutpatientVisitClosureHistoryDTO();
+        dto.setVisitClosureHistoryId(entity.getVisitClosureHistoryId());
+        dto.setVisitClosureId(entity.getVisitClosureId());
+        dto.setBeforeStatusCd(entity.getBeforeStatusCd());
+        dto.setAfterStatusCd(entity.getAfterStatusCd());
+        dto.setChangedBy(entity.getChangedBy());
+        dto.setChangedAt(entity.getChangedAt());
+        dto.setChangeReason(entity.getChangeReason());
+        return dto;
+    }
+
+    private OutpatientSettlementSnapshotDTO toSettlementSnapshotDto(ReceptionSettlementSnapshotEntity entity) {
+        OutpatientSettlementSnapshotDTO dto = new OutpatientSettlementSnapshotDTO();
+        dto.setSettlementSnapshotId(entity.getSettlementSnapshotId());
+        dto.setReceptionId(entity.getReceptionId());
+        dto.setPayStatusCd(entity.getPayStatusCd());
+        dto.setTotalAmount(entity.getTotalAmount());
+        dto.setInsuranceAmount(entity.getInsuranceAmount());
+        dto.setPatientAmount(entity.getPatientAmount());
+        dto.setSnapshotDatetime(entity.getSnapshotDatetime());
+        return dto;
+    }
+
+    private OutpatientReceptionAuditDTO toReceptionAuditDto(ReceptionAuditEntity entity) {
+        OutpatientReceptionAuditDTO dto = new OutpatientReceptionAuditDTO();
+        dto.setReceptionAuditId(entity.getReceptionAuditId());
+        dto.setReceptionId(entity.getReceptionId());
+        dto.setChangeTypeCd(entity.getChangeTypeCd());
+        dto.setChangeFieldNm(entity.getChangeFieldNm());
+        dto.setBeforeValue(entity.getBeforeValue());
+        dto.setAfterValue(entity.getAfterValue());
+        dto.setChangeReason(entity.getChangeReason());
+        dto.setChangedBy(entity.getChangedBy());
+        dto.setChangedAt(entity.getChangedAt());
         return dto;
     }
 
@@ -427,8 +611,13 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
     }
 
     private void syncQualificationSnapshot(OutpatientReceptionEntity reception) {
-        ReceptionQualificationSnapshotEntity snapshot = new ReceptionQualificationSnapshotEntity();
-        snapshot.setReceptionId(reception.getReceptionId());
+        ReceptionQualificationSnapshotEntity snapshot = qualificationSnapshotRepository
+                .findTopByReceptionIdOrderBySnapshotDatetimeDesc(reception.getReceptionId())
+                .orElseGet(ReceptionQualificationSnapshotEntity::new);
+
+        if (snapshot.getQualificationSnapshotId() == null) {
+            snapshot.setReceptionId(reception.getReceptionId());
+        }
         snapshot.setPatientId(reception.getPatientId());
         snapshot.setSnapshotDatetime(LocalDateTime.now());
         snapshot.setResultCd(Boolean.TRUE.equals(reception.getIsActive()) ? "VALID" : "INVALID");
@@ -437,6 +626,7 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
         snapshot.setValidYn(toYn(reception.getIsActive()));
         snapshot.setSourceSystemCd("RECEPTION_BACKEND");
         ReceptionQualificationSnapshotEntity saved = qualificationSnapshotRepository.save(snapshot);
+        qualificationItemRepository.deleteByQualificationSnapshotId(saved.getQualificationSnapshotId());
 
         saveQualificationItem(saved.getQualificationSnapshotId(), "STATUS", reception.getStatus(), 1);
         saveQualificationItem(saved.getQualificationSnapshotId(), "VISIT_TYPE", reception.getVisitType(), 2);
@@ -510,21 +700,23 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
     }
 
     private String mapClosureStatus(String status) {
-        if (status == null || status.isBlank()) {
-            return "OPEN";
-        }
-        String normalized = status.trim().toUpperCase();
+        String normalized = normalizeStatus(defaultIfBlank(status, "WAITING"));
         return switch (normalized) {
-            case "COMPLETED", "DONE" -> "COMPLETED";
-            case "CANCELLED", "CANCELED" -> "CANCELLED";
+            case "COMPLETED" -> "COMPLETED";
+            case "CANCELLED" -> "CANCELLED";
             case "INACTIVE" -> "INACTIVE";
             default -> "OPEN";
         };
     }
 
     private void snapshotSettlement(OutpatientReceptionEntity reception) {
-        ReceptionSettlementSnapshotEntity snapshot = new ReceptionSettlementSnapshotEntity();
-        snapshot.setReceptionId(reception.getReceptionId());
+        ReceptionSettlementSnapshotEntity snapshot = settlementSnapshotRepository
+                .findTopByReceptionIdOrderBySnapshotDatetimeDesc(reception.getReceptionId())
+                .orElseGet(ReceptionSettlementSnapshotEntity::new);
+
+        if (snapshot.getSettlementSnapshotId() == null) {
+            snapshot.setReceptionId(reception.getReceptionId());
+        }
         snapshot.setPayStatusCd(mapPayStatus(reception.getStatus()));
         snapshot.setTotalAmount(BigDecimal.ZERO);
         snapshot.setInsuranceAmount(BigDecimal.ZERO);
@@ -534,14 +726,11 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
     }
 
     private String mapPayStatus(String status) {
-        if (status == null || status.isBlank()) {
-            return "PENDING";
-        }
-        String normalized = status.trim().toUpperCase();
-        if ("COMPLETED".equals(normalized) || "DONE".equals(normalized)) {
+        String normalized = normalizeStatus(defaultIfBlank(status, "WAITING"));
+        if ("COMPLETED".equals(normalized)) {
             return "PAID";
         }
-        if ("CANCELLED".equals(normalized) || "CANCELED".equals(normalized)) {
+        if ("CANCELLED".equals(normalized)) {
             return "CANCELLED";
         }
         return "PENDING";
@@ -621,12 +810,9 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
     }
 
     private String mapQueueStatus(String status) {
-        if (status == null || status.isBlank()) {
-            return "WAITING";
-        }
-        String normalized = status.trim().toUpperCase();
+        String normalized = normalizeStatus(defaultIfBlank(status, "WAITING"));
         return switch (normalized) {
-            case "WAITING", "CALLED", "IN_PROGRESS", "COMPLETED", "DONE", "CANCELLED", "CANCELED", "INACTIVE" ->
+            case "WAITING", "CALLED", "TRIAGE", "TRIAGE_IN_PROGRESS", "IN_PROGRESS", "OBSERVATION", "HOLD", "PAYMENT_WAIT", "COMPLETED", "CANCELLED", "INACTIVE" ->
                     normalized;
             default -> "WAITING";
         };
@@ -634,9 +820,7 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
 
     private boolean isQueueClosedStatus(String queueStatus) {
         return "COMPLETED".equals(queueStatus)
-                || "DONE".equals(queueStatus)
                 || "CANCELLED".equals(queueStatus)
-                || "CANCELED".equals(queueStatus)
                 || "INACTIVE".equals(queueStatus);
     }
 
@@ -647,8 +831,222 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
         return value ? "Y" : "N";
     }
 
-    private String firstNonBlank(String first, String second) {
-        return trimToNull(first) != null ? trimToNull(first) : trimToNull(second);
+    private void validateStatusTransition(String fromStatus, String toStatus) {
+        String normalizedFrom = normalizeStatus(defaultIfBlank(fromStatus, "WAITING"));
+        String normalizedTo = normalizeStatus(toStatus);
+        assertStatusSupported(normalizedFrom);
+        assertStatusSupported(normalizedTo);
+
+        if (Objects.equals(normalizedFrom, normalizedTo)) {
+            return;
+        }
+
+        Set<String> allowedTargets = STATUS_TRANSITIONS.getOrDefault(normalizedFrom, Collections.emptySet());
+        if (!allowedTargets.contains(normalizedTo)) {
+            throw new IllegalArgumentException("Invalid status transition: " + normalizedFrom + " -> " + normalizedTo);
+        }
+    }
+
+    private void assertStatusSupported(String status) {
+        if (!STATUS_TRANSITIONS.containsKey(status)) {
+            throw new IllegalArgumentException("Unsupported status: " + status);
+        }
+    }
+
+    private void validateReasonIfRequired(String status, String reasonCode, String reasonText) {
+        if (!REASON_REQUIRED_STATUSES.contains(status)) {
+            return;
+        }
+        if (trimToNull(reasonCode) == null && trimToNull(reasonText) == null) {
+            throw new IllegalArgumentException("Reason is required for status: " + status);
+        }
+    }
+
+    private void applyStatusSideEffects(OutpatientReceptionEntity entity, String status, String reasonCode, String reasonText) {
+        String normalizedStatus = normalizeStatus(status);
+        String normalizedReasonCode = trimToNull(reasonCode);
+        String normalizedReasonText = trimToNull(reasonText);
+
+        switch (normalizedStatus) {
+            case "CANCELLED" -> {
+                entity.setIsActive(false);
+                entity.setInactiveAt(LocalDateTime.now());
+                entity.setCancelReasonCode(normalizedReasonCode);
+                entity.setCancelReasonText(normalizedReasonText);
+                entity.setInactiveReasonCode(normalizedReasonCode);
+                entity.setInactiveReasonText(normalizedReasonText);
+                entity.setHoldReasonCode(null);
+                entity.setHoldReasonText(null);
+            }
+            case "INACTIVE" -> {
+                entity.setIsActive(false);
+                entity.setInactiveAt(LocalDateTime.now());
+                entity.setInactiveReasonCode(normalizedReasonCode);
+                entity.setInactiveReasonText(normalizedReasonText);
+                entity.setCancelReasonCode(null);
+                entity.setCancelReasonText(null);
+                entity.setHoldReasonCode(null);
+                entity.setHoldReasonText(null);
+            }
+            case "HOLD" -> {
+                entity.setIsActive(true);
+                entity.setInactiveAt(null);
+                entity.setInactiveReasonCode(null);
+                entity.setInactiveReasonText(null);
+                entity.setCancelReasonCode(null);
+                entity.setCancelReasonText(null);
+                entity.setHoldReasonCode(normalizedReasonCode);
+                entity.setHoldReasonText(normalizedReasonText);
+            }
+            default -> {
+                entity.setIsActive(true);
+                entity.setInactiveAt(null);
+                entity.setInactiveReasonCode(null);
+                entity.setInactiveReasonText(null);
+                entity.setCancelReasonCode(null);
+                entity.setCancelReasonText(null);
+                entity.setHoldReasonCode(null);
+                entity.setHoldReasonText(null);
+            }
+        }
+    }
+
+    private String normalizeStatus(String status) {
+        String normalized = trimToNull(status);
+        if (normalized == null) {
+            throw new IllegalArgumentException("status is required");
+        }
+        normalized = normalized.toUpperCase();
+
+        return switch (normalized) {
+            case "CANCELED" -> "CANCELLED";
+            case "REGISTERED" -> "WAITING";
+            case "DONE" -> "COMPLETED";
+            case "ON_HOLD" -> "HOLD";
+            case "OBSERVING" -> "OBSERVATION";
+            case "TRANSFERRED" -> "INACTIVE";
+            case "TRIAGE_PROGRESS" -> "TRIAGE_IN_PROGRESS";
+            default -> normalized;
+        };
+    }
+
+    private static Map<String, Set<String>> createStatusTransitionRules() {
+        Map<String, Set<String>> rules = new HashMap<>();
+        rules.put("RESERVED", Set.of("WAITING", "CANCELLED", "INACTIVE"));
+        rules.put("WAITING", Set.of("CALLED", "TRIAGE", "TRIAGE_IN_PROGRESS", "IN_PROGRESS", "HOLD", "COMPLETED", "CANCELLED", "INACTIVE"));
+        rules.put("CALLED", Set.of("TRIAGE", "TRIAGE_IN_PROGRESS", "IN_PROGRESS", "HOLD", "CANCELLED", "INACTIVE"));
+        rules.put("TRIAGE", Set.of("TRIAGE_IN_PROGRESS", "IN_PROGRESS", "HOLD", "CANCELLED", "INACTIVE"));
+        rules.put("TRIAGE_IN_PROGRESS", Set.of("IN_PROGRESS", "HOLD", "CANCELLED", "INACTIVE"));
+        rules.put("IN_PROGRESS", Set.of("OBSERVATION", "HOLD", "PAYMENT_WAIT", "COMPLETED", "CANCELLED", "INACTIVE"));
+        rules.put("OBSERVATION", Set.of("IN_PROGRESS", "HOLD", "PAYMENT_WAIT", "COMPLETED", "CANCELLED", "INACTIVE"));
+        rules.put("HOLD", Set.of("WAITING", "CALLED", "TRIAGE", "TRIAGE_IN_PROGRESS", "IN_PROGRESS", "CANCELLED", "INACTIVE"));
+        rules.put("PAYMENT_WAIT", Set.of("COMPLETED", "CANCELLED", "INACTIVE"));
+        rules.put("COMPLETED", Set.of("CANCELLED"));
+        rules.put("CANCELLED", Collections.emptySet());
+        rules.put("INACTIVE", Collections.emptySet());
+        return rules;
+    }
+
+    private String resolveReasonCodeForStatus(String status, OutpatientReceptionDTO request, OutpatientReceptionEntity existing) {
+        if ("CANCELLED".equals(status)) {
+            return firstNonBlank(
+                    request == null ? null : request.getCancelReasonCode(),
+                    existing == null ? null : existing.getCancelReasonCode(),
+                    existing == null ? null : existing.getInactiveReasonCode(),
+                    "CANCELLED_BY_USER"
+            );
+        }
+        if ("INACTIVE".equals(status)) {
+            return firstNonBlank(
+                    request == null ? null : request.getInactiveReasonCode(),
+                    existing == null ? null : existing.getInactiveReasonCode()
+            );
+        }
+        if ("HOLD".equals(status)) {
+            return firstNonBlank(
+                    request == null ? null : request.getHoldReasonCode(),
+                    existing == null ? null : existing.getHoldReasonCode()
+            );
+        }
+        return firstNonBlank(
+                request == null ? null : request.getInactiveReasonCode(),
+                request == null ? null : request.getCancelReasonCode(),
+                request == null ? null : request.getHoldReasonCode()
+        );
+    }
+
+    private String resolveReasonTextForStatus(String status, OutpatientReceptionDTO request, OutpatientReceptionEntity existing) {
+        if ("CANCELLED".equals(status)) {
+            return firstNonBlank(
+                    request == null ? null : request.getCancelReasonText(),
+                    existing == null ? null : existing.getCancelReasonText(),
+                    existing == null ? null : existing.getInactiveReasonText()
+            );
+        }
+        if ("INACTIVE".equals(status)) {
+            return firstNonBlank(
+                    request == null ? null : request.getInactiveReasonText(),
+                    existing == null ? null : existing.getInactiveReasonText()
+            );
+        }
+        if ("HOLD".equals(status)) {
+            return firstNonBlank(
+                    request == null ? null : request.getHoldReasonText(),
+                    existing == null ? null : existing.getHoldReasonText()
+            );
+        }
+        return firstNonBlank(
+                request == null ? null : request.getInactiveReasonText(),
+                request == null ? null : request.getCancelReasonText(),
+                request == null ? null : request.getHoldReasonText()
+        );
+    }
+
+    private PatientRef resolvePatient(Long patientId, String patientName) {
+        PatientServiceClient.PatientSummary patientSummary;
+        if (patientId != null) {
+            patientSummary = patientServiceClient.requirePatientById(patientId);
+            String resolvedName = firstNonBlank(patientSummary.patientName(), patientName);
+            if (resolvedName == null) {
+                throw new IllegalArgumentException("patientName not found for patientId=" + patientId);
+            }
+            return new PatientRef(patientSummary.patientId(), resolvedName);
+        }
+        String normalizedPatientName = trimToNull(patientName);
+        if (normalizedPatientName == null) {
+            throw new IllegalArgumentException("patientId is required");
+        }
+        patientSummary = patientServiceClient.requirePatientByName(normalizedPatientName);
+        return new PatientRef(patientSummary.patientId(), firstNonBlank(patientSummary.patientName(), normalizedPatientName));
+    }
+
+    private String resolveDepartmentName(Long departmentId, String fallbackName) {
+        if (departmentId == null) {
+            throw new IllegalArgumentException("departmentId is required");
+        }
+        String fallback = trimToNull(fallbackName);
+        return fallback != null ? fallback : "DEPT-" + departmentId;
+    }
+
+    private String resolveDoctorName(Long doctorId, String fallbackName) {
+        if (doctorId == null) {
+            return null;
+        }
+        String fallback = trimToNull(fallbackName);
+        return fallback != null ? fallback : "DOCTOR-" + doctorId;
+    }
+
+    private String firstNonBlank(String... values) {
+        if (values == null) {
+            return null;
+        }
+        for (String value : values) {
+            String normalized = trimToNull(value);
+            if (normalized != null) {
+                return normalized;
+            }
+        }
+        return null;
     }
 
     private String defaultIfBlank(String value, String defaultValue) {
@@ -663,31 +1061,21 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
         return trimmed.isEmpty() ? null : trimmed;
     }
 
-    private Long resolveOrCreatePatientId(Long patientId, String patientName) {
-        if (patientId != null) {
-            return patientId;
+    private String resolveCreateReceptionNo(OutpatientReceptionDTO reception) {
+        String requestedReceptionNo = trimToNull(reception.getReceptionNo());
+        if (requestedReceptionNo != null) {
+            if (receptionRepository.existsByReceptionNo(requestedReceptionNo)) {
+                throw new IllegalArgumentException("Duplicated receptionNo: " + requestedReceptionNo);
+            }
+            return requestedReceptionNo;
         }
-        throw new IllegalArgumentException("patientId is required");
+        String generatedReceptionNo = receptionNumberSequenceClient.nextReceptionNo("OUTPATIENT");
+        if (receptionRepository.existsByReceptionNo(generatedReceptionNo)) {
+            throw new IllegalStateException("Generated duplicated receptionNo: " + generatedReceptionNo);
+        }
+        return generatedReceptionNo;
     }
 
-    private String resolvePatientName(Long patientId) {
-        if (patientId == null) {
-            return null;
-        }
-        return "PATIENT-" + patientId;
-    }
-
-    private String resolveDepartmentName(Long departmentId) {
-        if (departmentId == null) {
-            return null;
-        }
-        return "DEPT-" + departmentId;
-    }
-
-    private String resolveDoctorName(Long doctorId) {
-        if (doctorId == null) {
-            return null;
-        }
-        return "DOCTOR-" + doctorId;
+    private record PatientRef(Long patientId, String patientName) {
     }
 }

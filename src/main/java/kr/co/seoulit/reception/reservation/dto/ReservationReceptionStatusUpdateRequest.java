@@ -1,21 +1,23 @@
 package kr.co.seoulit.reception.reservation.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
-@Schema(description = "예약 상태 변경 요청")
+@Schema(description = "Reservation status update request")
 @Data
 public class ReservationReceptionStatusUpdateRequest {
 
-    @Schema(description = "상태")
+    @Schema(description = "Status")
+    @NotBlank(message = "status is required")
     private String status;
 
-    @Schema(description = "변경자 식별자")
+    @Schema(description = "Changed by")
     private Long changedBy;
 
-    @Schema(description = "사유 코드")
+    @Schema(description = "Reason code")
     private String reasonCode;
 
-    @Schema(description = "사유")
+    @Schema(description = "Reason text")
     private String reasonText;
 }

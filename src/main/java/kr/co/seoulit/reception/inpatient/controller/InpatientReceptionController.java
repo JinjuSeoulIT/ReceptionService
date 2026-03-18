@@ -3,12 +3,14 @@ package kr.co.seoulit.reception.inpatient.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import kr.co.seoulit.common.api.ApiResponse;
 import kr.co.seoulit.reception.inpatient.dto.InpatientReceptionDTO;
 import kr.co.seoulit.reception.inpatient.service.InpatientReceptionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,69 +27,68 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/inpatient-receptions")
-@Tag(name = "입원 접수", description = "입원 접수 기능")
+@Tag(name = "Inpatient Reception", description = "Inpatient reception APIs")
 @Slf4j
+@Validated
 public class InpatientReceptionController {
 
     private final InpatientReceptionService inpatientReceptionService;
 
-    @Operation(summary = "입원 접수 목록 조회", description = "입원 접수 목록을 조회합니다.")
+    @Operation(summary = "Get inpatient receptions")
     @GetMapping
     public ResponseEntity<ApiResponse<List<InpatientReceptionDTO>>> getInpatientReceptions(
-            @Parameter(description = "검색 구분") @RequestParam(required = false) String searchType,
-            @Parameter(description = "검색어") @RequestParam(required = false) String searchValue
+            @Parameter(description = "Search type") @RequestParam(required = false) String searchType,
+            @Parameter(description = "Search value") @RequestParam(required = false) String searchValue
     ) {
-        log.info("입원 접수 목록 요청: searchType={}, searchValue={}", searchType, searchValue);
+        log.info("Get inpatient receptions request: searchType={}, searchValue={}", searchType, searchValue);
         HashMap<String, Object> searchCondition = new HashMap<>();
         searchCondition.put("searchType", searchType);
         searchCondition.put("searchValue", searchValue);
 
         List<InpatientReceptionDTO> list = inpatientReceptionService.getInpatientReceptionList(searchCondition);
-        return ResponseEntity.ok(new ApiResponse<>(true, "입원 접수 목록 조회 완료", list));
+        return ResponseEntity.ok(new ApiResponse<>(true, "Inpatient reception list fetched", list));
     }
 
-    @Operation(summary = "입원 접수 상세 조회", description = "입원 접수 상세 1건을 조회합니다.")
+    @Operation(summary = "Get inpatient reception detail")
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<InpatientReceptionDTO>> getInpatientReception(
-            @Parameter(description = "접수 식별자") @PathVariable Long id
+            @Parameter(description = "Reception id") @PathVariable Long id
     ) {
-        log.info("입원 접수 조회 요청: id={}", id);
+        log.info("Get inpatient reception request: id={}", id);
         InpatientReceptionDTO dto = inpatientReceptionService.getInpatientReception(id);
-        return ResponseEntity.ok(new ApiResponse<>(true, "입원 접수 조회 완료", dto));
+        return ResponseEntity.ok(new ApiResponse<>(true, "Inpatient reception fetched", dto));
     }
 
-    @Operation(summary = "입원 접수 등록", description = "입원 접수를 등록합니다.")
+    @Operation(summary = "Create inpatient reception")
     @PostMapping
-    public ResponseEntity<ApiResponse<Boolean>> createInpatientReception(@RequestBody InpatientReceptionDTO request) {
-        log.info("입원 Create reception request: receptionNo={}", request.getReceptionNo());
+    public ResponseEntity<ApiResponse<Boolean>> createInpatientReception(@Valid @RequestBody InpatientReceptionDTO request) {
+        log.info("Create inpatient reception request: receptionNo={}", request.getReceptionNo());
         inpatientReceptionService.createInpatientReception(request);
         return ResponseEntity.ok(new ApiResponse<>(true, "Inpatient reception created", true));
     }
 
-    @Operation(summary = "입원 접수 수정", description = "입원 접수를 수정합니다.")
+    @Operation(summary = "Update inpatient reception")
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<Boolean>> updateInpatientReception(
-            @Parameter(description = "접수 식별자") @PathVariable Long id,
-            @RequestBody InpatientReceptionDTO request
+            @Parameter(description = "Reception id") @PathVariable Long id,
+            @Valid @RequestBody InpatientReceptionDTO request
     ) {
-        log.info("입원 Update reception request: id={}", id);
+        log.info("Update inpatient reception request: id={}", id);
         inpatientReceptionService.updateInpatientReception(id, request);
         return ResponseEntity.ok(new ApiResponse<>(true, "Inpatient reception updated", true));
     }
 
-    @Operation(summary = "입원 접수 취소", description = "입원 접수를 취소 처리합니다.")
+    @Operation(summary = "Cancel inpatient reception")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Boolean>> cancelInpatientReception(
-            @Parameter(description = "접수 식별자") @PathVariable Long id
+            @Parameter(description = "Reception id") @PathVariable Long id
     ) {
-        log.info("입원 Cancel reception request: id={}", id);
+        log.info("Cancel inpatient reception request: id={}", id);
         InpatientReceptionDTO request = new InpatientReceptionDTO();
         request.setStatus("CANCELLED");
         request.setIsActive(false);
         request.setNote("Cancelled from frontend");
         inpatientReceptionService.updateInpatientReception(id, request);
-        return ResponseEntity.ok(new ApiResponse<>(true, "입원 접수 수정 완료", true));
+        return ResponseEntity.ok(new ApiResponse<>(true, "Inpatient reception cancelled", true));
     }
 }
-
-
