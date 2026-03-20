@@ -11,6 +11,7 @@ import kr.co.seoulit.reception.outpatient.dto.OutpatientQualificationItemDTO;
 import kr.co.seoulit.reception.outpatient.dto.OutpatientQualificationSnapshotDTO;
 import kr.co.seoulit.reception.outpatient.dto.OutpatientReceptionAuditDTO;
 import kr.co.seoulit.reception.outpatient.dto.OutpatientReceptionDTO;
+import kr.co.seoulit.reception.outpatient.dto.OutpatientReceptionStatusChangedEventDTO;
 import kr.co.seoulit.reception.outpatient.dto.OutpatientReceptionStatusHistoryDTO;
 import kr.co.seoulit.reception.outpatient.dto.OutpatientSettlementSnapshotDTO;
 import kr.co.seoulit.reception.outpatient.dto.OutpatientVisitClosureDTO;
@@ -28,6 +29,7 @@ import kr.co.seoulit.reception.outpatient.entity.ReceptionSettlementSnapshotEnti
 import kr.co.seoulit.reception.outpatient.entity.ReceptionVisitClosureEntity;
 import kr.co.seoulit.reception.outpatient.entity.ReceptionVisitClosureHistoryEntity;
 import kr.co.seoulit.reception.outpatient.mapper.OutpatientReceptionMapper;
+import kr.co.seoulit.reception.outpatient.realtime.OutpatientReceptionStatusEventPublisher;
 import kr.co.seoulit.reception.outpatient.repository.OutpatientReceptionDetailRepository;
 import kr.co.seoulit.reception.outpatient.repository.OutpatientReceptionRepository;
 import kr.co.seoulit.reception.outpatient.repository.OutpatientReceptionStatusHistoryRepository;
@@ -50,6 +52,8 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -90,6 +94,7 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
     private final DepartmentRepository departmentRepository;
     private final DoctorRepository doctorRepository;
     private final AuditLogService auditLogService;
+    private final OutpatientReceptionStatusEventPublisher receptionStatusEventPublisher;
 
     @Override
     public List<OutpatientReceptionDTO> getReceptionList(Map<String, Object> searchCondition) {
@@ -283,6 +288,7 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
 
         if (!Objects.equals(fromStatus, targetStatus)) {
             saveStatusHistory(saved.getReceptionId(), fromStatus, targetStatus, reception.getUpdatedBy(), reasonCode, reasonText);
+            publishStatusChangedAfterCommit(saved, fromStatus, targetStatus);
         }
 
         if (beforeReservationId == null && saved.getReservationId() != null) {
@@ -423,6 +429,7 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
         maybeInsertCallHistory(saved, queue, changedBy);
 
         saveStatusHistory(receptionId, fromStatus, targetStatus, changedBy, normalizedReasonCode, normalizedReasonText);
+        publishStatusChangedAfterCommit(saved, fromStatus, targetStatus);
 
         saveReceptionAudit(
                 saved.getReceptionId(),
@@ -464,6 +471,47 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
         history.setReasonCode(reasonCode);
         history.setReasonText(reasonText);
         receptionStatusHistoryRepository.save(history);
+    }
+
+    private void publishStatusChangedAfterCommit(
+            OutpatientReceptionEntity reception,
+            String fromStatus,
+            String toStatus
+    ) {
+        if (Objects.equals(fromStatus, toStatus)) {
+            return;
+        }
+        OutpatientReceptionStatusChangedEventDTO event = buildStatusChangedEvent(
+                reception,
+                fromStatus,
+                toStatus
+        );
+        if (TransactionSynchronizationManager.isActualTransactionActive()) {
+            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+                @Override
+                public void afterCommit() {
+                    receptionStatusEventPublisher.publishStatusChanged(event);
+                }
+            });
+            return;
+        }
+        receptionStatusEventPublisher.publishStatusChanged(event);
+    }
+
+    private OutpatientReceptionStatusChangedEventDTO buildStatusChangedEvent(
+            OutpatientReceptionEntity reception,
+            String fromStatus,
+            String toStatus
+    ) {
+        OutpatientReceptionStatusChangedEventDTO event = new OutpatientReceptionStatusChangedEventDTO();
+        event.setReceptionId(reception.getReceptionId());
+        event.setReceptionNo(reception.getReceptionNo());
+        event.setPatientId(reception.getPatientId());
+        event.setPatientName(reception.getPatientName());
+        event.setFromStatus(fromStatus);
+        event.setToStatus(toStatus);
+        event.setChangedAt(LocalDateTime.now());
+        return event;
     }
 
     private OutpatientReceptionStatusHistoryDTO toHistoryDto(OutpatientReceptionStatusHistoryEntity entity) {

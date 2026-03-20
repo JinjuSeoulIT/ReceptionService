@@ -16,9 +16,11 @@ import kr.co.seoulit.reception.outpatient.dto.OutpatientReceptionStatusUpdateReq
 import kr.co.seoulit.reception.outpatient.dto.OutpatientSettlementSnapshotDTO;
 import kr.co.seoulit.reception.outpatient.dto.OutpatientVisitClosureDTO;
 import kr.co.seoulit.reception.outpatient.dto.OutpatientVisitClosureHistoryDTO;
+import kr.co.seoulit.reception.outpatient.realtime.OutpatientReceptionStatusEventPublisher;
 import kr.co.seoulit.reception.outpatient.service.OutpatientReceptionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -31,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.util.HashMap;
 import java.util.List;
@@ -44,6 +47,7 @@ import java.util.List;
 public class OutpatientReceptionController {
 
     private final OutpatientReceptionService receptionService;
+    private final OutpatientReceptionStatusEventPublisher receptionStatusEventPublisher;
 
     @Operation(summary = "Get outpatient receptions")
     @GetMapping
@@ -66,6 +70,13 @@ public class OutpatientReceptionController {
 
         List<OutpatientReceptionDTO> list = receptionService.getReceptionList(searchCondition);
         return ResponseEntity.ok(new ApiResponse<>(true, "Reception list fetched", list));
+    }
+
+    @Operation(summary = "Subscribe outpatient reception status events")
+    @GetMapping(value = "/events/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public SseEmitter streamReceptionStatusEvents() {
+        log.info("Subscribe reception status events");
+        return receptionStatusEventPublisher.subscribe();
     }
 
     @Operation(summary = "Get outpatient reception queue")
