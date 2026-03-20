@@ -41,7 +41,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/receptions")
-@Tag(name = "Outpatient Reception", description = "Outpatient reception APIs")
+@Tag(name = "외래 접수", description = "외래 접수 API")
 @Slf4j
 @Validated
 public class OutpatientReceptionController {
@@ -49,15 +49,15 @@ public class OutpatientReceptionController {
     private final OutpatientReceptionService receptionService;
     private final OutpatientReceptionStatusEventPublisher receptionStatusEventPublisher;
 
-    @Operation(summary = "Get outpatient receptions")
+    @Operation(summary = "외래 접수 목록 조회")
     @GetMapping
     public ResponseEntity<ApiResponse<List<OutpatientReceptionDTO>>> getReceptions(
-            @Parameter(description = "Search type") @RequestParam(required = false) String searchType,
-            @Parameter(description = "Search value") @RequestParam(required = false) String searchValue,
-            @Parameter(description = "Date from (YYYY-MM-DD)") @RequestParam(required = false) String dateFrom,
-            @Parameter(description = "Date to (YYYY-MM-DD)") @RequestParam(required = false) String dateTo,
-            @Parameter(description = "Department id") @RequestParam(required = false) Long departmentId,
-            @Parameter(description = "Doctor id") @RequestParam(required = false) Long doctorId
+            @Parameter(description = "검색 유형") @RequestParam(required = false) String searchType,
+            @Parameter(description = "검색어") @RequestParam(required = false) String searchValue,
+            @Parameter(description = "시작일 (YYYY-MM-DD)") @RequestParam(required = false) String dateFrom,
+            @Parameter(description = "종료일 (YYYY-MM-DD)") @RequestParam(required = false) String dateTo,
+            @Parameter(description = "진료과 ID") @RequestParam(required = false) Long departmentId,
+            @Parameter(description = "의사 ID") @RequestParam(required = false) Long doctorId
     ) {
         log.info("Get receptions request: searchType={}, searchValue={}", searchType, searchValue);
         HashMap<String, Object> searchCondition = new HashMap<>();
@@ -72,35 +72,35 @@ public class OutpatientReceptionController {
         return ResponseEntity.ok(new ApiResponse<>(true, "Reception list fetched", list));
     }
 
-    @Operation(summary = "Subscribe outpatient reception status events")
+    @Operation(summary = "외래 접수 상태 이벤트 구독")
     @GetMapping(value = "/events/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter streamReceptionStatusEvents() {
         log.info("Subscribe reception status events");
         return receptionStatusEventPublisher.subscribe();
     }
 
-    @Operation(summary = "Get outpatient reception queue")
+    @Operation(summary = "외래 접수 대기열 조회")
     @GetMapping("/queue")
     public ResponseEntity<ApiResponse<List<OutpatientReceptionDTO>>> getReceptionQueue(
-            @Parameter(description = "Department id") @RequestParam(required = false) Long departmentId,
-            @Parameter(description = "Doctor id") @RequestParam(required = false) Long doctorId,
-            @Parameter(description = "Date (YYYY-MM-DD)") @RequestParam(required = false) String date
+            @Parameter(description = "진료과 ID") @RequestParam(required = false) Long departmentId,
+            @Parameter(description = "의사 ID") @RequestParam(required = false) Long doctorId,
+            @Parameter(description = "조회일 (YYYY-MM-DD)") @RequestParam(required = false) String date
     ) {
         List<OutpatientReceptionDTO> list = receptionService.getReceptionQueue(departmentId, doctorId, date);
         return ResponseEntity.ok(new ApiResponse<>(true, "Reception queue fetched", list));
     }
 
-    @Operation(summary = "Get outpatient reception detail")
+    @Operation(summary = "외래 접수 상세 조회")
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<OutpatientReceptionDTO>> getReception(
-            @Parameter(description = "Reception id") @PathVariable Long id
+            @Parameter(description = "접수 ID") @PathVariable Long id
     ) {
         log.info("Get reception request: id={}", id);
         OutpatientReceptionDTO dto = receptionService.getReception(id);
         return ResponseEntity.ok(new ApiResponse<>(true, "Reception fetched", dto));
     }
 
-    @Operation(summary = "Create outpatient reception")
+    @Operation(summary = "외래 접수 등록")
     @PostMapping
     public ResponseEntity<ApiResponse<Boolean>> createReception(@Valid @RequestBody OutpatientReceptionDTO reception) {
         log.info("Create reception request: receptionNo={}", reception.getReceptionNo());
@@ -108,10 +108,10 @@ public class OutpatientReceptionController {
         return ResponseEntity.ok(new ApiResponse<>(true, "Reception created", true));
     }
 
-    @Operation(summary = "Update outpatient reception")
+    @Operation(summary = "외래 접수 수정")
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<Boolean>> updateReception(
-            @Parameter(description = "Reception id") @PathVariable Long id,
+            @Parameter(description = "접수 ID") @PathVariable Long id,
             @Valid @RequestBody OutpatientReceptionDTO reception
     ) {
         log.info("Update reception request: id={}", id);
@@ -119,13 +119,13 @@ public class OutpatientReceptionController {
         return ResponseEntity.ok(new ApiResponse<>(true, "Reception updated", true));
     }
 
-    @Operation(summary = "Cancel outpatient reception")
+    @Operation(summary = "외래 접수 취소")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Boolean>> cancelReception(
-            @Parameter(description = "Reception id") @PathVariable Long id,
-            @Parameter(description = "User id") @RequestParam(required = false) Long changedBy,
-            @Parameter(description = "Reason code") @RequestParam(required = false) String reasonCode,
-            @Parameter(description = "Reason text") @RequestParam(required = false) String reasonText
+            @Parameter(description = "접수 ID") @PathVariable Long id,
+            @Parameter(description = "사용자 ID") @RequestParam(required = false) Long changedBy,
+            @Parameter(description = "사유 코드") @RequestParam(required = false) String reasonCode,
+            @Parameter(description = "사유 내용") @RequestParam(required = false) String reasonText
     ) {
         log.info("Cancel reception request: id={}", id);
         receptionService.updateReceptionStatus(
@@ -138,10 +138,10 @@ public class OutpatientReceptionController {
         return ResponseEntity.ok(new ApiResponse<>(true, "Reception cancelled", true));
     }
 
-    @Operation(summary = "Update outpatient reception status")
+    @Operation(summary = "외래 접수 상태 변경")
     @PatchMapping("/{id}/status")
     public ResponseEntity<ApiResponse<OutpatientReceptionDTO>> updateReceptionStatus(
-            @Parameter(description = "Reception id") @PathVariable Long id,
+            @Parameter(description = "접수 ID") @PathVariable Long id,
             @Valid @RequestBody OutpatientReceptionStatusUpdateRequest request
     ) {
         log.info("Update reception status request: id={}, status={}", id, request.getStatus());
@@ -155,80 +155,80 @@ public class OutpatientReceptionController {
         return ResponseEntity.ok(new ApiResponse<>(true, "Reception status updated", updated));
     }
 
-    @Operation(summary = "Get outpatient reception status history")
+    @Operation(summary = "외래 접수 상태 이력 조회")
     @GetMapping("/{id}/status-history")
     public ResponseEntity<ApiResponse<List<OutpatientReceptionStatusHistoryDTO>>> getStatusHistory(
-            @Parameter(description = "Reception id") @PathVariable Long id
+            @Parameter(description = "접수 ID") @PathVariable Long id
     ) {
         List<OutpatientReceptionStatusHistoryDTO> list = receptionService.getReceptionStatusHistory(id);
         return ResponseEntity.ok(new ApiResponse<>(true, "Reception status history fetched", list));
     }
 
-    @Operation(summary = "Get qualification snapshots")
+    @Operation(summary = "수진자격 스냅샷 조회")
     @GetMapping("/{id}/qualification-snapshots")
     public ResponseEntity<ApiResponse<List<OutpatientQualificationSnapshotDTO>>> getQualificationSnapshots(
-            @Parameter(description = "Reception id") @PathVariable Long id
+            @Parameter(description = "접수 ID") @PathVariable Long id
     ) {
         List<OutpatientQualificationSnapshotDTO> list = receptionService.getQualificationSnapshots(id);
         return ResponseEntity.ok(new ApiResponse<>(true, "Qualification snapshots fetched", list));
     }
 
-    @Operation(summary = "Get qualification items")
+    @Operation(summary = "수진자격 항목 조회")
     @GetMapping("/{id}/qualification-items")
     public ResponseEntity<ApiResponse<List<OutpatientQualificationItemDTO>>> getQualificationItems(
-            @Parameter(description = "Reception id") @PathVariable Long id
+            @Parameter(description = "접수 ID") @PathVariable Long id
     ) {
         List<OutpatientQualificationItemDTO> items = receptionService.getLatestQualificationItems(id);
         return ResponseEntity.ok(new ApiResponse<>(true, "Qualification items fetched", items));
     }
 
-    @Operation(summary = "Get call history")
+    @Operation(summary = "호출 이력 조회")
     @GetMapping("/{id}/call-history")
     public ResponseEntity<ApiResponse<List<OutpatientCallHistoryDTO>>> getCallHistory(
-            @Parameter(description = "Reception id") @PathVariable Long id
+            @Parameter(description = "접수 ID") @PathVariable Long id
     ) {
         List<OutpatientCallHistoryDTO> list = receptionService.getCallHistory(id);
         return ResponseEntity.ok(new ApiResponse<>(true, "Call history fetched", list));
     }
 
-    @Operation(summary = "Get visit closure")
+    @Operation(summary = "진료 종료 정보 조회")
     @GetMapping("/{id}/visit-closure")
     public ResponseEntity<ApiResponse<OutpatientVisitClosureDTO>> getVisitClosure(
-            @Parameter(description = "Reception id") @PathVariable Long id
+            @Parameter(description = "접수 ID") @PathVariable Long id
     ) {
         OutpatientVisitClosureDTO closure = receptionService.getVisitClosure(id);
         return ResponseEntity.ok(new ApiResponse<>(true, "Visit closure fetched", closure));
     }
 
-    @Operation(summary = "Get closure reason code list")
+    @Operation(summary = "진료 종료 사유 코드 목록 조회")
     @GetMapping("/closure-reasons")
     public ResponseEntity<ApiResponse<List<OutpatientClosureReasonDTO>>> getClosureReasons() {
         List<OutpatientClosureReasonDTO> reasons = receptionService.getClosureReasons();
         return ResponseEntity.ok(new ApiResponse<>(true, "Closure reasons fetched", reasons));
     }
 
-    @Operation(summary = "Get visit closure history")
+    @Operation(summary = "진료 종료 이력 조회")
     @GetMapping("/{id}/visit-closure-history")
     public ResponseEntity<ApiResponse<List<OutpatientVisitClosureHistoryDTO>>> getVisitClosureHistory(
-            @Parameter(description = "Reception id") @PathVariable Long id
+            @Parameter(description = "접수 ID") @PathVariable Long id
     ) {
         List<OutpatientVisitClosureHistoryDTO> list = receptionService.getVisitClosureHistory(id);
         return ResponseEntity.ok(new ApiResponse<>(true, "Visit closure history fetched", list));
     }
 
-    @Operation(summary = "Get settlement snapshots")
+    @Operation(summary = "정산 스냅샷 조회")
     @GetMapping("/{id}/settlement-snapshots")
     public ResponseEntity<ApiResponse<List<OutpatientSettlementSnapshotDTO>>> getSettlementSnapshots(
-            @Parameter(description = "Reception id") @PathVariable Long id
+            @Parameter(description = "접수 ID") @PathVariable Long id
     ) {
         List<OutpatientSettlementSnapshotDTO> list = receptionService.getSettlementSnapshots(id);
         return ResponseEntity.ok(new ApiResponse<>(true, "Settlement snapshots fetched", list));
     }
 
-    @Operation(summary = "Get reception audits")
+    @Operation(summary = "접수 감사 이력 조회")
     @GetMapping("/{id}/audits")
     public ResponseEntity<ApiResponse<List<OutpatientReceptionAuditDTO>>> getReceptionAudits(
-            @Parameter(description = "Reception id") @PathVariable Long id
+            @Parameter(description = "접수 ID") @PathVariable Long id
     ) {
         List<OutpatientReceptionAuditDTO> list = receptionService.getReceptionAudits(id);
         return ResponseEntity.ok(new ApiResponse<>(true, "Reception audits fetched", list));

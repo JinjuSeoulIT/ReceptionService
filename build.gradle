@@ -61,6 +61,10 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
+tasks.withType(org.gradle.api.tasks.compile.JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
 
 tasks.named('compileJava') {
     // Keep only legacy service/util excluded; controllers are compiled again.

@@ -29,18 +29,18 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/reservations")
-@Tag(name = "Reservation Reception", description = "Reservation reception APIs")
+@Tag(name = "예약 접수", description = "예약 접수 API")
 @Slf4j
 @Validated
 public class ReservationReceptionController {
 
     private final ReservationReceptionService reservationService;
 
-    @Operation(summary = "Get reservations")
+    @Operation(summary = "예약 목록 조회")
     @GetMapping
     public ResponseEntity<ApiResponse<List<ReservationReceptionDTO>>> getReservations(
-            @Parameter(description = "Search type") @RequestParam(required = false) String searchType,
-            @Parameter(description = "Search value") @RequestParam(required = false) String searchValue
+            @Parameter(description = "검색 유형") @RequestParam(required = false) String searchType,
+            @Parameter(description = "검색어") @RequestParam(required = false) String searchValue
     ) {
         log.info("Get reservations request: searchType={}, searchValue={}", searchType, searchValue);
         HashMap<String, Object> searchCondition = new HashMap<>();
@@ -51,17 +51,17 @@ public class ReservationReceptionController {
         return ResponseEntity.ok(new ApiResponse<>(true, "Reservation list fetched", list));
     }
 
-    @Operation(summary = "Get reservation detail")
+    @Operation(summary = "예약 상세 조회")
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<ReservationReceptionDTO>> getReservation(
-            @Parameter(description = "Reservation id") @PathVariable Long id
+            @Parameter(description = "예약 ID") @PathVariable Long id
     ) {
         log.info("Get reservation request: id={}", id);
         ReservationReceptionDTO dto = reservationService.getReservation(id);
         return ResponseEntity.ok(new ApiResponse<>(true, "Reservation fetched", dto));
     }
 
-    @Operation(summary = "Create reservation")
+    @Operation(summary = "예약 등록")
     @PostMapping
     public ResponseEntity<ApiResponse<Boolean>> createReservation(@Valid @RequestBody ReservationReceptionDTO reservation) {
         log.info("Create reservation request: reservationNo={}", reservation.getReservationNo());
@@ -69,10 +69,10 @@ public class ReservationReceptionController {
         return ResponseEntity.ok(new ApiResponse<>(true, "Reservation created", true));
     }
 
-    @Operation(summary = "Update reservation")
+    @Operation(summary = "예약 수정")
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<Boolean>> updateReservation(
-            @Parameter(description = "Reservation id") @PathVariable Long id,
+            @Parameter(description = "예약 ID") @PathVariable Long id,
             @Valid @RequestBody ReservationReceptionDTO reservation
     ) {
         log.info("Update reservation request: id={}", id);
@@ -80,13 +80,13 @@ public class ReservationReceptionController {
         return ResponseEntity.ok(new ApiResponse<>(true, "Reservation updated", true));
     }
 
-    @Operation(summary = "Cancel reservation")
+    @Operation(summary = "예약 취소")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Boolean>> cancelReservation(
-            @Parameter(description = "Reservation id") @PathVariable Long id,
-            @Parameter(description = "Changed by") @RequestParam(required = false) Long changedBy,
-            @Parameter(description = "Reason code") @RequestParam(required = false) String reasonCode,
-            @Parameter(description = "Reason text") @RequestParam(required = false) String reasonText
+            @Parameter(description = "예약 ID") @PathVariable Long id,
+            @Parameter(description = "변경자 ID") @RequestParam(required = false) Long changedBy,
+            @Parameter(description = "사유 코드") @RequestParam(required = false) String reasonCode,
+            @Parameter(description = "사유 내용") @RequestParam(required = false) String reasonText
     ) {
         log.info("Cancel reservation request: id={}", id);
         reservationService.updateReservationStatus(
@@ -99,10 +99,10 @@ public class ReservationReceptionController {
         return ResponseEntity.ok(new ApiResponse<>(true, "Reservation cancelled", true));
     }
 
-    @Operation(summary = "Update reservation status")
+    @Operation(summary = "예약 상태 변경")
     @PatchMapping("/{id}/status")
     public ResponseEntity<ApiResponse<ReservationReceptionDTO>> updateReservationStatus(
-            @Parameter(description = "Reservation id") @PathVariable Long id,
+            @Parameter(description = "예약 ID") @PathVariable Long id,
             @Valid @RequestBody ReservationReceptionStatusUpdateRequest request
     ) {
         log.info("Update reservation status request: id={}, status={}", id, request.getStatus());

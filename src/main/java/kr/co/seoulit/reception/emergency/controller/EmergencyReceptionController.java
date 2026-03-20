@@ -27,18 +27,18 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/emergency-receptions")
-@Tag(name = "Emergency Reception", description = "Emergency reception APIs")
+@Tag(name = "응급 접수", description = "응급 접수 API")
 @Slf4j
 @Validated
 public class EmergencyReceptionController {
 
     private final EmergencyReceptionService emergencyReceptionService;
 
-    @Operation(summary = "Get emergency receptions")
+    @Operation(summary = "응급 접수 목록 조회")
     @GetMapping
     public ResponseEntity<ApiResponse<List<EmergencyReceptionDTO>>> getEmergencyReceptions(
-            @Parameter(description = "Search type") @RequestParam(required = false) String searchType,
-            @Parameter(description = "Search value") @RequestParam(required = false) String searchValue
+            @Parameter(description = "검색 유형") @RequestParam(required = false) String searchType,
+            @Parameter(description = "검색어") @RequestParam(required = false) String searchValue
     ) {
         log.info("Get emergency receptions request: searchType={}, searchValue={}", searchType, searchValue);
         HashMap<String, Object> searchCondition = new HashMap<>();
@@ -49,17 +49,17 @@ public class EmergencyReceptionController {
         return ResponseEntity.ok(new ApiResponse<>(true, "Emergency reception list fetched", list));
     }
 
-    @Operation(summary = "Get emergency reception detail")
+    @Operation(summary = "응급 접수 상세 조회")
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<EmergencyReceptionDTO>> getEmergencyReception(
-            @Parameter(description = "Reception id") @PathVariable Long id
+            @Parameter(description = "접수 ID") @PathVariable Long id
     ) {
         log.info("Get emergency reception request: id={}", id);
         EmergencyReceptionDTO dto = emergencyReceptionService.getEmergencyReception(id);
         return ResponseEntity.ok(new ApiResponse<>(true, "Emergency reception fetched", dto));
     }
 
-    @Operation(summary = "Create emergency reception")
+    @Operation(summary = "응급 접수 등록")
     @PostMapping
     public ResponseEntity<ApiResponse<Boolean>> createEmergencyReception(@Valid @RequestBody EmergencyReceptionDTO request) {
         log.info("Create emergency reception request: receptionNo={}", request.getReceptionNo());
@@ -67,10 +67,10 @@ public class EmergencyReceptionController {
         return ResponseEntity.ok(new ApiResponse<>(true, "Emergency reception created", true));
     }
 
-    @Operation(summary = "Update emergency reception")
+    @Operation(summary = "응급 접수 수정")
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<Boolean>> updateEmergencyReception(
-            @Parameter(description = "Reception id") @PathVariable Long id,
+            @Parameter(description = "접수 ID") @PathVariable Long id,
             @Valid @RequestBody EmergencyReceptionDTO request
     ) {
         log.info("Update emergency reception request: id={}", id);
@@ -78,10 +78,10 @@ public class EmergencyReceptionController {
         return ResponseEntity.ok(new ApiResponse<>(true, "Emergency reception updated", true));
     }
 
-    @Operation(summary = "Cancel emergency reception")
+    @Operation(summary = "응급 접수 취소")
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponse<Boolean>> cancelEmergencyReception(
-            @Parameter(description = "Reception id") @PathVariable Long id
+            @Parameter(description = "접수 ID") @PathVariable Long id
     ) {
         log.info("Cancel emergency reception request: id={}", id);
         EmergencyReceptionDTO request = new EmergencyReceptionDTO();
