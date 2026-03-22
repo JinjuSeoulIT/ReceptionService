@@ -67,6 +67,7 @@ public class InpatientReceptionServiceImpl implements InpatientReceptionService 
                 .findTopByInpatientAdmissionIdOrderByAssignmentDatetimeDesc(inpatient.getInpatientAdmissionId())
                 .orElse(null);
 
+        enrichDisplayNames(reception);
         return toInpatientDto(reception, inpatient, bedAssignment);
     }
 
@@ -575,6 +576,34 @@ public class InpatientReceptionServiceImpl implements InpatientReceptionService 
         }
         String normalizedFallback = trimToNull(fallback);
         return normalizedFallback != null ? normalizedFallback : "DOCTOR-" + doctorId;
+    }
+
+    private void enrichDisplayNames(OutpatientReceptionEntity reception) {
+        if (reception == null) {
+            return;
+        }
+
+        if (reception.getPatientId() != null) {
+            try {
+                reception.setPatientName(resolvePatientName(reception.getPatientId(), reception.getPatientName()));
+            } catch (RuntimeException ignored) {
+                if (trimToNull(reception.getPatientName()) == null) {
+                    reception.setPatientName("PATIENT-" + reception.getPatientId());
+                }
+            }
+        }
+
+        try {
+            reception.setDepartmentName(resolveDepartmentName(reception.getDepartmentId(), reception.getDepartmentName()));
+        } catch (RuntimeException ignored) {
+            // keep current value
+        }
+
+        try {
+            reception.setDoctorName(resolveDoctorName(reception.getDoctorId(), reception.getDoctorName()));
+        } catch (RuntimeException ignored) {
+            // keep current value
+        }
     }
 
     private String firstNonBlank(String... values) {

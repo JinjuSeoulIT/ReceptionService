@@ -5,8 +5,6 @@ import kr.co.seoulit.common.sequence.ReceptionNumberSequenceClient;
 import kr.co.seoulit.reception.reservation.mapstruct.ReservationReqMapStruct;
 import kr.co.seoulit.reception.reservation.mapstruct.ReservationResMapStruct;
 import kr.co.seoulit.common.client.PatientServiceClient;
-import kr.co.seoulit.reception.repository.DepartmentRepository;
-import kr.co.seoulit.reception.repository.DoctorRepository;
 import kr.co.seoulit.reception.reservation.dto.ReservationReceptionDTO;
 import kr.co.seoulit.reception.reservation.entity.ReservationBookingRuleEntity;
 import kr.co.seoulit.reception.reservation.entity.ReservationDoctorScheduleEntity;
@@ -41,6 +39,20 @@ public class ReservationReceptionServiceImpl implements ReservationReceptionServ
 
     private static final Set<String> REASON_REQUIRED_STATUSES = Set.of("CANCELED", "INACTIVE", "HOLD");
     private static final Map<String, Set<String>> STATUS_TRANSITIONS = createStatusTransitionRules();
+    private static final Map<Long, String> FRONT_DEPT_NAME = Map.of(
+            1L, "내과",
+            2L, "정형외과",
+            3L, "소아과",
+            4L, "이비인후과",
+            5L, "피부과"
+    );
+    private static final Map<Long, String> FRONT_DOCTOR_NAME = Map.of(
+            1L, "송태민",
+            2L, "이현석",
+            3L, "성숙희",
+            4L, "최효정",
+            5L, "홍예진"
+    );
 
     private final ReservationReceptionRepository reservationRepository;
     private final ReservationReceptionMapper reservationMyBatisMapper;
@@ -51,8 +63,6 @@ public class ReservationReceptionServiceImpl implements ReservationReceptionServ
     private final ReservationTimeSlotRepository reservationTimeSlotRepository;
     private final ReservationBookingRuleRepository reservationBookingRuleRepository;
     private final PatientServiceClient patientServiceClient;
-    private final DepartmentRepository departmentRepository;
-    private final DoctorRepository doctorRepository;
     private final AuditLogService auditLogService;
     private final ReceptionNumberSequenceClient receptionNumberSequenceClient;
 
@@ -60,7 +70,9 @@ public class ReservationReceptionServiceImpl implements ReservationReceptionServ
     public List<ReservationReceptionDTO> getReservationList(Map<String, Object> searchCondition) {
         String searchType = (String) searchCondition.get("searchType");
         String searchValue = (String) searchCondition.get("searchValue");
-        return reservationMyBatisMapper.selectReservations(searchType, searchValue);
+        List<ReservationReceptionDTO> list = reservationMyBatisMapper.selectReservations(searchType, searchValue);
+        list.forEach(this::normalizeFrontDisplayNames);
+        return list;
     }
 
     @Override
@@ -68,7 +80,7 @@ public class ReservationReceptionServiceImpl implements ReservationReceptionServ
     public ReservationReceptionDTO getReservation(Long reservationId) {
         ReservationReceptionEntity entity = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new IllegalArgumentException("Reservation not found. reservationId=" + reservationId));
-        return reservationResMapStruct.toDto(entity);
+        return toDisplayDto(entity);
     }
 
     @Override
@@ -105,6 +117,7 @@ public class ReservationReceptionServiceImpl implements ReservationReceptionServ
         ReservationDoctorScheduleEntity schedule = ensureDoctorSchedule(saved);
         ensureTimeSlot(saved, schedule);
         saveReservationStatusHistory(saved.getReservationId(), null, saved.getStatus(), reservation.getCreatedBy(), reasonText);
+        ReservationReceptionDTO after = toDisplayDto(saved);
 
         auditLogService.log(
                 "RESERVATION",
@@ -114,7 +127,7 @@ public class ReservationReceptionServiceImpl implements ReservationReceptionServ
                 reasonCode,
                 reasonText,
                 null,
-                reservationResMapStruct.toDto(saved)
+                after
         );
     }
 
@@ -141,7 +154,7 @@ public class ReservationReceptionServiceImpl implements ReservationReceptionServ
         ReservationReceptionEntity existing = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new IllegalArgumentException("Reservation not found. reservationId=" + reservationId));
 
-        ReservationReceptionDTO before = reservationResMapStruct.toDto(existing);
+        ReservationReceptionDTO before = toDisplayDto(existing);
         String beforeStatus = normalizeStatus(existing.getStatus());
 
         if (trimToNull(reservation.getReservationNo()) != null) {
@@ -208,6 +221,7 @@ public class ReservationReceptionServiceImpl implements ReservationReceptionServ
                     reasonText
             );
         }
+        ReservationReceptionDTO after = toDisplayDto(saved);
 
         auditLogService.log(
                 "RESERVATION",
@@ -217,7 +231,7 @@ public class ReservationReceptionServiceImpl implements ReservationReceptionServ
                 reasonCode,
                 reasonText,
                 before,
-                reservationResMapStruct.toDto(saved)
+                after
         );
     }
 
@@ -238,7 +252,7 @@ public class ReservationReceptionServiceImpl implements ReservationReceptionServ
         ReservationReceptionEntity existing = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new IllegalArgumentException("Reservation not found. reservationId=" + reservationId));
 
-        ReservationReceptionDTO before = reservationResMapStruct.toDto(existing);
+        ReservationReceptionDTO before = toDisplayDto(existing);
         String beforeStatus = normalizeStatus(existing.getStatus());
         String targetStatus = normalizeStatus(status);
         validateStatusTransition(beforeStatus, targetStatus);
@@ -256,6 +270,7 @@ public class ReservationReceptionServiceImpl implements ReservationReceptionServ
         ReservationDoctorScheduleEntity schedule = ensureDoctorSchedule(saved);
         ensureTimeSlot(saved, schedule);
         saveReservationStatusHistory(saved.getReservationId(), beforeStatus, targetStatus, changedBy, normalizedReasonText);
+        ReservationReceptionDTO after = toDisplayDto(saved);
 
         auditLogService.log(
                 "RESERVATION",
@@ -265,10 +280,10 @@ public class ReservationReceptionServiceImpl implements ReservationReceptionServ
                 normalizedReasonCode,
                 normalizedReasonText,
                 before,
-                reservationResMapStruct.toDto(saved)
+                after
         );
 
-        return reservationResMapStruct.toDto(saved);
+        return after;
     }
 
     private void saveReservationStatusHistory(
@@ -507,6 +522,61 @@ public class ReservationReceptionServiceImpl implements ReservationReceptionServ
         return null;
     }
 
+    private ReservationReceptionDTO toDisplayDto(ReservationReceptionEntity entity) {
+        if (entity == null) {
+            return null;
+        }
+        ReservationReceptionDTO mapped = reservationMyBatisMapper.selectReservationById(entity.getReservationId());
+        if (mapped != null) {
+            normalizeFrontDisplayNames(mapped);
+            return mapped;
+        }
+        enrichDisplayNames(entity);
+        ReservationReceptionDTO fallback = reservationResMapStruct.toDto(entity);
+        normalizeFrontDisplayNames(fallback);
+        return fallback;
+    }
+
+    private void normalizeFrontDisplayNames(ReservationReceptionDTO dto) {
+        if (dto == null) {
+            return;
+        }
+        if (dto.getDepartmentId() != null) {
+            dto.setDepartmentName(resolveDepartmentName(dto.getDepartmentId(), dto.getDepartmentName()));
+        }
+        if (dto.getDoctorId() != null) {
+            dto.setDoctorName(resolveDoctorName(dto.getDoctorId(), dto.getDoctorName()));
+        }
+    }
+
+    private void enrichDisplayNames(ReservationReceptionEntity reservation) {
+        if (reservation == null) {
+            return;
+        }
+
+        if (reservation.getPatientId() != null) {
+            try {
+                reservation.setPatientName(resolvePatientName(reservation.getPatientId(), reservation.getPatientName()));
+            } catch (RuntimeException ignored) {
+                if (trimToNull(reservation.getPatientName()) == null) {
+                    reservation.setPatientName("PATIENT-" + reservation.getPatientId());
+                }
+            }
+        }
+
+        try {
+            reservation.setDepartmentName(resolveDepartmentName(reservation.getDepartmentId(), reservation.getDepartmentName()));
+        } catch (RuntimeException ignored) {
+            // keep current value when department metadata cannot be resolved
+        }
+
+        try {
+            reservation.setDoctorName(resolveDoctorName(reservation.getDoctorId(), reservation.getDoctorName()));
+        } catch (RuntimeException ignored) {
+            // keep current value when doctor metadata cannot be resolved
+        }
+    }
+
     private Long resolvePatientId(Long patientId, String patientName) {
         if (patientId != null) {
             return patientServiceClient.requirePatientById(patientId).patientId();
@@ -534,6 +604,10 @@ public class ReservationReceptionServiceImpl implements ReservationReceptionServ
         if (departmentId == null) {
             throw new IllegalArgumentException("departmentId is required");
         }
+        String resolvedFromMap = FRONT_DEPT_NAME.get(departmentId);
+        if (resolvedFromMap != null) {
+            return resolvedFromMap;
+        }
         String fallback = trimToNull(fallbackName);
         return fallback != null ? fallback : "DEPT-" + departmentId;
     }
@@ -541,6 +615,10 @@ public class ReservationReceptionServiceImpl implements ReservationReceptionServ
     private String resolveDoctorName(Long doctorId, String fallbackName) {
         if (doctorId == null) {
             return null;
+        }
+        String resolvedFromMap = FRONT_DOCTOR_NAME.get(doctorId);
+        if (resolvedFromMap != null) {
+            return resolvedFromMap;
         }
         String fallback = trimToNull(fallbackName);
         return fallback != null ? fallback : "DOCTOR-" + doctorId;

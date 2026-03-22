@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -34,7 +35,7 @@ public class ReceptionEntity {
     @Column(name = "patient_id", nullable = false)
     private Long patientId;
 
-    @Column(name = "patient_name", length = 50, nullable = false)
+    @Transient
     private String patientName;
 
     @Column(name = "visit_type", length = 20, nullable = false)
@@ -43,13 +44,13 @@ public class ReceptionEntity {
     @Column(name = "department_id", nullable = false)
     private Long departmentId;
 
-    @Column(name = "department_name", length = 50, nullable = false)
+    @Transient
     private String departmentName;
 
     @Column(name = "doctor_id")
     private Long doctorId;
 
-    @Column(name = "doctor_name", length = 50)
+    @Transient
     private String doctorName;
 
     @Column(name = "reservation_id")
@@ -105,6 +106,5 @@ public class ReceptionEntity {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 }
-
 
 

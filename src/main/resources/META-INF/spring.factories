@@ -1,0 +1,2 @@
+org.springframework.context.ApplicationContextInitializer=\
+kr.co.seoulit.common.config.DatasourcePreflightInitializer

@@ -42,8 +42,6 @@ import kr.co.seoulit.reception.outpatient.repository.ReceptionQualificationSnaps
 import kr.co.seoulit.reception.outpatient.repository.ReceptionSettlementSnapshotRepository;
 import kr.co.seoulit.reception.outpatient.repository.ReceptionVisitClosureHistoryRepository;
 import kr.co.seoulit.reception.outpatient.repository.ReceptionVisitClosureRepository;
-import kr.co.seoulit.reception.repository.DepartmentRepository;
-import kr.co.seoulit.reception.repository.DoctorRepository;
 import kr.co.seoulit.common.client.PatientServiceClient;
 import kr.co.seoulit.reception.reservation.entity.ReservationToReceptionHistoryEntity;
 import kr.co.seoulit.reception.reservation.repository.ReservationToReceptionHistoryRepository;
@@ -72,6 +70,20 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
 
     private static final Set<String> REASON_REQUIRED_STATUSES = Set.of("CANCELLED", "INACTIVE", "HOLD");
     private static final Map<String, Set<String>> STATUS_TRANSITIONS = createStatusTransitionRules();
+    private static final Map<Long, String> FRONT_DEPT_NAME = Map.of(
+            1L, "내과",
+            2L, "정형외과",
+            3L, "소아과",
+            4L, "이비인후과",
+            5L, "피부과"
+    );
+    private static final Map<Long, String> FRONT_DOCTOR_NAME = Map.of(
+            1L, "송태민",
+            2L, "이현석",
+            3L, "성숙희",
+            4L, "최효정",
+            5L, "홍예진"
+    );
 
     private final OutpatientReceptionRepository receptionRepository;
     private final OutpatientReceptionMapper receptionMyBatisMapper;
@@ -91,8 +103,6 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
     private final ReservationToReceptionHistoryRepository reservationToReceptionHistoryRepository;
     private final PatientServiceClient patientServiceClient;
     private final ReceptionNumberSequenceClient receptionNumberSequenceClient;
-    private final DepartmentRepository departmentRepository;
-    private final DoctorRepository doctorRepository;
     private final AuditLogService auditLogService;
     private final OutpatientReceptionStatusEventPublisher receptionStatusEventPublisher;
 
@@ -120,6 +130,7 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
     public OutpatientReceptionDTO getReception(Long receptionId) {
         OutpatientReceptionEntity entity = receptionRepository.findById(receptionId)
                 .orElseThrow(() -> new ReceptionNotFoundException("Reception not found. receptionId=" + receptionId));
+        enrichDisplayNames(entity);
         return receptionResMapStruct.toDto(entity);
     }
 
@@ -265,6 +276,7 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
         applyStatusSideEffects(existing, targetStatus, reasonCode, reasonText);
 
         OutpatientReceptionEntity saved = receptionRepository.save(existing);
+        enrichDisplayNames(saved);
         upsertOutpatientDetail(saved);
         OutpatientWaitingQueueEntity queue = upsertWaitingQueue(saved);
         syncQualificationSnapshot(saved);
@@ -453,6 +465,40 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
         );
 
         return receptionResMapStruct.toDto(saved);
+    }
+
+    private void enrichDisplayNames(OutpatientReceptionEntity reception) {
+        if (reception == null) {
+            return;
+        }
+
+        if (reception.getPatientId() != null) {
+            try {
+                PatientRef resolved = resolvePatient(reception.getPatientId(), reception.getPatientName());
+                reception.setPatientId(resolved.patientId());
+                reception.setPatientName(resolved.patientName());
+            } catch (RuntimeException ignored) {
+                if (trimToNull(reception.getPatientName()) == null) {
+                    reception.setPatientName("PATIENT-" + reception.getPatientId());
+                }
+            }
+        }
+
+        try {
+            reception.setDepartmentName(
+                    resolveDepartmentName(reception.getDepartmentId(), reception.getDepartmentName())
+            );
+        } catch (RuntimeException ignored) {
+            // keep current value when department metadata cannot be resolved
+        }
+
+        try {
+            reception.setDoctorName(
+                    resolveDoctorName(reception.getDoctorId(), reception.getDoctorName())
+            );
+        } catch (RuntimeException ignored) {
+            // keep current value when doctor metadata cannot be resolved
+        }
     }
 
     private void saveStatusHistory(
@@ -1072,16 +1118,28 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
         if (departmentId == null) {
             throw new IllegalArgumentException("departmentId is required");
         }
+        String resolvedFromMap = FRONT_DEPT_NAME.get(departmentId);
+        if (resolvedFromMap != null) {
+            return resolvedFromMap;
+        }
         String fallback = trimToNull(fallbackName);
-        return fallback != null ? fallback : "DEPT-" + departmentId;
+        if (fallback != null) {
+            return fallback;
+        }
+        throw new IllegalArgumentException("departmentName not found for departmentId: " + departmentId);
     }
 
     private String resolveDoctorName(Long doctorId, String fallbackName) {
-        if (doctorId == null) {
-            return null;
+        if (doctorId == null) return null;
+        String resolvedFromMap = FRONT_DOCTOR_NAME.get(doctorId);
+        if (resolvedFromMap != null) {
+            return resolvedFromMap;
         }
         String fallback = trimToNull(fallbackName);
-        return fallback != null ? fallback : "DOCTOR-" + doctorId;
+        if (fallback != null) {
+            return fallback;
+        }
+        throw new IllegalArgumentException("doctorName not found for doctorId: " + doctorId);
     }
 
     private String firstNonBlank(String... values) {

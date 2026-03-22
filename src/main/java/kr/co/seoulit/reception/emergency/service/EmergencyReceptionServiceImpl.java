@@ -58,6 +58,7 @@ public class EmergencyReceptionServiceImpl implements EmergencyReceptionService 
                 .findTopByReceptionIdOrderByTriageDatetimeDesc(receptionId)
                 .orElse(null);
 
+        enrichDisplayNames(reception);
         return toEmergencyDto(reception, emergency, triage);
     }
 
@@ -466,6 +467,34 @@ public class EmergencyReceptionServiceImpl implements EmergencyReceptionService 
         }
         String normalizedFallback = trimToNull(fallback);
         return normalizedFallback != null ? normalizedFallback : "DOCTOR-" + doctorId;
+    }
+
+    private void enrichDisplayNames(OutpatientReceptionEntity reception) {
+        if (reception == null) {
+            return;
+        }
+
+        if (reception.getPatientId() != null) {
+            try {
+                reception.setPatientName(resolvePatientName(reception.getPatientId(), reception.getPatientName()));
+            } catch (RuntimeException ignored) {
+                if (trimToNull(reception.getPatientName()) == null) {
+                    reception.setPatientName("PATIENT-" + reception.getPatientId());
+                }
+            }
+        }
+
+        try {
+            reception.setDepartmentName(resolveDepartmentName(reception.getDepartmentId(), reception.getDepartmentName()));
+        } catch (RuntimeException ignored) {
+            // keep current value
+        }
+
+        try {
+            reception.setDoctorName(resolveDoctorName(reception.getDoctorId(), reception.getDoctorName()));
+        } catch (RuntimeException ignored) {
+            // keep current value
+        }
     }
 
     private String toYn(Boolean value) {

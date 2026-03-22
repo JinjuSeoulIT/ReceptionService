@@ -12,8 +12,9 @@ public interface ReservationReceptionMapper {
             @Param("searchType") String searchType,
             @Param("searchValue") String searchValue
     );
-}
 
+    ReservationReceptionDTO selectReservationById(@Param("reservationId") Long reservationId);
+}
 
 
 

@@ -10,11 +10,11 @@
             rs.reservation_id,
             rs.reservation_no,
             rs.patient_id,
-            NVL(p.name, rs.patient_name) AS patient_name,
+            p.name AS patient_name,
             rs.department_id,
-            NVL(rs.department_name, d.name) AS department_name,
+            d.name AS department_name,
             rs.doctor_id,
-            NVL(rs.doctor_name, doc.full_name) AS doctor_name,
+            doc.full_name AS doctor_name,
             rs.reserved_at,
             rs.status,
             rs.note,
@@ -50,6 +50,37 @@
             </if>
         </where>
         ORDER BY rs.reservation_id DESC
+    </select>
+
+    <select id="selectReservationById" resultType="kr.co.seoulit.reception.reservation.dto.ReservationReceptionDTO">
+        SELECT
+            rs.reservation_id,
+            rs.reservation_no,
+            rs.patient_id,
+            p.name AS patient_name,
+            rs.department_id,
+            d.name AS department_name,
+            rs.doctor_id,
+            doc.full_name AS doctor_name,
+            rs.reserved_at,
+            rs.status,
+            rs.note,
+            NVL(rs.is_active, 1) AS is_active,
+            rs.inactive_at,
+            rs.inactive_reason_code,
+            rs.inactive_reason_text,
+            rs.canceled_at,
+            rs.cancel_reason_code,
+            rs.cancel_reason_text,
+            rs.created_by,
+            rs.updated_by,
+            rs.created_at,
+            rs.updated_at
+        FROM RESERVATION rs
+        LEFT JOIN patient p ON p.patient_id = rs.patient_id
+        LEFT JOIN departments d ON d.id = rs.department_id
+        LEFT JOIN staff doc ON doc.id = rs.doctor_id
+        WHERE rs.reservation_id = #{reservationId}
     </select>
 
 </mapper>
