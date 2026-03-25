@@ -99,7 +99,7 @@ public class InpatientReceptionServiceImpl implements InpatientReceptionService 
         reception.setDepartmentId(request.getDepartmentId());
         reception.setDepartmentName(resolveDepartmentName(request.getDepartmentId(), request.getDepartmentName()));
         reception.setDoctorId(request.getDoctorId());
-        reception.setDoctorName(resolveDoctorName(request.getDoctorId(), request.getDoctorName()));
+        reception.setDoctorName(resolveDoctorName(request.getDoctorId(), request.getDepartmentId(), request.getDoctorName()));
         reception.setReservationId(request.getReservationId());
         reception.setScheduledAt(request.getScheduledAt());
         reception.setArrivedAt(request.getArrivedAt());
@@ -201,7 +201,11 @@ public class InpatientReceptionServiceImpl implements InpatientReceptionService 
             reception.setDoctorId(request.getDoctorId());
         }
         if (trimToNull(request.getDoctorName()) != null || request.getDoctorId() != null) {
-            reception.setDoctorName(resolveDoctorName(reception.getDoctorId(), firstNonBlank(request.getDoctorName(), reception.getDoctorName())));
+            reception.setDoctorName(resolveDoctorName(
+                    reception.getDoctorId(),
+                    reception.getDepartmentId(),
+                    firstNonBlank(request.getDoctorName(), reception.getDoctorName())
+            ));
         }
         if (request.getReservationId() != null) {
             reception.setReservationId(request.getReservationId());
@@ -566,16 +570,38 @@ public class InpatientReceptionServiceImpl implements InpatientReceptionService 
         if (departmentId == null) {
             throw new IllegalArgumentException("departmentId is required");
         }
-        String normalizedFallback = trimToNull(fallback);
-        return normalizedFallback != null ? normalizedFallback : "DEPT-" + departmentId;
+        return departmentRepository.findById(departmentId)
+                .map(item -> firstNonBlank(item.getDepartmentName(), fallback))
+                .orElseGet(() -> {
+                    String normalizedFallback = trimToNull(fallback);
+                    if (normalizedFallback != null) {
+                        return normalizedFallback;
+                    }
+                    throw new IllegalArgumentException("departmentName not found for departmentId=" + departmentId);
+                });
     }
 
-    private String resolveDoctorName(Long doctorId, String fallback) {
+    private String resolveDoctorName(Long doctorId, Long departmentId, String fallback) {
         if (doctorId == null) {
             return null;
         }
-        String normalizedFallback = trimToNull(fallback);
-        return normalizedFallback != null ? normalizedFallback : "DOCTOR-" + doctorId;
+        return doctorRepository.findById(doctorId)
+                .map(item -> {
+                    if (departmentId != null && item.getDepartmentId() != null
+                            && !Objects.equals(item.getDepartmentId(), departmentId)) {
+                        throw new IllegalArgumentException(
+                                "doctorId=" + doctorId + " does not belong to departmentId=" + departmentId
+                        );
+                    }
+                    return firstNonBlank(item.getDoctorName(), fallback);
+                })
+                .orElseGet(() -> {
+                    String normalizedFallback = trimToNull(fallback);
+                    if (normalizedFallback != null) {
+                        return normalizedFallback;
+                    }
+                    throw new IllegalArgumentException("doctorName not found for doctorId=" + doctorId);
+                });
     }
 
     private void enrichDisplayNames(OutpatientReceptionEntity reception) {
@@ -600,7 +626,11 @@ public class InpatientReceptionServiceImpl implements InpatientReceptionService 
         }
 
         try {
-            reception.setDoctorName(resolveDoctorName(reception.getDoctorId(), reception.getDoctorName()));
+            reception.setDoctorName(resolveDoctorName(
+                    reception.getDoctorId(),
+                    reception.getDepartmentId(),
+                    reception.getDoctorName()
+            ));
         } catch (RuntimeException ignored) {
             // keep current value
         }

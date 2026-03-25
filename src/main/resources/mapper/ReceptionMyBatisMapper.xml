@@ -13,9 +13,9 @@
             p.name AS patient_name,
             r.visit_type,
             r.department_id,
-            d.name AS department_name,
+            d.department_name AS department_name,
             r.doctor_id,
-            doc.full_name AS doctor_name,
+            doc.doctor_name AS doctor_name,
             r.reservation_id,
             r.scheduled_at,
             r.arrived_at,
@@ -35,8 +35,8 @@
             r.updated_at
         FROM RECEPTION r
         LEFT JOIN patient p ON p.patient_id = r.patient_id
-        LEFT JOIN departments d ON d.id = r.department_id
-        LEFT JOIN staff doc ON doc.id = r.doctor_id
+        LEFT JOIN department d ON d.department_id = r.department_id
+        LEFT JOIN doctor doc ON doc.doctor_id = r.doctor_id
         LEFT JOIN reception_outpatient_detail od
             ON od.reception_id = r.reception_id
            AND NVL(od.active_yn, 'Y') = 'Y'
@@ -81,9 +81,9 @@
             p.name AS patient_name,
             r.visit_type,
             r.department_id,
-            d.name AS department_name,
+            d.department_name AS department_name,
             r.doctor_id,
-            doc.full_name AS doctor_name,
+            doc.doctor_name AS doctor_name,
             r.reservation_id,
             r.scheduled_at,
             r.arrived_at,
@@ -105,8 +105,8 @@
         INNER JOIN RECEPTION r
             ON r.reception_id = q.reception_id
         LEFT JOIN patient p ON p.patient_id = r.patient_id
-        LEFT JOIN departments d ON d.id = r.department_id
-        LEFT JOIN staff doc ON doc.id = r.doctor_id
+        LEFT JOIN department d ON d.department_id = r.department_id
+        LEFT JOIN doctor doc ON doc.doctor_id = r.doctor_id
         LEFT JOIN reception_outpatient_detail od
             ON od.reception_id = r.reception_id
            AND NVL(od.active_yn, 'Y') = 'Y'

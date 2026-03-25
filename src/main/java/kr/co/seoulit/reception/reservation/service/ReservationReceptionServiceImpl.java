@@ -5,6 +5,8 @@ import kr.co.seoulit.common.sequence.ReceptionNumberSequenceClient;
 import kr.co.seoulit.reception.reservation.mapstruct.ReservationReqMapStruct;
 import kr.co.seoulit.reception.reservation.mapstruct.ReservationResMapStruct;
 import kr.co.seoulit.common.client.PatientServiceClient;
+import kr.co.seoulit.reception.repository.DepartmentRepository;
+import kr.co.seoulit.reception.repository.DoctorRepository;
 import kr.co.seoulit.reception.reservation.dto.ReservationReceptionDTO;
 import kr.co.seoulit.reception.reservation.entity.ReservationBookingRuleEntity;
 import kr.co.seoulit.reception.reservation.entity.ReservationDoctorScheduleEntity;
@@ -39,21 +41,6 @@ public class ReservationReceptionServiceImpl implements ReservationReceptionServ
 
     private static final Set<String> REASON_REQUIRED_STATUSES = Set.of("CANCELED", "INACTIVE", "HOLD");
     private static final Map<String, Set<String>> STATUS_TRANSITIONS = createStatusTransitionRules();
-    private static final Map<Long, String> FRONT_DEPT_NAME = Map.of(
-            1L, "내과",
-            2L, "정형외과",
-            3L, "소아과",
-            4L, "이비인후과",
-            5L, "피부과"
-    );
-    private static final Map<Long, String> FRONT_DOCTOR_NAME = Map.of(
-            1L, "송태민",
-            2L, "이현석",
-            3L, "성숙희",
-            4L, "최효정",
-            5L, "홍예진"
-    );
-
     private final ReservationReceptionRepository reservationRepository;
     private final ReservationReceptionMapper reservationMyBatisMapper;
     private final ReservationResMapStruct reservationResMapStruct;
@@ -63,6 +50,8 @@ public class ReservationReceptionServiceImpl implements ReservationReceptionServ
     private final ReservationTimeSlotRepository reservationTimeSlotRepository;
     private final ReservationBookingRuleRepository reservationBookingRuleRepository;
     private final PatientServiceClient patientServiceClient;
+    private final DepartmentRepository departmentRepository;
+    private final DoctorRepository doctorRepository;
     private final AuditLogService auditLogService;
     private final ReceptionNumberSequenceClient receptionNumberSequenceClient;
 
@@ -105,7 +94,7 @@ public class ReservationReceptionServiceImpl implements ReservationReceptionServ
         entity.setPatientId(resolvePatientId(entity.getPatientId(), entity.getPatientName()));
         entity.setPatientName(resolvePatientName(entity.getPatientId(), entity.getPatientName()));
         entity.setDepartmentName(resolveDepartmentName(entity.getDepartmentId(), entity.getDepartmentName()));
-        entity.setDoctorName(resolveDoctorName(entity.getDoctorId(), entity.getDoctorName()));
+        entity.setDoctorName(resolveDoctorName(entity.getDoctorId(), entity.getDepartmentId(), entity.getDoctorName()));
         entity.setStatus(normalizedStatus);
         if (entity.getIsActive() == null) {
             entity.setIsActive(true);
@@ -185,7 +174,7 @@ public class ReservationReceptionServiceImpl implements ReservationReceptionServ
             existing.setDoctorId(reservation.getDoctorId());
         }
         if (trimToNull(reservation.getDoctorName()) != null || reservation.getDoctorId() != null) {
-            existing.setDoctorName(resolveDoctorName(existing.getDoctorId(), firstNonBlank(reservation.getDoctorName(), existing.getDoctorName())));
+            existing.setDoctorName(resolveDoctorName(existing.getDoctorId(), existing.getDepartmentId(), firstNonBlank(reservation.getDoctorName(), existing.getDoctorName())));
         }
         if (reservation.getReservedAt() != null) {
             existing.setReservedAt(reservation.getReservedAt());
@@ -545,7 +534,7 @@ public class ReservationReceptionServiceImpl implements ReservationReceptionServ
             dto.setDepartmentName(resolveDepartmentName(dto.getDepartmentId(), dto.getDepartmentName()));
         }
         if (dto.getDoctorId() != null) {
-            dto.setDoctorName(resolveDoctorName(dto.getDoctorId(), dto.getDoctorName()));
+            dto.setDoctorName(resolveDoctorName(dto.getDoctorId(), dto.getDepartmentId(), dto.getDoctorName()));
         }
     }
 
@@ -571,7 +560,7 @@ public class ReservationReceptionServiceImpl implements ReservationReceptionServ
         }
 
         try {
-            reservation.setDoctorName(resolveDoctorName(reservation.getDoctorId(), reservation.getDoctorName()));
+            reservation.setDoctorName(resolveDoctorName(reservation.getDoctorId(), reservation.getDepartmentId(), reservation.getDoctorName()));
         } catch (RuntimeException ignored) {
             // keep current value when doctor metadata cannot be resolved
         }
@@ -604,24 +593,40 @@ public class ReservationReceptionServiceImpl implements ReservationReceptionServ
         if (departmentId == null) {
             throw new IllegalArgumentException("departmentId is required");
         }
-        String resolvedFromMap = FRONT_DEPT_NAME.get(departmentId);
-        if (resolvedFromMap != null) {
-            return resolvedFromMap;
-        }
-        String fallback = trimToNull(fallbackName);
-        return fallback != null ? fallback : "DEPT-" + departmentId;
+
+        return departmentRepository.findById(departmentId)
+                .map(item -> firstNonBlank(item.getDepartmentName(), fallbackName))
+                .orElseGet(() -> {
+                    String fallback = trimToNull(fallbackName);
+                    if (fallback != null) {
+                        return fallback;
+                    }
+                    throw new IllegalArgumentException("departmentName not found for departmentId=" + departmentId);
+                });
     }
 
-    private String resolveDoctorName(Long doctorId, String fallbackName) {
+    private String resolveDoctorName(Long doctorId, Long departmentId, String fallbackName) {
         if (doctorId == null) {
             return null;
         }
-        String resolvedFromMap = FRONT_DOCTOR_NAME.get(doctorId);
-        if (resolvedFromMap != null) {
-            return resolvedFromMap;
-        }
-        String fallback = trimToNull(fallbackName);
-        return fallback != null ? fallback : "DOCTOR-" + doctorId;
+
+        return doctorRepository.findById(doctorId)
+                .map(item -> {
+                    if (departmentId != null && item.getDepartmentId() != null
+                            && !Objects.equals(item.getDepartmentId(), departmentId)) {
+                        throw new IllegalArgumentException(
+                                "doctorId=" + doctorId + " does not belong to departmentId=" + departmentId
+                        );
+                    }
+                    return firstNonBlank(item.getDoctorName(), fallbackName);
+                })
+                .orElseGet(() -> {
+                    String fallback = trimToNull(fallbackName);
+                    if (fallback != null) {
+                        return fallback;
+                    }
+                    throw new IllegalArgumentException("doctorName not found for doctorId=" + doctorId);
+                });
     }
 
     private String firstNonBlank(String... values) {
@@ -649,3 +654,4 @@ public class ReservationReceptionServiceImpl implements ReservationReceptionServ
         return trimmed.isEmpty() ? null : trimmed;
     }
 }
+

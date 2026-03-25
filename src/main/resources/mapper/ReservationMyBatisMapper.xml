@@ -12,9 +12,9 @@
             rs.patient_id,
             p.name AS patient_name,
             rs.department_id,
-            d.name AS department_name,
+            d.department_name AS department_name,
             rs.doctor_id,
-            doc.full_name AS doctor_name,
+            doc.doctor_name AS doctor_name,
             rs.reserved_at,
             rs.status,
             rs.note,
@@ -31,8 +31,8 @@
             rs.updated_at
         FROM RESERVATION rs
         LEFT JOIN patient p ON p.patient_id = rs.patient_id
-        LEFT JOIN departments d ON d.id = rs.department_id
-        LEFT JOIN staff doc ON doc.id = rs.doctor_id
+        LEFT JOIN department d ON d.department_id = rs.department_id
+        LEFT JOIN doctor doc ON doc.doctor_id = rs.doctor_id
         <where>
             1 = 1
             <if test="searchValue != null and searchValue != ''">
@@ -59,9 +59,9 @@
             rs.patient_id,
             p.name AS patient_name,
             rs.department_id,
-            d.name AS department_name,
+            d.department_name AS department_name,
             rs.doctor_id,
-            doc.full_name AS doctor_name,
+            doc.doctor_name AS doctor_name,
             rs.reserved_at,
             rs.status,
             rs.note,
@@ -78,8 +78,8 @@
             rs.updated_at
         FROM RESERVATION rs
         LEFT JOIN patient p ON p.patient_id = rs.patient_id
-        LEFT JOIN departments d ON d.id = rs.department_id
-        LEFT JOIN staff doc ON doc.id = rs.doctor_id
+        LEFT JOIN department d ON d.department_id = rs.department_id
+        LEFT JOIN doctor doc ON doc.doctor_id = rs.doctor_id
         WHERE rs.reservation_id = #{reservationId}
     </select>
 
