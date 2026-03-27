@@ -15,7 +15,7 @@ import java.util.Objects;
 @Component
 public class PatientServiceClient {
 
-    private static final String DEFAULT_PATIENT_SERVICE_BASE_URL = "http://192.168.1.55:8181";
+    private static final String DEFAULT_PATIENT_SERVICE_BASE_URL = "http://192.168.1.60:8181";
 
     private final RestClient restClient;
 
@@ -28,22 +28,7 @@ public class PatientServiceClient {
     }
 
     public PatientSummary requirePatientById(Long patientId) {
-        if (patientId == null) {
-            throw new IllegalArgumentException("patientId is required");
-        }
-
-        ApiResponse<Map<String, Object>> response;
-        try {
-            response = restClient.get()
-                    .uri("/api/patients/{patientId}", patientId)
-                    .retrieve()
-                    .body(new ParameterizedTypeReference<>() {
-                    });
-        } catch (RestClientException ex) {
-            throw translateRestClientException("lookup patient by patientId=" + patientId, ex);
-        }
-
-        Map<String, Object> result = unwrapResult(response, "patient not found for patientId=" + patientId);
+        Map<String, Object> result = getPatientById(patientId);
         PatientSummary candidate = toPatientSummary(result);
         if (candidate == null) {
             throw new IllegalArgumentException("patient data is invalid for patientId=" + patientId);
@@ -64,22 +49,7 @@ public class PatientServiceClient {
             throw new IllegalArgumentException("patientName is required");
         }
 
-        ApiResponse<List<Map<String, Object>>> response;
-        try {
-            response = restClient.get()
-                    .uri(uriBuilder -> uriBuilder
-                            .path("/api/patients/search")
-                            .queryParam("type", "name")
-                            .queryParam("keyword", normalizedName)
-                            .build())
-                    .retrieve()
-                    .body(new ParameterizedTypeReference<>() {
-                    });
-        } catch (RestClientException ex) {
-            throw translateRestClientException("lookup patient by patientName=" + normalizedName, ex);
-        }
-
-        List<Map<String, Object>> result = unwrapResult(response, "patient not found for patientName=" + normalizedName);
+        List<Map<String, Object>> result = searchPatients("name", normalizedName);
         if (result.isEmpty()) {
             throw new IllegalArgumentException("patient not found for patientName=" + normalizedName);
         }
@@ -108,6 +78,53 @@ public class PatientServiceClient {
             return new PatientSummary(candidate.patientId(), firstNonBlank(candidate.patientName(), normalizedName));
         }
         throw new IllegalArgumentException("multiple patients found for patientName=" + normalizedName);
+    }
+
+    private Map<String, Object> getPatientById(Long patientId) {
+        if (patientId == null) {
+            throw new IllegalArgumentException("patientId is required");
+        }
+
+        ApiResponse<Map<String, Object>> response;
+        try {
+            response = restClient.get()
+                    .uri("/api/patients/{patientId}", patientId)
+                    .retrieve()
+                    .body(new ParameterizedTypeReference<>() {
+                    });
+        } catch (RestClientException ex) {
+            throw translateRestClientException("lookup patient by patientId=" + patientId, ex);
+        }
+
+        return unwrapResult(response, "patient not found for patientId=" + patientId);
+    }
+
+    private List<Map<String, Object>> searchPatients(String type, String keyword) {
+        String normalizedType = trimToNull(type);
+        String normalizedKeyword = trimToNull(keyword);
+        if (normalizedKeyword == null) {
+            throw new IllegalArgumentException("keyword is required");
+        }
+
+        ApiResponse<List<Map<String, Object>>> response;
+        try {
+            response = restClient.get()
+                    .uri(uriBuilder -> uriBuilder
+                            .path("/api/patients/search")
+                            .queryParam("type", firstNonBlank(normalizedType, "name"))
+                            .queryParam("keyword", normalizedKeyword)
+                            .build())
+                    .retrieve()
+                    .body(new ParameterizedTypeReference<>() {
+                    });
+        } catch (RestClientException ex) {
+            throw translateRestClientException(
+                    "search patients by type=" + firstNonBlank(normalizedType, "name") + ", keyword=" + normalizedKeyword,
+                    ex
+            );
+        }
+
+        return unwrapResult(response, "patient not found for keyword=" + normalizedKeyword);
     }
 
     private <T> T unwrapResult(ApiResponse<T> response, String defaultMessage) {

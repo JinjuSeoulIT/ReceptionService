@@ -516,6 +516,9 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
         if (Objects.equals(fromStatus, toStatus)) {
             return;
         }
+        // reception entity keeps display fields as transient, so make sure
+        // patient/department/doctor names are resolved before sending SSE.
+        enrichDisplayNames(reception);
         OutpatientReceptionStatusChangedEventDTO event = buildStatusChangedEvent(
                 reception,
                 fromStatus,
@@ -1004,6 +1007,9 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
         return switch (normalized) {
             case "CANCELED" -> "CANCELLED";
             case "REGISTERED" -> "WAITING";
+            case "진료완료", "TREATMENT_COMPLETED", "PAYMENT_IN_PROGRESS" -> "PAYMENT_WAIT";
+            case "수납중" -> "PAYMENT_WAIT";
+            case "수납완료", "PAYMENT_COMPLETED" -> "COMPLETED";
             case "DONE" -> "COMPLETED";
             case "ON_HOLD" -> "HOLD";
             case "OBSERVING" -> "OBSERVATION";

@@ -17,13 +17,14 @@ public interface OutpatientReceptionMapper {
             @Param("doctorId") Long doctorId
     );
 
+    OutpatientReceptionDTO selectReceptionById(@Param("receptionId") Long receptionId);
+
     List<OutpatientReceptionDTO> selectQueue(
             @Param("departmentId") Long departmentId,
             @Param("doctorId") Long doctorId,
             @Param("date") String date
     );
 }
-
 
 
 
