@@ -589,7 +589,7 @@ public class ReservationReceptionServiceImpl implements ReservationReceptionServ
         return resolvedName;
     }
 
-    private String resolveDepartmentName(Long departmentId, String fallbackName) {
+    private String resolveDepartmentName(String departmentId, String fallbackName) {
         if (departmentId == null) {
             throw new IllegalArgumentException("departmentId is required");
         }
@@ -605,7 +605,7 @@ public class ReservationReceptionServiceImpl implements ReservationReceptionServ
                 });
     }
 
-    private String resolveDoctorName(Long doctorId, Long departmentId, String fallbackName) {
+    private String resolveDoctorName(Long doctorId, String departmentId, String fallbackName) {
         if (doctorId == null) {
             return null;
         }

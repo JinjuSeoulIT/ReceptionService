@@ -1,0 +1,104 @@
+/*
+  Purpose:
+  - Add HOSPITAL.RECEPTION.STAFF_ID
+  - Backfill STAFF_ID from JCH.EMPLOYEE by DOCTOR_ID (doctor positions only)
+  - Add index for join performance
+  - Keep future inserts/updates in sync via trigger
+*/
+
+SET SERVEROUTPUT ON
+SET FEEDBACK ON
+SET VERIFY OFF
+SET PAGESIZE 200
+SET LINESIZE 300
+
+PROMPT === BEFORE CHECK ===
+SELECT COUNT(*) AS reception_rows FROM HOSPITAL.RECEPTION;
+SELECT COUNT(*) AS staff_id_null_before FROM HOSPITAL.RECEPTION WHERE STAFF_ID IS NULL;
+
+-- 1) Add STAFF_ID column if missing
+DECLARE
+  v_exists NUMBER;
+BEGIN
+  SELECT COUNT(*)
+    INTO v_exists
+    FROM ALL_TAB_COLUMNS
+   WHERE OWNER = 'HOSPITAL'
+     AND TABLE_NAME = 'RECEPTION'
+     AND COLUMN_NAME = 'STAFF_ID';
+
+  IF v_exists = 0 THEN
+    EXECUTE IMMEDIATE 'ALTER TABLE HOSPITAL.RECEPTION ADD (STAFF_ID NUMBER(19))';
+    DBMS_OUTPUT.PUT_LINE('Added column HOSPITAL.RECEPTION.STAFF_ID');
+  ELSE
+    DBMS_OUTPUT.PUT_LINE('Column HOSPITAL.RECEPTION.STAFF_ID already exists');
+  END IF;
+END;
+/
+
+-- 2) Backfill STAFF_ID from DOCTOR_ID -> JCH.EMPLOYEE (doctor positions only)
+MERGE INTO HOSPITAL.RECEPTION r
+USING (
+  SELECT doctor_id, MIN(staff_id) AS staff_id
+    FROM JCH.EMPLOYEE
+   WHERE doctor_id IS NOT NULL
+     AND UPPER(position_id) LIKE 'DOC%'
+   GROUP BY doctor_id
+) e
+ON (r.doctor_id = e.doctor_id)
+WHEN MATCHED THEN
+  UPDATE SET r.staff_id = e.staff_id
+   WHERE r.staff_id IS NULL;
+
+-- 3) Add index if missing
+DECLARE
+  v_exists NUMBER;
+BEGIN
+  SELECT COUNT(*)
+    INTO v_exists
+    FROM ALL_INDEXES
+   WHERE OWNER = 'HOSPITAL'
+     AND TABLE_NAME = 'RECEPTION'
+     AND INDEX_NAME = 'IDX_RECEPTION_STAFF_ID';
+
+  IF v_exists = 0 THEN
+    EXECUTE IMMEDIATE 'CREATE INDEX HOSPITAL.IDX_RECEPTION_STAFF_ID ON HOSPITAL.RECEPTION (STAFF_ID)';
+    DBMS_OUTPUT.PUT_LINE('Created index HOSPITAL.IDX_RECEPTION_STAFF_ID');
+  ELSE
+    DBMS_OUTPUT.PUT_LINE('Index HOSPITAL.IDX_RECEPTION_STAFF_ID already exists');
+  END IF;
+END;
+/
+
+-- 4) Auto-fill trigger for future rows (if staff_id omitted but doctor_id is present)
+CREATE OR REPLACE TRIGGER HOSPITAL.TRG_RECEPTION_SET_STAFF_ID
+BEFORE INSERT OR UPDATE OF DOCTOR_ID, STAFF_ID
+ON HOSPITAL.RECEPTION
+FOR EACH ROW
+DECLARE
+  v_staff_id JCH.EMPLOYEE.STAFF_ID%TYPE;
+BEGIN
+  IF :NEW.STAFF_ID IS NULL AND :NEW.DOCTOR_ID IS NOT NULL THEN
+    SELECT MIN(e.staff_id)
+      INTO v_staff_id
+      FROM JCH.EMPLOYEE e
+     WHERE e.doctor_id = :NEW.doctor_id
+       AND UPPER(e.position_id) LIKE 'DOC%';
+
+    :NEW.STAFF_ID := v_staff_id;
+  END IF;
+END;
+/
+
+PROMPT === AFTER CHECK ===
+SELECT COUNT(*) AS staff_id_null_after FROM HOSPITAL.RECEPTION WHERE STAFF_ID IS NULL;
+SELECT COUNT(*) AS staff_id_filled_after FROM HOSPITAL.RECEPTION WHERE STAFF_ID IS NOT NULL;
+
+SELECT
+  COUNT(*) AS total_rows,
+  SUM(CASE WHEN e.staff_id IS NOT NULL THEN 1 ELSE 0 END) AS matched_doc_staff
+FROM HOSPITAL.RECEPTION r
+LEFT JOIN JCH.EMPLOYEE e
+  ON e.staff_id = r.staff_id
+ AND UPPER(e.position_id) LIKE 'DOC%';
+

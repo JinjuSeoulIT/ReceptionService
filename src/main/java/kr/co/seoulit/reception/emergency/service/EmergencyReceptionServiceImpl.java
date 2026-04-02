@@ -453,7 +453,7 @@ public class EmergencyReceptionServiceImpl implements EmergencyReceptionService 
         return resolvedName;
     }
 
-    private String resolveDepartmentName(Long departmentId, String fallback) {
+    private String resolveDepartmentName(String departmentId, String fallback) {
         if (departmentId == null) {
             throw new IllegalArgumentException("departmentId is required");
         }

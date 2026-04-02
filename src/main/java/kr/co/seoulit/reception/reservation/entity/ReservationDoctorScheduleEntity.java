@@ -34,7 +34,7 @@ public class ReservationDoctorScheduleEntity {
     private Long doctorId;
 
     @Column(name = "dept_id")
-    private Long deptId;
+    private String deptId;
 
     @Column(name = "schedule_date", nullable = false)
     private LocalDate scheduleDate;

@@ -46,7 +46,7 @@ public class InpatientReceptionEntity {
     private String admissionReason;
 
     @Column(name = "dept_id")
-    private Long departmentId;
+    private String departmentId;
 
     @Column(name = "attending_doctor_id")
     private Long doctorId;

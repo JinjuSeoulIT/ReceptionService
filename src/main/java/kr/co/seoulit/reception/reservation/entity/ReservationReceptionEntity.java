@@ -38,8 +38,8 @@ public class ReservationReceptionEntity {
     @Transient
     private String patientName;
 
-    @Column(name = "department_id", nullable = false)
-    private Long departmentId;
+    @Column(name = "dept_id", nullable = false)
+    private String departmentId;
 
     @Transient
     private String departmentName;

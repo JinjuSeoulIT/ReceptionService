@@ -11,10 +11,10 @@
             rs.reservation_no,
             rs.patient_id,
             p.name AS patient_name,
-            rs.department_id,
-            d.department_name AS department_name,
+            e.dept_id AS department_id,
+            d.dept_name AS department_name,
             rs.doctor_id,
-            doc.doctor_name AS doctor_name,
+            e.name AS doctor_name,
             rs.reserved_at,
             rs.status,
             rs.note,
@@ -31,8 +31,8 @@
             rs.updated_at
         FROM RESERVATION rs
         LEFT JOIN patient p ON p.patient_id = rs.patient_id
-        LEFT JOIN department d ON d.department_id = rs.department_id
-        LEFT JOIN doctor doc ON doc.doctor_id = rs.doctor_id
+        LEFT JOIN jch.employee e ON e.doctor_id = rs.doctor_id
+        LEFT JOIN jch.department d ON d.dept_id = e.dept_id
         <where>
             1 = 1
             <if test="searchValue != null and searchValue != ''">
@@ -58,10 +58,10 @@
             rs.reservation_no,
             rs.patient_id,
             p.name AS patient_name,
-            rs.department_id,
-            d.department_name AS department_name,
+            e.dept_id AS department_id,
+            d.dept_name AS department_name,
             rs.doctor_id,
-            doc.doctor_name AS doctor_name,
+            e.name AS doctor_name,
             rs.reserved_at,
             rs.status,
             rs.note,
@@ -78,8 +78,8 @@
             rs.updated_at
         FROM RESERVATION rs
         LEFT JOIN patient p ON p.patient_id = rs.patient_id
-        LEFT JOIN department d ON d.department_id = rs.department_id
-        LEFT JOIN doctor doc ON doc.doctor_id = rs.doctor_id
+        LEFT JOIN jch.employee e ON e.doctor_id = rs.doctor_id
+        LEFT JOIN jch.department d ON d.dept_id = e.dept_id
         WHERE rs.reservation_id = #{reservationId}
     </select>
 
