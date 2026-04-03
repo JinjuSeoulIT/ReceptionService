@@ -8,5 +8,5 @@ import lombok.Data;
 public class DoctorDTO {
     private Long doctorId;
     private String doctorName;
-    private String departmentId;
+    private Long departmentId;
 }

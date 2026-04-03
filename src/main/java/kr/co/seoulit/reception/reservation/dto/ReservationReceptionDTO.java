@@ -23,7 +23,7 @@ public class ReservationReceptionDTO implements Serializable {
     private String patientName;
 
     @Schema(description = "진료과 ID")
-    private String departmentId;
+    private Long departmentId;
 
     @Schema(description = "진료과 이름")
     private String departmentName;

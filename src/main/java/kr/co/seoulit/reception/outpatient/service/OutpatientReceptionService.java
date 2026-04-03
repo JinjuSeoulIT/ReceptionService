@@ -19,7 +19,7 @@ public interface OutpatientReceptionService {
 
     OutpatientReceptionDTO getReception(Long receptionId);
 
-    List<OutpatientReceptionDTO> getReceptionQueue(String departmentId, Long doctorId, String date);
+    List<OutpatientReceptionDTO> getReceptionQueue(Long departmentId, Long doctorId, String date);
 
     void createReception(OutpatientReceptionDTO reception);
 

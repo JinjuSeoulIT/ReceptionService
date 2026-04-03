@@ -27,6 +27,6 @@ public class DoctorEntity {
     @Column(name = "doctor_name", length = 50, nullable = false)
     private String doctorName;
 
-    @Column(name = "dept_id")
-    private String departmentId;
+    @Column(name = "department_id")
+    private Long departmentId;
 }

@@ -56,7 +56,7 @@ public class OutpatientReceptionController {
             @Parameter(description = "검색어") @RequestParam(required = false) String searchValue,
             @Parameter(description = "시작일 (YYYY-MM-DD)") @RequestParam(required = false) String dateFrom,
             @Parameter(description = "종료일 (YYYY-MM-DD)") @RequestParam(required = false) String dateTo,
-            @Parameter(description = "진료과 ID") @RequestParam(required = false) String departmentId,
+            @Parameter(description = "진료과 ID") @RequestParam(required = false) Long departmentId,
             @Parameter(description = "의사 ID") @RequestParam(required = false) Long doctorId
     ) {
         log.info("Get receptions request: searchType={}, searchValue={}", searchType, searchValue);
@@ -82,7 +82,7 @@ public class OutpatientReceptionController {
     @Operation(summary = "외래 접수 대기열 조회")
     @GetMapping("/queue")
     public ResponseEntity<ApiResponse<List<OutpatientReceptionDTO>>> getReceptionQueue(
-            @Parameter(description = "진료과 ID") @RequestParam(required = false) String departmentId,
+            @Parameter(description = "진료과 ID") @RequestParam(required = false) Long departmentId,
             @Parameter(description = "의사 ID") @RequestParam(required = false) Long doctorId,
             @Parameter(description = "조회일 (YYYY-MM-DD)") @RequestParam(required = false) String date
     ) {

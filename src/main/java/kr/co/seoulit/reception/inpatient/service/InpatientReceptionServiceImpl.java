@@ -566,7 +566,7 @@ public class InpatientReceptionServiceImpl implements InpatientReceptionService 
         return resolvedName;
     }
 
-    private String resolveDepartmentName(String departmentId, String fallback) {
+    private String resolveDepartmentName(Long departmentId, String fallback) {
         if (departmentId == null) {
             throw new IllegalArgumentException("departmentId is required");
         }
@@ -581,7 +581,7 @@ public class InpatientReceptionServiceImpl implements InpatientReceptionService 
                 });
     }
 
-    private String resolveDoctorName(Long doctorId, String departmentId, String fallback) {
+    private String resolveDoctorName(Long doctorId, Long departmentId, String fallback) {
         if (doctorId == null) {
             return null;
         }

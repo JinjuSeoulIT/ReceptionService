@@ -12,10 +12,10 @@
             r.patient_id,
             p.name AS patient_name,
             r.visit_type,
-            e.dept_id AS department_id,
-            d.dept_name AS department_name,
+            r.department_id,
+            d.department_name AS department_name,
             r.doctor_id,
-            e.name AS doctor_name,
+            doc.doctor_name AS doctor_name,
             r.reservation_id,
             r.scheduled_at,
             r.arrived_at,
@@ -29,10 +29,8 @@
             r.updated_at
         FROM RECEPTION r
         LEFT JOIN patient p ON p.patient_id = r.patient_id
-        LEFT JOIN jch.employee e
-            ON e.staff_id = r.staff_id
-           AND UPPER(e.position_id) LIKE 'DOC%'
-        LEFT JOIN jch.department d ON d.dept_id = e.dept_id
+        LEFT JOIN department d ON d.department_id = r.department_id
+        LEFT JOIN doctor doc ON doc.doctor_id = r.doctor_id
         LEFT JOIN inpatient_admission ia ON ia.reception_id = r.reception_id
         LEFT JOIN (
             SELECT bed_latest.*

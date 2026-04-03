@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface ReservationDoctorScheduleRepository extends JpaRepository<ReservationDoctorScheduleEntity, Long> {
     Optional<ReservationDoctorScheduleEntity> findTopByDoctorIdAndDeptIdAndScheduleDateOrderByScheduleIdDesc(
             Long doctorId,
-            String deptId,
+            Long deptId,
             LocalDate scheduleDate
     );
 }

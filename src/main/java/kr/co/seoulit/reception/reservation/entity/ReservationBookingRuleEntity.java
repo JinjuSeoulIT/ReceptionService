@@ -29,7 +29,7 @@ public class ReservationBookingRuleEntity {
     private Long bookingRuleId;
 
     @Column(name = "dept_id")
-    private String deptId;
+    private Long deptId;
 
     @Column(name = "doctor_id")
     private Long doctorId;

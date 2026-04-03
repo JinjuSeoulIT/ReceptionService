@@ -29,7 +29,7 @@ public class DoctorController {
     @GetMapping
     public ResponseEntity<ApiResponse<List<DoctorDTO>>> getDoctors(
             @Parameter(description = "진료과 ID")
-            @RequestParam(required = false) String departmentId
+            @RequestParam(required = false) Long departmentId
     ) {
         List<DoctorEntity> entities = departmentId == null
                 ? doctorRepository.findAll()

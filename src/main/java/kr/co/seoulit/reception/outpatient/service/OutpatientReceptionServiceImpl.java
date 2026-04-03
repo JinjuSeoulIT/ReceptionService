@@ -101,7 +101,7 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
         String searchValue = (String) searchCondition.get("searchValue");
         String dateFrom = (String) searchCondition.get("dateFrom");
         String dateTo = (String) searchCondition.get("dateTo");
-        String departmentId = (String) searchCondition.get("departmentId");
+        Long departmentId = (Long) searchCondition.get("departmentId");
         Long doctorId = (Long) searchCondition.get("doctorId");
 
         return receptionMyBatisMapper.selectReceptions(
@@ -124,7 +124,7 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
     }
 
     @Override
-    public List<OutpatientReceptionDTO> getReceptionQueue(String departmentId, Long doctorId, String date) {
+    public List<OutpatientReceptionDTO> getReceptionQueue(Long departmentId, Long doctorId, String date) {
         return receptionMyBatisMapper.selectQueue(departmentId, doctorId, date);
     }
 
@@ -1109,7 +1109,7 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
         return new PatientRef(patientSummary.patientId(), firstNonBlank(patientSummary.patientName(), normalizedPatientName));
     }
 
-    private String resolveDepartmentName(String departmentId, String fallbackName) {
+    private String resolveDepartmentName(Long departmentId, String fallbackName) {
         if (departmentId == null) {
             throw new IllegalArgumentException("departmentId is required");
         }
@@ -1125,7 +1125,7 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
                 });
     }
 
-    private String resolveDoctorName(Long doctorId, String departmentId, String fallbackName) {
+    private String resolveDoctorName(Long doctorId, Long departmentId, String fallbackName) {
         if (doctorId == null) {
             return null;
         }
