@@ -135,6 +135,12 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
         if (reception.getDepartmentId() == null) {
             throw new IllegalArgumentException("departmentId is required");
         }
+        if (reception.getReservationId() != null
+                && receptionRepository.existsByReservationId(reception.getReservationId())) {
+            throw new IllegalArgumentException(
+                    "Duplicated reservationId: " + reception.getReservationId()
+            );
+        }
 
         String normalizedStatus = normalizeStatus(defaultIfBlank(reception.getStatus(), "WAITING"));
         assertStatusSupported(normalizedStatus);

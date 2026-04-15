@@ -15,6 +15,8 @@ public interface OutpatientReceptionRepository extends CrudRepository<Outpatient
     Optional<OutpatientReceptionEntity> findByReceptionNo(String receptionNo);
 
     List<OutpatientReceptionEntity> findByPatientId(Long patientId);
+
+    boolean existsByReservationId(Long reservationId);
 }
 
 

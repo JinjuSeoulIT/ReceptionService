@@ -104,7 +104,7 @@ public class OutpatientReceptionController {
     @PostMapping
     public ResponseEntity<ApiResponse<Boolean>> createReception(@Valid @RequestBody OutpatientReceptionDTO reception) {
         log.info("Create reception request: receptionNo={}", reception.getReceptionNo());
-        receptionService.createReception(reception);
+        receptionService.createReception(reception); //실제 데이터를 저장하는 문구
         return ResponseEntity.ok(new ApiResponse<>(true, "Reception created", true));
     }
 

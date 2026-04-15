@@ -1,5 +1,5 @@
 package kr.co.seoulit.reception.outpatient.realtime;
-
+// 실제 Eventstream 수행 주체
 import kr.co.seoulit.reception.outpatient.dto.OutpatientReceptionStatusChangedEventDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
