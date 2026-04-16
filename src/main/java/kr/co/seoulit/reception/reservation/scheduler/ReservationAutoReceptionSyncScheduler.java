@@ -1,5 +1,6 @@
-package kr.co.seoulit.reception.reservation.service;
+package kr.co.seoulit.reception.reservation.scheduler;
 
+import kr.co.seoulit.reception.reservation.application.ReservationAutoReceptionSyncService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;

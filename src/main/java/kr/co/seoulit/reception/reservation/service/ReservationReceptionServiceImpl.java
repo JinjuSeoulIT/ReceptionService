@@ -39,6 +39,11 @@ import java.util.Set;
 @Transactional(readOnly = true)
 public class ReservationReceptionServiceImpl implements ReservationReceptionService {
 
+    private static final Long AUTO_SYNC_SYSTEM_USER_ID = 0L;
+    private static final String AUTO_SYNC_REASON_CODE = "AUTO_SYNC";
+    private static final String AUTO_SYNC_REASON_TEXT = "예약 당일 자동 외래접수 생성";
+    private static final String RESERVED_STATUS = "RESERVED";
+    private static final String COMPLETED_STATUS = "COMPLETED";
     private static final Set<String> REASON_REQUIRED_STATUSES = Set.of("CANCELED", "INACTIVE", "HOLD");
     private static final Map<String, Set<String>> STATUS_TRANSITIONS = createStatusTransitionRules();
     private final ReservationReceptionRepository reservationRepository;
@@ -70,6 +75,23 @@ public class ReservationReceptionServiceImpl implements ReservationReceptionServ
         ReservationReceptionEntity entity = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new IllegalArgumentException("Reservation not found. reservationId=" + reservationId));
         return toDisplayDto(entity);
+    }
+
+    @Override
+    public List<ReservationReceptionDTO> getAutoSyncReservations(LocalDate targetDate) {
+        LocalDateTime start = targetDate.atStartOfDay();
+        LocalDateTime end = targetDate.plusDays(1).atStartOfDay();
+
+        return reservationRepository
+                .findAllByStatusAndIsActiveTrueAndReservedAtBetweenOrderByReservationIdAsc(
+                        RESERVED_STATUS,
+                        start,
+                        end
+                )
+                .stream()
+                .filter(reservation -> isAutoSyncTarget(reservation, targetDate))
+                .map(this::toDisplayDto)
+                .toList();
     }
 
     @Override
@@ -229,6 +251,19 @@ public class ReservationReceptionServiceImpl implements ReservationReceptionServ
     @CacheEvict(value = "RESERVATION", key = "#reservationId")
     public ReservationReceptionDTO updateReservationStatus(Long reservationId, String status, Long changedBy, String reasonCode, String reasonText) {
         return doUpdateReservationStatus(reservationId, status, changedBy, reasonCode, reasonText);
+    }
+
+    @Override
+    @Transactional
+    @CacheEvict(value = "RESERVATION", key = "#reservationId")
+    public ReservationReceptionDTO completeReservationByAutoSync(Long reservationId) {
+        return doUpdateReservationStatus(
+                reservationId,
+                COMPLETED_STATUS,
+                AUTO_SYNC_SYSTEM_USER_ID,
+                AUTO_SYNC_REASON_CODE,
+                AUTO_SYNC_REASON_TEXT
+        );
     }
 
     private ReservationReceptionDTO doUpdateReservationStatus(
@@ -509,6 +544,20 @@ public class ReservationReceptionServiceImpl implements ReservationReceptionServ
             return firstNonBlank(request == null ? null : request.getNote(), existing == null ? null : existing.getNote());
         }
         return null;
+    }
+
+    private boolean isAutoSyncTarget(ReservationReceptionEntity reservation, LocalDate targetDate) {
+        if (reservation == null) {
+            return false;
+        }
+        if (!RESERVED_STATUS.equals(reservation.getStatus())) {
+            return false;
+        }
+        if (!Boolean.TRUE.equals(reservation.getIsActive())) {
+            return false;
+        }
+        LocalDateTime reservedAt = reservation.getReservedAt();
+        return reservedAt != null && targetDate.equals(reservedAt.toLocalDate());
     }
 
     private ReservationReceptionDTO toDisplayDto(ReservationReceptionEntity entity) {
