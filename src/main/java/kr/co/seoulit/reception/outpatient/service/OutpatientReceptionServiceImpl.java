@@ -50,6 +50,7 @@ import kr.co.seoulit.reception.reservation.repository.ReservationToReceptionHist
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronization;
@@ -96,6 +97,7 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
     private final OutpatientReceptionStatusEventPublisher receptionStatusEventPublisher;
 
     @Override
+    @Cacheable(value = "RECEPTION_LIST")
     public List<OutpatientReceptionDTO> getReceptionList(Map<String, Object> searchCondition) {
         String searchType = (String) searchCondition.get("searchType");
         String searchValue = (String) searchCondition.get("searchValue");
@@ -130,6 +132,7 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
 
     @Override
     @Transactional
+    @CacheEvict(value = "RECEPTION_LIST", allEntries = true)
     public void createReception(OutpatientReceptionDTO reception) {
         String receptionNo = resolveCreateReceptionNo(reception);
         if (reception.getDepartmentId() == null) {
@@ -194,7 +197,10 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
 
     @Override
     @Transactional
-    @CacheEvict(value = "RECEPTION", key = "#receptionId")
+    @Caching(evict = {
+            @CacheEvict(value = "RECEPTION", key = "#receptionId"),
+            @CacheEvict(value = "RECEPTION_LIST", allEntries = true)
+    })
     public void updateReception(Long receptionId, OutpatientReceptionDTO reception) {
         OutpatientReceptionEntity existing = receptionRepository.findById(receptionId)
                 .orElseThrow(() -> new ReceptionNotFoundException("Reception not found. receptionId=" + receptionId));
@@ -317,7 +323,10 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
 
     @Override
     @Transactional
-    @CacheEvict(value = "RECEPTION", key = "#receptionId")
+    @Caching(evict = {
+            @CacheEvict(value = "RECEPTION", key = "#receptionId"),
+            @CacheEvict(value = "RECEPTION_LIST", allEntries = true)
+    })
     public OutpatientReceptionDTO updateReceptionStatus(Long receptionId, String status, Long changedBy, String reasonCode, String reasonText) {
         return doUpdateReceptionStatus(receptionId, status, changedBy, reasonCode, reasonText);
     }
