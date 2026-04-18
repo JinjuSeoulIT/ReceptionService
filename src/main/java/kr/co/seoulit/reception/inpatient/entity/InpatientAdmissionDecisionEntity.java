@@ -33,7 +33,7 @@ public class InpatientAdmissionDecisionEntity {
     private LocalDateTime decisionDatetime;
 
     @Column(name = "decision_doctor_id")
-    private Long decisionDoctorId;
+    private String decisionDoctorId;
 
     @Column(name = "decision_reason", length = 1000)
     private String decisionReason;

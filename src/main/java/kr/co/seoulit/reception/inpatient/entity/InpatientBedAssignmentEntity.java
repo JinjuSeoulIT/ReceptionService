@@ -45,7 +45,7 @@ public class InpatientBedAssignmentEntity {
     private String assignmentStatusCd;
 
     @Column(name = "assigned_by")
-    private Long assignedBy;
+    private String assignedBy;
 
     @Column(name = "remark", length = 1000)
     private String remark;

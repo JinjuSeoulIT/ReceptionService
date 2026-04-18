@@ -13,15 +13,15 @@ public interface OutpatientReceptionMapper {
             @Param("searchValue") String searchValue,
             @Param("dateFrom") String dateFrom,
             @Param("dateTo") String dateTo,
-            @Param("departmentId") Long departmentId,
-            @Param("doctorId") Long doctorId
+            @Param("departmentId") String departmentId,
+            @Param("doctorId") String doctorId
     );
 
     OutpatientReceptionDTO selectReceptionById(@Param("receptionId") Long receptionId);
 
     List<OutpatientReceptionDTO> selectQueue(
-            @Param("departmentId") Long departmentId,
-            @Param("doctorId") Long doctorId,
+            @Param("departmentId") String departmentId,
+            @Param("doctorId") String doctorId,
             @Param("date") String date
     );
 }

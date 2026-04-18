@@ -31,10 +31,10 @@ public class ReservationDoctorScheduleEntity {
     private Long scheduleId;
 
     @Column(name = "doctor_id", nullable = false)
-    private Long doctorId;
+    private String doctorId;
 
     @Column(name = "dept_id")
-    private Long deptId;
+    private String deptId;
 
     @Column(name = "schedule_date", nullable = false)
     private LocalDate scheduleDate;

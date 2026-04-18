@@ -43,7 +43,7 @@ public class InpatientAdmissionAuditEntity {
     private String changeReason;
 
     @Column(name = "changed_by")
-    private Long changedBy;
+    private String changedBy;
 
     @CreationTimestamp
     @Column(name = "changed_at", updatable = false, nullable = false)

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
@@ -14,7 +14,7 @@
             rs.department_id,
             d.department_name AS department_name,
             rs.doctor_id,
-            doc.doctor_name AS doctor_name,
+            doc.full_name AS doctor_name,
             rs.reserved_at,
             rs.status,
             rs.note,
@@ -31,8 +31,11 @@
             rs.updated_at
         FROM RESERVATION rs
         LEFT JOIN patient p ON p.patient_id = rs.patient_id
-        LEFT JOIN department d ON d.department_id = rs.department_id
-        LEFT JOIN doctor doc ON doc.doctor_id = rs.doctor_id
+        LEFT JOIN CMH.STAFF_DEPARTMENT d ON d.department_id = TO_CHAR(rs.department_id)
+        LEFT JOIN CMH.STAFF doc
+            ON doc.staff_id = TO_CHAR(rs.doctor_id)
+           AND doc.staff_id LIKE 'DOC-%'
+           AND UPPER(TRIM(NVL(doc.employment_status, 'ACTIVE'))) = 'ACTIVE'
         <where>
             1 = 1
             <if test="searchValue != null and searchValue != ''">
@@ -42,6 +45,9 @@
                     </when>
                     <when test="searchType == 'patientId'">
                         AND rs.patient_id = #{searchValue}
+                    </when>
+                    <when test="searchType == 'patientName'">
+                        AND p.name LIKE '%' || #{searchValue} || '%'
                     </when>
                     <when test="searchType == 'status'">
                         AND rs.status = #{searchValue}
@@ -61,7 +67,7 @@
             rs.department_id,
             d.department_name AS department_name,
             rs.doctor_id,
-            doc.doctor_name AS doctor_name,
+            doc.full_name AS doctor_name,
             rs.reserved_at,
             rs.status,
             rs.note,
@@ -78,11 +84,13 @@
             rs.updated_at
         FROM RESERVATION rs
         LEFT JOIN patient p ON p.patient_id = rs.patient_id
-        LEFT JOIN department d ON d.department_id = rs.department_id
-        LEFT JOIN doctor doc ON doc.doctor_id = rs.doctor_id
+        LEFT JOIN CMH.STAFF_DEPARTMENT d ON d.department_id = TO_CHAR(rs.department_id)
+        LEFT JOIN CMH.STAFF doc
+            ON doc.staff_id = TO_CHAR(rs.doctor_id)
+           AND doc.staff_id LIKE 'DOC-%'
+           AND UPPER(TRIM(NVL(doc.employment_status, 'ACTIVE'))) = 'ACTIVE'
         WHERE rs.reservation_id = #{reservationId}
     </select>
 
 </mapper>
-
 

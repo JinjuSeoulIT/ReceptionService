@@ -29,10 +29,10 @@ public class ReservationBookingRuleEntity {
     private Long bookingRuleId;
 
     @Column(name = "dept_id")
-    private Long deptId;
+    private String deptId;
 
     @Column(name = "doctor_id")
-    private Long doctorId;
+    private String doctorId;
 
     @Column(name = "min_lead_min")
     private Integer minLeadMin;

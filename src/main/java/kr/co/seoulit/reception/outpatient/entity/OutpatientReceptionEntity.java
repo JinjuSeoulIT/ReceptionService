@@ -42,13 +42,13 @@ public class OutpatientReceptionEntity {
     private String visitType = "OUTPATIENT";
 
     @Column(name = "department_id", nullable = false)
-    private Long departmentId;
+    private String departmentId;
 
     @Transient
     private String departmentName;
 
     @Column(name = "doctor_id")
-    private Long doctorId;
+    private String doctorId;
 
     @Transient
     private String doctorName;

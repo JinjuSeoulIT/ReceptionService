@@ -26,13 +26,13 @@ public class EmergencyReceptionDTO implements Serializable {
     private String visitType;
 
     @Schema(description = "진료과 ID")
-    private Long departmentId;
+    private String departmentId;
 
     @Schema(description = "진료과 이름")
     private String departmentName;
 
     @Schema(description = "의사 식별자")
-    private Long doctorId;
+    private String doctorId;
 
     @Schema(description = "의사명")
     private String doctorName;

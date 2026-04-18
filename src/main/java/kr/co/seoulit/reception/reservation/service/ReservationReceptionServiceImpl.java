@@ -5,8 +5,6 @@ import kr.co.seoulit.common.sequence.ReceptionNumberSequenceClient;
 import kr.co.seoulit.reception.reservation.mapstruct.ReservationReqMapStruct;
 import kr.co.seoulit.reception.reservation.mapstruct.ReservationResMapStruct;
 import kr.co.seoulit.common.client.PatientServiceClient;
-import kr.co.seoulit.reception.repository.DepartmentRepository;
-import kr.co.seoulit.reception.repository.DoctorRepository;
 import kr.co.seoulit.reception.reservation.dto.ReservationReceptionDTO;
 import kr.co.seoulit.reception.reservation.entity.ReservationBookingRuleEntity;
 import kr.co.seoulit.reception.reservation.entity.ReservationDoctorScheduleEntity;
@@ -55,8 +53,6 @@ public class ReservationReceptionServiceImpl implements ReservationReceptionServ
     private final ReservationTimeSlotRepository reservationTimeSlotRepository;
     private final ReservationBookingRuleRepository reservationBookingRuleRepository;
     private final PatientServiceClient patientServiceClient;
-    private final DepartmentRepository departmentRepository;
-    private final DoctorRepository doctorRepository;
     private final AuditLogService auditLogService;
     private final ReceptionNumberSequenceClient receptionNumberSequenceClient;
 
@@ -638,46 +634,32 @@ public class ReservationReceptionServiceImpl implements ReservationReceptionServ
         return resolvedName;
     }
 
-    private String resolveDepartmentName(Long departmentId, String fallbackName) {
-        if (departmentId == null) {
-            throw new IllegalArgumentException("departmentId is required");
+    private String resolveDepartmentName(String departmentId, String fallbackName) {
+        String normalizedName = trimToNull(fallbackName);
+        if (normalizedName != null) {
+            return normalizedName;
         }
 
-        return departmentRepository.findById(departmentId)
-                .map(item -> firstNonBlank(item.getDepartmentName(), fallbackName))
-                .orElseGet(() -> {
-                    String fallback = trimToNull(fallbackName);
-                    if (fallback != null) {
-                        return fallback;
-                    }
-                    throw new IllegalArgumentException("departmentName not found for departmentId=" + departmentId);
-                });
+        if (trimToNull(departmentId) != null) {
+            throw new IllegalArgumentException("departmentName is required when departmentId is provided.");
+        }
+
+        return null;
     }
 
-    private String resolveDoctorName(Long doctorId, Long departmentId, String fallbackName) {
-        if (doctorId == null) {
+    private String resolveDoctorName(String doctorId, String departmentId, String fallbackName) {
+        String normalizedDoctorId = trimToNull(doctorId);
+        if (normalizedDoctorId == null) {
             return null;
         }
 
-        return doctorRepository.findById(doctorId)
-                .map(item -> {
-                    if (departmentId != null && item.getDepartmentId() != null
-                            && !Objects.equals(item.getDepartmentId(), departmentId)) {
-                        throw new IllegalArgumentException(
-                                "doctorId=" + doctorId + " does not belong to departmentId=" + departmentId
-                        );
-                    }
-                    return firstNonBlank(item.getDoctorName(), fallbackName);
-                })
-                .orElseGet(() -> {
-                    String fallback = trimToNull(fallbackName);
-                    if (fallback != null) {
-                        return fallback;
-                    }
-                    throw new IllegalArgumentException("doctorName not found for doctorId=" + doctorId);
-                });
-    }
+        String normalizedName = trimToNull(fallbackName);
+        if (normalizedName != null) {
+            return normalizedName;
+        }
 
+        throw new IllegalArgumentException("doctorName is required when doctorId is provided.");
+    }
     private String firstNonBlank(String... values) {
         if (values == null) {
             return null;

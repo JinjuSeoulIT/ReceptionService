@@ -45,10 +45,10 @@ public class OutpatientWaitingQueueEntity {
     private Long queueOrderNo;
 
     @Column(name = "dept_id")
-    private Long deptId;
+    private String deptId;
 
     @Column(name = "doctor_id")
-    private Long doctorId;
+    private String doctorId;
 
     @Column(name = "estimated_wait_min")
     private Integer estimatedWaitMin;

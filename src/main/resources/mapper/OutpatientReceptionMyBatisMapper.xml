@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
@@ -15,7 +15,7 @@
             r.department_id,
             d.department_name AS department_name,
             r.doctor_id,
-            doc.doctor_name AS doctor_name,
+            doc.full_name AS doctor_name,
             r.reservation_id,
             r.scheduled_at,
             r.arrived_at,
@@ -35,8 +35,11 @@
             r.updated_at
         FROM RECEPTION r
         LEFT JOIN patient p ON p.patient_id = r.patient_id
-        LEFT JOIN department d ON d.department_id = r.department_id
-        LEFT JOIN doctor doc ON doc.doctor_id = r.doctor_id
+        LEFT JOIN CMH.STAFF_DEPARTMENT d ON d.department_id = TO_CHAR(r.department_id)
+        LEFT JOIN CMH.STAFF doc
+            ON doc.staff_id = TO_CHAR(r.doctor_id)
+           AND doc.staff_id LIKE 'DOC-%'
+           AND UPPER(TRIM(NVL(doc.employment_status, 'ACTIVE'))) = 'ACTIVE'
         LEFT JOIN reception_outpatient_detail od
             ON od.reception_id = r.reception_id
            AND NVL(od.active_yn, 'Y') = 'Y'
@@ -63,11 +66,11 @@
             <if test="dateTo != null and dateTo != ''">
                 AND TRUNC(r.created_at) &lt;= TO_DATE(#{dateTo}, 'YYYY-MM-DD')
             </if>
-            <if test="departmentId != null">
-                AND r.department_id = #{departmentId}
+            <if test="departmentId != null and departmentId != ''">
+                AND TO_CHAR(r.department_id) = #{departmentId}
             </if>
-            <if test="doctorId != null">
-                AND r.doctor_id = #{doctorId}
+            <if test="doctorId != null and doctorId != ''">
+                AND TO_CHAR(r.doctor_id) = #{doctorId}
             </if>
         </where>
         ORDER BY r.reception_id
@@ -83,7 +86,7 @@
             r.department_id,
             d.department_name AS department_name,
             r.doctor_id,
-            doc.doctor_name AS doctor_name,
+            doc.full_name AS doctor_name,
             r.reservation_id,
             r.scheduled_at,
             r.arrived_at,
@@ -105,19 +108,22 @@
         INNER JOIN RECEPTION r
             ON r.reception_id = q.reception_id
         LEFT JOIN patient p ON p.patient_id = r.patient_id
-        LEFT JOIN department d ON d.department_id = r.department_id
-        LEFT JOIN doctor doc ON doc.doctor_id = r.doctor_id
+        LEFT JOIN CMH.STAFF_DEPARTMENT d ON d.department_id = TO_CHAR(r.department_id)
+        LEFT JOIN CMH.STAFF doc
+            ON doc.staff_id = TO_CHAR(r.doctor_id)
+           AND doc.staff_id LIKE 'DOC-%'
+           AND UPPER(TRIM(NVL(doc.employment_status, 'ACTIVE'))) = 'ACTIVE'
         LEFT JOIN reception_outpatient_detail od
             ON od.reception_id = r.reception_id
            AND NVL(od.active_yn, 'Y') = 'Y'
         <where>
             q.queue_status_cd IN ('WAITING', 'CALLED')
             AND NVL(q.active_yn, 'Y') = 'Y'
-            <if test="departmentId != null">
-                AND r.department_id = #{departmentId}
+            <if test="departmentId != null and departmentId != ''">
+                AND TO_CHAR(r.department_id) = #{departmentId}
             </if>
-            <if test="doctorId != null">
-                AND r.doctor_id = #{doctorId}
+            <if test="doctorId != null and doctorId != ''">
+                AND TO_CHAR(r.doctor_id) = #{doctorId}
             </if>
             <if test="date != null and date != ''">
                 AND TRUNC(r.created_at) = TO_DATE(#{date}, 'YYYY-MM-DD')
@@ -127,5 +133,6 @@
     </select>
 
 </mapper>
+
 
 

@@ -39,7 +39,7 @@ public class InpatientBedAssignmentHistoryEntity {
     private String changeReason;
 
     @Column(name = "changed_by")
-    private Long changedBy;
+    private String changedBy;
 
     @Column(name = "changed_at", nullable = false)
     private LocalDateTime changedAt;

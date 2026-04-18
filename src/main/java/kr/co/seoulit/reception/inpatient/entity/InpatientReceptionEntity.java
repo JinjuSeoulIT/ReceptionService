@@ -46,10 +46,10 @@ public class InpatientReceptionEntity {
     private String admissionReason;
 
     @Column(name = "dept_id")
-    private Long departmentId;
+    private String departmentId;
 
     @Column(name = "attending_doctor_id")
-    private Long doctorId;
+    private String doctorId;
 
     @Column(name = "active_yn", length = 1, nullable = false)
     private String activeYn = "Y";

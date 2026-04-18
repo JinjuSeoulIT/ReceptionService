@@ -23,15 +23,15 @@ public class ReservationReceptionDTO implements Serializable {
     private String patientName;
 
     @Schema(description = "진료과 ID")
-    private Long departmentId;
+    private String departmentId;
 
     @Schema(description = "진료과 이름")
     private String departmentName;
 
-    @Schema(description = "의사 식별자")
-    private Long doctorId;
+    @Schema(description = "의사 ID")
+    private String doctorId;
 
-    @Schema(description = "의사명")
+    @Schema(description = "의사 이름")
     private String doctorName;
 
     @Schema(description = "예약 시간")
@@ -40,7 +40,7 @@ public class ReservationReceptionDTO implements Serializable {
     @Schema(description = "상태")
     private String status;
 
-    @Schema(description = "비고")
+    @Schema(description = "메모")
     private String note;
 
     @Schema(description = "사용 여부")
@@ -73,6 +73,6 @@ public class ReservationReceptionDTO implements Serializable {
     @Schema(description = "등록 일시")
     private LocalDateTime createdAt;
 
-    @Schema(description = "수정 시각")
+    @Schema(description = "수정 일시")
     private LocalDateTime updatedAt;
 }

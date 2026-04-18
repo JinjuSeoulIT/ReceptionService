@@ -8,8 +8,8 @@ import java.util.Optional;
 
 public interface ReservationDoctorScheduleRepository extends JpaRepository<ReservationDoctorScheduleEntity, Long> {
     Optional<ReservationDoctorScheduleEntity> findTopByDoctorIdAndDeptIdAndScheduleDateOrderByScheduleIdDesc(
-            Long doctorId,
-            Long deptId,
+            String doctorId,
+            String deptId,
             LocalDate scheduleDate
     );
 }

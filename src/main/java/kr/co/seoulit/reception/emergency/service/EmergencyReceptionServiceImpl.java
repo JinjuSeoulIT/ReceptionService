@@ -10,8 +10,6 @@ import kr.co.seoulit.reception.emergency.repository.EmergencyTriageRepository;
 import kr.co.seoulit.reception.outpatient.entity.OutpatientReceptionEntity;
 import kr.co.seoulit.common.client.PatientServiceClient;
 import kr.co.seoulit.reception.outpatient.repository.OutpatientReceptionRepository;
-import kr.co.seoulit.reception.repository.DepartmentRepository;
-import kr.co.seoulit.reception.repository.DoctorRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,8 +35,6 @@ public class EmergencyReceptionServiceImpl implements EmergencyReceptionService 
     private final EmergencyTriageRepository emergencyTriageRepository;
     private final EmergencyReceptionMapper emergencyMyBatisMapper;
     private final PatientServiceClient patientServiceClient;
-    private final DepartmentRepository departmentRepository;
-    private final DoctorRepository doctorRepository;
     private final ReceptionNumberSequenceClient receptionNumberSequenceClient;
 
     @Override
@@ -453,20 +449,26 @@ public class EmergencyReceptionServiceImpl implements EmergencyReceptionService 
         return resolvedName;
     }
 
-    private String resolveDepartmentName(Long departmentId, String fallback) {
-        if (departmentId == null) {
-            throw new IllegalArgumentException("departmentId is required");
-        }
+    private String resolveDepartmentName(String departmentId, String fallback) {
         String normalizedFallback = trimToNull(fallback);
-        return normalizedFallback != null ? normalizedFallback : "DEPT-" + departmentId;
+        if (normalizedFallback != null) {
+            return normalizedFallback;
+        }
+        if (trimToNull(departmentId) != null) {
+            throw new IllegalArgumentException("departmentName is required when departmentId is provided.");
+        }
+        return null;
     }
 
-    private String resolveDoctorName(Long doctorId, String fallback) {
-        if (doctorId == null) {
+    private String resolveDoctorName(String doctorId, String fallback) {
+        if (trimToNull(doctorId) == null) {
             return null;
         }
         String normalizedFallback = trimToNull(fallback);
-        return normalizedFallback != null ? normalizedFallback : "DOCTOR-" + doctorId;
+        if (normalizedFallback != null) {
+            return normalizedFallback;
+        }
+        throw new IllegalArgumentException("doctorName is required when doctorId is provided.");
     }
 
     private void enrichDisplayNames(OutpatientReceptionEntity reception) {
