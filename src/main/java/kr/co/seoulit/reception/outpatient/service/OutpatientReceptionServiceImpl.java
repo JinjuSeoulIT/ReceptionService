@@ -1,6 +1,7 @@
 package kr.co.seoulit.reception.outpatient.service;
 
 import kr.co.seoulit.common.audit.AuditLogService;
+import kr.co.seoulit.common.client.PatientServiceClient;
 import kr.co.seoulit.common.sequence.ReceptionNumberSequenceClient;
 import kr.co.seoulit.reception.exception.ReceptionNotFoundException;
 import kr.co.seoulit.reception.outpatient.mapstruct.ReceptionReqMapStruct;
@@ -42,9 +43,10 @@ import kr.co.seoulit.reception.outpatient.repository.ReceptionQualificationSnaps
 import kr.co.seoulit.reception.outpatient.repository.ReceptionSettlementSnapshotRepository;
 import kr.co.seoulit.reception.outpatient.repository.ReceptionVisitClosureHistoryRepository;
 import kr.co.seoulit.reception.outpatient.repository.ReceptionVisitClosureRepository;
-import kr.co.seoulit.common.client.PatientServiceClient;
 import kr.co.seoulit.reception.reservation.entity.ReservationToReceptionHistoryEntity;
 import kr.co.seoulit.reception.reservation.repository.ReservationToReceptionHistoryRepository;
+import kr.co.seoulit.reception.service.DepartmentService;
+import kr.co.seoulit.reception.service.DoctorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -91,6 +93,8 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
     private final ReceptionNumberSequenceClient receptionNumberSequenceClient;
     private final AuditLogService auditLogService;
     private final OutpatientReceptionStatusEventPublisher receptionStatusEventPublisher;
+    private final DepartmentService departmentService;
+    private final DoctorService doctorService;
 
     @Override
     @Cacheable(value = "RECEPTION_LIST")
@@ -153,6 +157,7 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
         entity.setPatientId(resolvedPatient.patientId());
         entity.setPatientName(resolvedPatient.patientName());
         entity.setDepartmentName(resolveDepartmentName(entity.getDepartmentId(), entity.getDepartmentName()));
+        doctorService.validateActiveDoctor(entity.getDoctorId(), entity.getDepartmentId());
         entity.setDoctorName(resolveDoctorName(entity.getDoctorId(), entity.getDepartmentId(), entity.getDoctorName()));
         entity.setStatus(normalizedStatus);
         entity.setVisitType(defaultIfBlank(entity.getVisitType(), "OUTPATIENT"));
@@ -239,6 +244,7 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
         if (reception.getDoctorId() != null) {
             existing.setDoctorId(reception.getDoctorId());
         }
+        doctorService.validateActiveDoctor(existing.getDoctorId(), existing.getDepartmentId());
         if (trimToNull(reception.getDoctorName()) != null || reception.getDoctorId() != null) {
             existing.setDoctorName(resolveDoctorName(existing.getDoctorId(), existing.getDepartmentId(), firstNonBlank(reception.getDoctorName(), existing.getDoctorName())));
         }
@@ -1121,16 +1127,20 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
     }
 
     private String resolveDepartmentName(String departmentId, String fallbackName) {
+        String normalizedDepartmentId = trimToNull(departmentId);
         String normalizedName = trimToNull(fallbackName);
         if (normalizedName != null) {
             return normalizedName;
         }
 
-        if (trimToNull(departmentId) != null) {
-            throw new IllegalArgumentException("departmentName is required when departmentId is provided.");
+        if (normalizedDepartmentId == null) {
+            return null;
         }
 
-        return null;
+        return departmentService.findDepartmentName(normalizedDepartmentId)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "departmentName not found for departmentId=" + normalizedDepartmentId
+                ));
     }
 
     private String resolveDoctorName(String doctorId, String departmentId, String fallbackName) {
@@ -1144,7 +1154,10 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
             return normalizedName;
         }
 
-        throw new IllegalArgumentException("doctorName is required when doctorId is provided.");
+        return doctorService.findDoctorName(normalizedDoctorId)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "doctorName not found for doctorId=" + normalizedDoctorId
+                ));
     }
     private String firstNonBlank(String... values) {
         if (values == null) {

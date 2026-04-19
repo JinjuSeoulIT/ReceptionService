@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.seoulit.reception.mapper.DoctorMapper">
+
+    <select id="selectActiveDoctors" resultType="kr.co.seoulit.reception.dto.DoctorDTO">
+        SELECT
+            s.staff_id AS doctor_id,
+            s.full_name AS doctor_name,
+            s.staff_department_id AS department_id
+        FROM CMH.STAFF s
+        INNER JOIN CMH.STAFF_DEPARTMENT d
+            ON d.department_id = s.staff_department_id
+        WHERE s.staff_id LIKE 'DOC-%'
+          AND UPPER(TRIM(NVL(s.employment_status, 'ACTIVE'))) = 'ACTIVE'
+        <if test="departmentId != null and departmentId != ''">
+            AND s.staff_department_id = #{departmentId}
+        </if>
+        ORDER BY d.department_name, s.full_name
+    </select>
+
+    <select id="selectDoctorNameById" resultType="string">
+        SELECT s.full_name
+        FROM CMH.STAFF s
+        WHERE s.staff_id = #{doctorId}
+          AND s.staff_id LIKE 'DOC-%'
+    </select>
+
+    <select id="countActiveDoctors" resultType="int">
+        SELECT COUNT(*)
+        FROM CMH.STAFF s
+        WHERE s.staff_id = #{doctorId}
+          AND s.staff_id LIKE 'DOC-%'
+          AND UPPER(TRIM(NVL(s.employment_status, 'ACTIVE'))) = 'ACTIVE'
+        <if test="departmentId != null and departmentId != ''">
+            AND s.staff_department_id = #{departmentId}
+        </if>
+    </select>
+
+</mapper>

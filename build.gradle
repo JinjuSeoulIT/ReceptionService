@@ -67,7 +67,6 @@ tasks.withType(org.gradle.api.tasks.compile.JavaCompile).configureEach {
 
 
 tasks.named('compileJava') {
-    // Keep only legacy service/util excluded; controllers are compiled again.
-    exclude 'kr/co/seoulit/reception/service/**'
+    // Keep only legacy util excluded.
     exclude 'kr/co/seoulit/reception/util/**'
 }
