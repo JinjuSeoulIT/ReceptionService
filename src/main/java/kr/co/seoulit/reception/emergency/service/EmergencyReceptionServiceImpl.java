@@ -41,7 +41,10 @@ public class EmergencyReceptionServiceImpl implements EmergencyReceptionService 
     public List<EmergencyReceptionDTO> getEmergencyReceptionList(Map<String, Object> searchCondition) {
         String searchType = (String) searchCondition.get("searchType");
         String searchValue = (String) searchCondition.get("searchValue");
-        return emergencyMyBatisMapper.selectEmergencyReceptions(searchType, searchValue);
+        return emergencyMyBatisMapper.selectEmergencyReceptions(searchType, searchValue)
+                .stream()
+                .map(this::normalizeStatusForResponse)
+                .toList();
     }
 
     @Override
@@ -55,6 +58,7 @@ public class EmergencyReceptionServiceImpl implements EmergencyReceptionService 
                 .orElse(null);
 
         enrichDisplayNames(reception);
+        reception.setStatus(normalizeStatus(reception.getStatus()));
         return toEmergencyDto(reception, emergency, triage);
     }
 
@@ -258,7 +262,7 @@ public class EmergencyReceptionServiceImpl implements EmergencyReceptionService 
         dto.setReservationId(reception.getReservationId());
         dto.setScheduledAt(reception.getScheduledAt());
         dto.setArrivedAt(reception.getArrivedAt());
-        dto.setStatus(reception.getStatus());
+        dto.setStatus(normalizeStatus(reception.getStatus()));
         dto.setNote(reception.getNote());
         dto.setIsActive(reception.getIsActive());
         dto.setCreatedAt(reception.getCreatedAt());
@@ -274,6 +278,14 @@ public class EmergencyReceptionServiceImpl implements EmergencyReceptionService 
         dto.setVitalSpo2(emergency.getVitalSpo2());
         dto.setArrivalMode(emergency.getArrivalMode());
         dto.setTriageNote(triage != null ? triage.getTriageNote() : null);
+        return dto;
+    }
+
+    private EmergencyReceptionDTO normalizeStatusForResponse(EmergencyReceptionDTO dto) {
+        if (dto == null) {
+            return null;
+        }
+        dto.setStatus(normalizeStatus(dto.getStatus()));
         return dto;
     }
 
@@ -363,6 +375,7 @@ public class EmergencyReceptionServiceImpl implements EmergencyReceptionService 
         normalized = normalized.toUpperCase();
         return switch (normalized) {
             case "CANCELED" -> "CANCELLED";
+            case "CALLED", "호출" -> "WAITING";
             case "REGISTERED" -> "WAITING";
             case "DONE" -> "COMPLETED";
             case "ON_HOLD" -> "HOLD";
@@ -376,13 +389,12 @@ public class EmergencyReceptionServiceImpl implements EmergencyReceptionService 
     private static Map<String, Set<String>> createStatusTransitionRules() {
         Map<String, Set<String>> rules = new HashMap<>();
         rules.put("RESERVED", Set.of("WAITING", "CANCELLED", "INACTIVE"));
-        rules.put("WAITING", Set.of("CALLED", "TRIAGE", "TRIAGE_IN_PROGRESS", "IN_PROGRESS", "HOLD", "COMPLETED", "CANCELLED", "INACTIVE"));
-        rules.put("CALLED", Set.of("TRIAGE", "TRIAGE_IN_PROGRESS", "IN_PROGRESS", "HOLD", "CANCELLED", "INACTIVE"));
+        rules.put("WAITING", Set.of("TRIAGE", "TRIAGE_IN_PROGRESS", "IN_PROGRESS", "HOLD", "COMPLETED", "CANCELLED", "INACTIVE"));
         rules.put("TRIAGE", Set.of("TRIAGE_IN_PROGRESS", "IN_PROGRESS", "HOLD", "CANCELLED", "INACTIVE"));
         rules.put("TRIAGE_IN_PROGRESS", Set.of("IN_PROGRESS", "HOLD", "CANCELLED", "INACTIVE"));
         rules.put("IN_PROGRESS", Set.of("OBSERVATION", "HOLD", "PAYMENT_WAIT", "COMPLETED", "CANCELLED", "INACTIVE"));
         rules.put("OBSERVATION", Set.of("IN_PROGRESS", "HOLD", "PAYMENT_WAIT", "COMPLETED", "CANCELLED", "INACTIVE"));
-        rules.put("HOLD", Set.of("WAITING", "CALLED", "TRIAGE", "TRIAGE_IN_PROGRESS", "IN_PROGRESS", "CANCELLED", "INACTIVE"));
+        rules.put("HOLD", Set.of("WAITING", "TRIAGE", "TRIAGE_IN_PROGRESS", "IN_PROGRESS", "CANCELLED", "INACTIVE"));
         rules.put("PAYMENT_WAIT", Set.of("COMPLETED", "CANCELLED", "INACTIVE"));
         rules.put("COMPLETED", Set.of("CANCELLED"));
         rules.put("CANCELLED", Collections.emptySet());

@@ -15,7 +15,7 @@ import java.util.Objects;
 @Component
 public class PatientServiceClient {
 
-    private static final String DEFAULT_PATIENT_SERVICE_BASE_URL = "http://192.168.1.55:8181";
+    private static final String DEFAULT_PATIENT_SERVICE_BASE_URL = "http://192.168.1.60:8181";
 
     private final RestClient restClient;
 

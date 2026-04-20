@@ -113,7 +113,7 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
                 dateTo,
                 departmentId,
                 doctorId
-        );
+        ).stream().map(this::normalizeStatusForResponse).collect(Collectors.toList());
     }
 
     @Override
@@ -122,12 +122,16 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
         OutpatientReceptionEntity entity = receptionRepository.findById(receptionId)
                 .orElseThrow(() -> new ReceptionNotFoundException("Reception not found. receptionId=" + receptionId));
         enrichDisplayNames(entity);
-        return receptionResMapStruct.toDto(entity);
+        entity.setStatus(normalizeStatus(entity.getStatus()));
+        return normalizeStatusForResponse(receptionResMapStruct.toDto(entity));
     }
 
     @Override
     public List<OutpatientReceptionDTO> getReceptionQueue(String departmentId, String doctorId, String date) {
-        return receptionMyBatisMapper.selectQueue(departmentId, doctorId, date);
+        return receptionMyBatisMapper.selectQueue(departmentId, doctorId, date)
+                .stream()
+                .map(this::normalizeStatusForResponse)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -182,8 +186,6 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
                 reception.getCreatedBy()
         );
         saveReservationConversionHistory(saved, reception.getCreatedBy(), "SUCCESS", "Reception created");
-        maybeInsertCallHistory(saved, queue, reception.getCreatedBy());
-
         auditLogService.log(
                 "RECEPTION",
                 saved.getReceptionId(),
@@ -309,8 +311,6 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
         if (beforeReservationId == null && saved.getReservationId() != null) {
             saveReservationConversionHistory(saved, reception.getUpdatedBy(), "SUCCESS", "Reservation linked");
         }
-        maybeInsertCallHistory(saved, queue, reception.getUpdatedBy());
-
         auditLogService.log(
                 "RECEPTION",
                 saved.getReceptionId(),
@@ -444,8 +444,6 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
         syncQualificationSnapshot(saved);
         syncVisitClosure(saved, targetStatus, changedBy, normalizedReasonCode, normalizedReasonText);
         snapshotSettlement(saved);
-        maybeInsertCallHistory(saved, queue, changedBy);
-
         saveStatusHistory(receptionId, fromStatus, targetStatus, changedBy, normalizedReasonCode, normalizedReasonText);
         publishStatusChangedAfterCommit(saved, fromStatus, targetStatus);
 
@@ -470,7 +468,7 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
                 receptionResMapStruct.toDto(saved)
         );
 
-        return receptionResMapStruct.toDto(saved);
+        return normalizeStatusForResponse(receptionResMapStruct.toDto(saved));
     }
 
     private void enrichDisplayNames(OutpatientReceptionEntity reception) {
@@ -573,8 +571,8 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
         OutpatientReceptionStatusHistoryDTO dto = new OutpatientReceptionStatusHistoryDTO();
         dto.setStatusHistoryId(entity.getStatusHistoryId());
         dto.setReceptionId(entity.getReceptionId());
-        dto.setFromStatus(entity.getFromStatus());
-        dto.setToStatus(entity.getToStatus());
+        dto.setFromStatus(entity.getFromStatus() == null ? null : normalizeStatus(entity.getFromStatus()));
+        dto.setToStatus(entity.getToStatus() == null ? null : normalizeStatus(entity.getToStatus()));
         dto.setChangedBy(entity.getChangedBy());
         dto.setChangedAt(entity.getChangedAt());
         dto.setReasonCode(entity.getReasonCode());
@@ -886,36 +884,10 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
         reservationToReceptionHistoryRepository.save(history);
     }
 
-    private void maybeInsertCallHistory(
-            OutpatientReceptionEntity reception,
-            OutpatientWaitingQueueEntity queue,
-            Long changedBy
-    ) {
-        if (queue == null || queue.getWaitingQueueId() == null) {
-            return;
-        }
-        if (!"CALLED".equalsIgnoreCase(reception.getStatus())) {
-            return;
-        }
-
-        int callCount = callHistoryRepository.findTopByWaitingQueueIdOrderByCallDatetimeDesc(queue.getWaitingQueueId())
-                .map(item -> item.getCallCount() == null ? 1 : item.getCallCount() + 1)
-                .orElse(1);
-
-        ReceptionCallHistoryEntity history = new ReceptionCallHistoryEntity();
-        history.setWaitingQueueId(queue.getWaitingQueueId());
-        history.setCallDatetime(LocalDateTime.now());
-        history.setCallUserId(changedBy);
-        history.setCallCount(callCount);
-        history.setCallResultCd("CALLED");
-        history.setRemark("Auto generated by status change");
-        callHistoryRepository.save(history);
-    }
-
     private String mapQueueStatus(String status) {
         String normalized = normalizeStatus(defaultIfBlank(status, "WAITING"));
         return switch (normalized) {
-            case "WAITING", "CALLED", "TRIAGE", "TRIAGE_IN_PROGRESS", "IN_PROGRESS", "OBSERVATION", "HOLD", "PAYMENT_WAIT", "COMPLETED", "CANCELLED", "INACTIVE" ->
+            case "WAITING", "TRIAGE", "TRIAGE_IN_PROGRESS", "IN_PROGRESS", "OBSERVATION", "HOLD", "PAYMENT_WAIT", "COMPLETED", "CANCELLED", "INACTIVE" ->
                     normalized;
             default -> "WAITING";
         };
@@ -1023,6 +995,7 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
 
         return switch (normalized) {
             case "CANCELED" -> "CANCELLED";
+            case "CALLED", "호출" -> "WAITING";
             case "REGISTERED" -> "WAITING";
             case "진료완료", "TREATMENT_COMPLETED", "PAYMENT_IN_PROGRESS" -> "PAYMENT_WAIT";
             case "수납중" -> "PAYMENT_WAIT";
@@ -1039,18 +1012,25 @@ public class OutpatientReceptionServiceImpl implements OutpatientReceptionServic
     private static Map<String, Set<String>> createStatusTransitionRules() {
         Map<String, Set<String>> rules = new HashMap<>();
         rules.put("RESERVED", Set.of("WAITING", "CANCELLED", "INACTIVE"));
-        rules.put("WAITING", Set.of("CALLED", "TRIAGE", "TRIAGE_IN_PROGRESS", "IN_PROGRESS", "HOLD", "COMPLETED", "CANCELLED", "INACTIVE"));
-        rules.put("CALLED", Set.of("TRIAGE", "TRIAGE_IN_PROGRESS", "IN_PROGRESS", "HOLD", "CANCELLED", "INACTIVE"));
+        rules.put("WAITING", Set.of("TRIAGE", "TRIAGE_IN_PROGRESS", "IN_PROGRESS", "HOLD", "COMPLETED", "CANCELLED", "INACTIVE"));
         rules.put("TRIAGE", Set.of("TRIAGE_IN_PROGRESS", "IN_PROGRESS", "HOLD", "CANCELLED", "INACTIVE"));
         rules.put("TRIAGE_IN_PROGRESS", Set.of("IN_PROGRESS", "HOLD", "CANCELLED", "INACTIVE"));
         rules.put("IN_PROGRESS", Set.of("OBSERVATION", "HOLD", "PAYMENT_WAIT", "COMPLETED", "CANCELLED", "INACTIVE"));
         rules.put("OBSERVATION", Set.of("IN_PROGRESS", "HOLD", "PAYMENT_WAIT", "COMPLETED", "CANCELLED", "INACTIVE"));
-        rules.put("HOLD", Set.of("WAITING", "CALLED", "TRIAGE", "TRIAGE_IN_PROGRESS", "IN_PROGRESS", "CANCELLED", "INACTIVE"));
+        rules.put("HOLD", Set.of("WAITING", "TRIAGE", "TRIAGE_IN_PROGRESS", "IN_PROGRESS", "CANCELLED", "INACTIVE"));
         rules.put("PAYMENT_WAIT", Set.of("COMPLETED", "CANCELLED", "INACTIVE"));
         rules.put("COMPLETED", Set.of("CANCELLED"));
         rules.put("CANCELLED", Collections.emptySet());
         rules.put("INACTIVE", Collections.emptySet());
         return rules;
+    }
+
+    private OutpatientReceptionDTO normalizeStatusForResponse(OutpatientReceptionDTO dto) {
+        if (dto == null) {
+            return null;
+        }
+        dto.setStatus(normalizeStatus(dto.getStatus()));
+        return dto;
     }
 
     private String resolveReasonCodeForStatus(String status, OutpatientReceptionDTO request, OutpatientReceptionEntity existing) {
