@@ -7,14 +7,15 @@
 
     <select id="selectActiveDoctors" resultType="kr.co.seoulit.reception.dto.DoctorDTO">
         SELECT
-            s.staff_id AS doctor_id,
-            s.full_name AS doctor_name,
-            s.staff_department_id AS department_id
+        s.staff_id AS doctor_id,
+        s.full_name AS doctor_name,
+        s.staff_department_id AS department_id
         FROM CMH.STAFF s
         INNER JOIN CMH.STAFF_DEPARTMENT d
-            ON d.department_id = s.staff_department_id
+        ON d.department_id = s.staff_department_id
+        AND NVL(d.reception_display_yn, 'N') = 'Y'
         WHERE s.staff_id LIKE 'DOC-%'
-          AND UPPER(TRIM(NVL(s.employment_status, 'ACTIVE'))) = 'ACTIVE'
+        AND UPPER(TRIM(NVL(s.employment_status, 'ACTIVE'))) = 'ACTIVE'
         <if test="departmentId != null and departmentId != ''">
             AND s.staff_department_id = #{departmentId}
         </if>

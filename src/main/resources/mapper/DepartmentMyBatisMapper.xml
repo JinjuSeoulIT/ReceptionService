@@ -7,15 +7,16 @@
 
     <select id="selectActiveDepartments" resultType="kr.co.seoulit.reception.dto.DepartmentDTO">
         SELECT
-            d.department_id AS department_id,
-            d.department_name AS department_name
+        d.department_id AS department_id,
+        d.department_name AS department_name
         FROM CMH.STAFF_DEPARTMENT d
-        WHERE EXISTS (
-            SELECT 1
-            FROM CMH.STAFF s
-            WHERE s.staff_department_id = d.department_id
-              AND s.staff_id LIKE 'DOC-%'
-              AND UPPER(TRIM(NVL(s.employment_status, 'ACTIVE'))) = 'ACTIVE'
+        WHERE NVL(d.reception_display_yn, 'N') = 'Y'
+        AND EXISTS (
+        SELECT 1
+        FROM CMH.STAFF s
+        WHERE s.staff_department_id = d.department_id
+        AND s.staff_id LIKE 'DOC-%'
+        AND UPPER(TRIM(NVL(s.employment_status, 'ACTIVE'))) = 'ACTIVE'
         )
         ORDER BY d.department_name
     </select>
