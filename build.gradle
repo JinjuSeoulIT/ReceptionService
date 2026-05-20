@@ -1,7 +1,7 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.3.2'
-    id 'io.spring.dependency-management' version '1.1.5'
+    id 'org.springframework.boot' version '3.4.2'
+    id 'io.spring.dependency-management' version '1.1.7'
 }
 
 group = 'kr.co.seoulit'
@@ -18,43 +18,30 @@ repositories {
 }
 
 dependencies {
+    implementation project(':util')
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    // implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
-
-    // ✅ JPA 추가
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-
-    implementation 'org.hibernate.orm:hibernate-community-dialects:6.5.2.Final'
-
-    // ★ 버전은 Spring Boot BOM이 알아서 관리하게 하고, runtimeOnly 로만 설정
-    runtimeOnly 'com.mysql:mysql-connector-j'
-    runtimeOnly 'com.oracle.database.jdbc:ojdbc11:21.11.0.0'
-
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-aop'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.5'
+    implementation 'org.mapstruct:mapstruct:1.6.3'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
+    implementation 'io.minio:minio:8.5.17'
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
+
+    runtimeOnly 'com.mysql:mysql-connector-j'
+    runtimeOnly 'com.oracle.database.jdbc:ojdbc11:23.3.0.23.09'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
 
-    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4'
-
-    //mapstruct 의존성
-    implementation 'org.mapstruct:mapstruct:1.5.5.Final'
-    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
-
-    //레디스 의존성 라이브러리 추가 후 재빌드하기
-    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-    implementation 'org.springframework.boot:spring-boot-starter-cache'
-
-    //swagger 라이브러리 추가 - 프레임 워크 사용
-    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
-
-    // MinIO client
-    implementation 'io.minio:minio:8.5.12'
-
-
+tasks.named('bootJar') {
+    dependsOn ':util:jar'
 }
 
 tasks.named('test') {
@@ -65,8 +52,4 @@ tasks.withType(org.gradle.api.tasks.compile.JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 }
 
-
-tasks.named('compileJava') {
-    // Keep only legacy util excluded.
-    exclude 'kr/co/seoulit/reception/util/**'
-}
+sourceSets.main.java.exclude 'kr/co/seoulit/reception/util/**'
